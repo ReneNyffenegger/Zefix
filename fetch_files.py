@@ -12,6 +12,10 @@ import os.path
 
 path_to_archive = sys.argv[1]
 
+#  Make sure path_to_archive ends with a slash:
+if path_to_archive[-1:] not in ('/', '\\'):
+   path_to_archive += '/'
+
 def get_gz(ftp, ftp_filename, local_filename):
 
     sys.stdout.write('get_gz ' + ftp_filename)
