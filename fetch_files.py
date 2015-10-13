@@ -1,6 +1,8 @@
 # TODO:
 #   NOK fs-081023.gz
 #   NOK fs-130327-060-1364312713337-2.gz
+#   NOK fs-150519-093.gz (Could be manually extracted, however)
+#   NOK fs-150519-094.gz
 
 from   ftplib import FTP
 import zlib
