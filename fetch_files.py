@@ -1,3 +1,4 @@
+#!/usr/bin/python
 # TODO:
 #   NOK fs-081023.gz
 #   NOK fs-130327-060-1364312713337-2.gz
@@ -20,7 +21,7 @@ if path_to_archive[-1:] not in ('/', '\\'):
 
 def get_gz(ftp, ftp_filename, local_filename):
 
-    sys.stdout.write('get_gz ' + ftp_filename)
+    sys.stdout.write('get_gz ' + ftp_filename + ' to ' + local_filename)
 
     decomp = zlib.decompressobj(16+zlib.MAX_WBITS)
 
@@ -51,10 +52,10 @@ def get_firmen_und_bezeichnung(ftp):
     ftp.cwd('/hrdata')
 
     for ftp_file_name in ftp_zefix.nlst():
-        if   ftp_file_name[:2] == 'fb':
+        if   re.match('fb.*\.gz$', ftp_file_name):
              get_gz(ftp_zefix, ftp_file_name, path_to_archive + 'firmen_bezeichnung')
              
-        elif ftp_file_name[:2] == 'fi':
+        if   re.match('fi.*\.gz$', ftp_file_name):
              get_gz(ftp_zefix, ftp_file_name, path_to_archive + 'firmen')
 
 
@@ -87,7 +88,7 @@ def get_new_files(ftp, ftp_path):
            else:
            #  fetch the file
               get_gz(ftp_zefix, ftp_file_name, path_to_archive + local_file_name)
-              time.sleep(10)
+           #  time.sleep(10)
            
 
 
