@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import sys
 import os.path
 import csv
@@ -19,7 +20,7 @@ html.write('<html><head><title>' + os.path.basename(path_to_tsv) + '</title></he
 
 re_company_name = re.compile(r'<F>(.*?)<E>(.*)')
 re_company_nr   = re.compile(r'(.*?)<L>(.*?)<E>(.*)')
-re_where        = re.compile(r'<S>(.*?)<E>')
+re_where        = re.compile(r'<(S|5)>(.*?)<E>')        # Sitz neu: <5>Ortname<E>
 re_rechtsform   = re.compile(r'<Q>(.*?)<E>')
 re_tags         = re.compile(r'<.>')
 
@@ -31,7 +32,7 @@ for line in csv.reader(tsv, delimiter="\t"):
     # text = text.replace('<E>', '</h1>', 1)
 
     m = re_where.search(text)
-    where = m.group(1)
+    where = m.group(2)
 
     m = re_rechtsform.search(text)
     if m:
