@@ -27,8 +27,9 @@ $dbh->{AutoCommit} = 0;
 
 my $cnt_gemeinden = $dbh->selectrow_array('select count(*) from gemeinde');
 
-print "cnt gemeinde: $cnt_gemeinden\n";
 my $load_gemeinden = ! $cnt_gemeinden;
+
+print "TODO: Forcing gemeinden to be loaded\n";
 $load_gemeinden = 1;
 
 
@@ -99,9 +100,6 @@ sub load_firmen { #  {
           if ($Gemeinde_NR_2_Name{$fi_GemeindeNR} ne $fi_GemeindeName) {
             printf "%5d %-30s %-30s\n", $fi_GemeindeNR, $Gemeinde_NR_2_Name{$fi_GemeindeNR}, $fi_GemeindeName;
           }
-          else {
-            print "TODO bekannte Gemeinde $fi_GemeindeName\n";
-          }
         }
         else {
           $sth_gemeinde -> execute($fi_GemeindeNR, $fi_GemeindeName);
@@ -114,10 +112,7 @@ sub load_firmen { #  {
 
     $fi_Loeschdat =~ s/ 00:00:00$//;
 
-    $sth_firma -> execute($fi_firma,
-      # $fi_name, 
-        $fi_Code13, $fi_firma1, $fi_GemeindeNR, $fi_Kapital, $fi_CurrencyID, $fi_statusID, $fi_Loeschdat, $fi_ShabSequence, $fi_CareOf, $fi_Strasse, $fi_Hausnummer, $fi_Addresszusatz, $fi_Postfach, $fi_PLZ, $fi_Ort
-      # , $fi_Zweck
+    $sth_firma -> execute($fi_firma, $fi_Code13, $fi_firma1, $fi_GemeindeNR, $fi_Kapital, $fi_CurrencyID, $fi_statusID, $fi_Loeschdat, $fi_ShabSequence, $fi_CareOf, $fi_Strasse, $fi_Hausnummer, $fi_Addresszusatz, $fi_Postfach, $fi_PLZ, $fi_Ort
       );
     $sth_zweck -> execute($fi_firma, $fi_Zweck);
   } #  }
@@ -179,7 +174,7 @@ create table firma (
 --name           varchar    not null,
   code13         varchar    not null,
   firma1         int,
-  gemeinde_id    int        not null,
+  id_gemeinde    int        not null,
   kapital        number,
   currency       varchar,
   status         int,
@@ -195,7 +190,7 @@ create table firma (
 --zweck          text,
   -----
   primary key (id)
---foreign key (gemeinde_id) references gemeinden
+--foreign key (id_gemeinde) references gemeinden
 )
 ") or die;
 
