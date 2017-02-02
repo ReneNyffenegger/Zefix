@@ -6,7 +6,10 @@ use DBI;
 use Encode qw(decode encode);
 my $zefix_root;
 
-if ('test') {
+# Input files seem to be in dos format.
+$/ = "\r\n";
+
+if (! 'test') {
   $zefix_root = "$ENV{github_root}Zefix/test/";
 }
 else {
@@ -40,9 +43,11 @@ $dbh -> commit;
 
 sub load_firmen { #  {
 
+  print "load_firmen\n";
+  my $cnt = 0;
+
   my %Gemeinde_NR_2_Name;
 
-  my $cnt = 0;
   my $tsv_firmen     = "${zefix_downloads}firmen";
 
   die unless -f $tsv_firmen;
@@ -61,6 +66,8 @@ sub load_firmen { #  {
 
   open (my $f_firmen, '<', $tsv_firmen) or die;
   while (my $in = <$f_firmen>) { #  {
+    $cnt++;
+    chomp $in;
     $cnt ++;
     my @row = split("\t", $in);
 
@@ -115,11 +122,15 @@ sub load_firmen { #  {
     $sth_firma -> execute($fi_firma, $fi_Code13, $fi_firma1, $fi_GemeindeNR, $fi_Kapital, $fi_CurrencyID, $fi_statusID, $fi_Loeschdat, $fi_ShabSequence, $fi_CareOf, $fi_Strasse, $fi_Hausnummer, $fi_Addresszusatz, $fi_Postfach, $fi_PLZ, $fi_Ort
       );
     $sth_zweck -> execute($fi_firma, $fi_Zweck);
+
+    print "$cnt\n" unless $cnt % 10000;
   } #  }
 
 } #  }
 
 sub load_firmen_bez {
+  print "load_firmen_bez\n";
+  my $cnt = 0;
   my $tsv_firmen_bez = "${zefix_downloads}firmen_bezeichnung";
   die unless -f $tsv_firmen_bez;
 
@@ -128,6 +139,8 @@ sub load_firmen_bez {
 
   open (my $f_firmen_bez, '<', $tsv_firmen_bez) or die;
   while (my $in = <$f_firmen_bez>) {
+    $cnt++;
+    chomp $in; 
     my @row = split("\t", $in);
 
     my $fi_id         = $row[0];
@@ -136,11 +149,12 @@ sub load_firmen_bez {
     my $sprachcode    = $row[3]; # DE, FR, IT, EN, XX
     my $status        = $row[4]; # -1: nicht mehr gültige Bezeichnung, 3: letztgültige Bezeichnung
     my $bezeichnung   = to_txt($row[5]);
-    my $dt_ab         = to_dt($row[6]);
-    my $dt_bis        = to_dt($row[7]);
+    my $dt_ab         = to_dt ($row[6]);
+    my $dt_bis        = to_dt ($row[7]);
 
     $sth_firma_bez -> execute($fi_id, $seq, $typ, $sprachcode, $status, $bezeichnung, $dt_ab, $dt_bis);
   
+    print "$cnt\n" unless $cnt % 10000;
   }
 
 }
@@ -221,6 +235,9 @@ create table gemeinde (
 
 sub to_dt {
   my $str = shift;
+
+  return '9999-12-31' unless $str; # 1082610, Trimos Ltd
+  
   die unless $str =~ /^((\d\d\d\d)-(\d\d)-(\d\d)) 00:00:00$/;
 
   my $dt = $1;
