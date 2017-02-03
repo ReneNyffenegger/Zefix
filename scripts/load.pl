@@ -4,16 +4,29 @@ use strict;
 
 use DBI;
 use Encode qw(decode encode);
+use Getopt::Long;
 my $zefix_root;
 
 # Input files seem to be in dos format.
 $/ = "\r\n";
 
-if (! 'test') {
+my $env = 'dev';
+
+GetOptions (
+  'test'    => \my $test
+) or die;
+
+$env = 'test' if $test;
+print "env = $env\n";
+
+if ($env eq 'test') {
   $zefix_root = "$ENV{github_root}Zefix/test/";
 }
-else {
+elsif ($env eq 'dev') {
   $zefix_root = "$ENV{digitales_backup}Zefix/";
+}
+else {
+   die "unknown env $env\n";
 }
 die $zefix_root unless -d $zefix_root;
 
@@ -28,7 +41,11 @@ my $db = "${zefix_root}zefix.db";
 my $dbh = DBI->connect("dbi:SQLite:dbname=$db") or die "Could not open/create $db";
 $dbh->{AutoCommit} = 0;
 
+print "connected\n";
+
 my $cnt_gemeinden = $dbh->selectrow_array('select count(*) from gemeinde');
+print "cnt_gemeinden=$cnt_gemeinden\n";
+
 
 my $load_gemeinden = ! $cnt_gemeinden;
 
@@ -60,8 +77,8 @@ sub load_firmen { #  {
      trunc_table_gemeinde();
      $sth_gemeinde = $dbh -> prepare('insert into gemeinde values(?, ?)') or die;
   }
-  my $sth_firma = $dbh -> prepare ('insert into firma values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)') or die;
-  my $sth_zweck = $dbh -> prepare ('insert into zweck values (?,?)                            ') or die;
+  my $sth_firma = $dbh -> prepare ('insert into firma values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)') or die;
+  my $sth_zweck = $dbh -> prepare ('insert into zweck values (?,?)                              ') or die;
 
 
   open (my $f_firmen, '<', $tsv_firmen) or die;
@@ -74,7 +91,7 @@ sub load_firmen { #  {
     my $fi_firma         = $row[ 0]; #  {
     my $fi_Code13        = $row[ 1];
     my $fi_RechtsformID  = $row[ 2];
-    my $fi_firma1        = $row[ 3];
+    my $fi_hauptsitz     = $row[ 3];
     my $fi_GemeindeNR    = $row[ 4];
     my $fi_GemeindeName  = to_txt($row[5]);
     my $fi_RegisteramtID = $row[ 6];
@@ -119,8 +136,7 @@ sub load_firmen { #  {
 
     $fi_Loeschdat =~ s/ 00:00:00$//;
 
-    $sth_firma -> execute($fi_firma, $fi_Code13, $fi_firma1, $fi_GemeindeNR, $fi_Kapital, $fi_CurrencyID, $fi_statusID, $fi_Loeschdat, $fi_ShabSequence, $fi_CareOf, $fi_Strasse, $fi_Hausnummer, $fi_Addresszusatz, $fi_Postfach, $fi_PLZ, $fi_Ort
-      );
+    $sth_firma -> execute($fi_firma, $fi_Code13, $fi_hauptsitz, $fi_GemeindeNR, $fi_Kapital, $fi_CurrencyID, $fi_statusID, $fi_Loeschdat, $fi_ShabSequence, $fi_CareOf, $fi_Strasse, $fi_Hausnummer, $fi_Addresszusatz, $fi_Postfach, $fi_PLZ, $fi_Ort, $fi_RechtsformID);
     $sth_zweck -> execute($fi_firma, $fi_Zweck);
 
     print "$cnt\n" unless $cnt % 10000;
@@ -166,7 +182,7 @@ sub trunc_table_firma_bez { # {
 create table firma_bez (
   id_firma       int       not null,
   seq            int       not null,
-  typ                              , -- ???
+  typ            int       not null, -- 1=Bevorzugte Bezeichnung? 2=Alternative Bezeichnung ?
   sprachcode     int       not null,
   status         int       not null,
   bezeichnung    text      not null,
@@ -187,7 +203,7 @@ create table firma (
   id             int,
 --name           varchar    not null,
   code13         varchar    not null,
-  firma1         int,
+  id_hauptsitz   int,
   id_gemeinde    int        not null,
   kapital        number,
   currency       varchar,
@@ -201,7 +217,7 @@ create table firma (
   postfach       text,
   plz            text,
   ort            text,
---zweck          text,
+  rechtsform     int,
   -----
   primary key (id)
 --foreign key (id_gemeinde) references gemeinden
@@ -238,7 +254,7 @@ sub to_dt {
 
   return '9999-12-31' unless $str; # 1082610, Trimos Ltd
   
-  die unless $str =~ /^((\d\d\d\d)-(\d\d)-(\d\d)) 00:00:00$/;
+  die "$str" unless $str =~ /^((\d\d\d\d)-(\d\d)-(\d\d)) 00:00:00$/;
 
   my $dt = $1;
 
