@@ -94,7 +94,7 @@ sub load_firmen { #  {
     my $fi_hauptsitz     = $row[ 3];
     my $fi_GemeindeNR    = $row[ 4];
     my $fi_GemeindeName  = to_txt($row[5]);
-    my $fi_RegisteramtID = $row[ 6];
+#   my $fi_RegisteramtID = $row[ 6];
     my $fi_Kapital       = $row[ 7];
     my $fi_CurrencyID    = $row[ 8];
     my $fi_statusID      = $row[ 9]; # 0: gelöscht, 2: aktiv, 3: in Auflösung (von Amtes wegen, Konkurs, Fusion)
