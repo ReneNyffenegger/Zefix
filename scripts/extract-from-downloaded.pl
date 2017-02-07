@@ -3,7 +3,7 @@ use warnings;
 use strict;
 use File::Basename;
 
-my $id_firma = shift or die;
+my @ids_firma = @ARGV or die;
 
 my $downloaded_dir = "$ENV{digitales_backup}Zefix/downloaded/";
 my $dest_dir       = "extracted/";

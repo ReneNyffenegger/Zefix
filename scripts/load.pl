@@ -1,10 +1,13 @@
 #!/usr/bin/perl
 use warnings;
 use strict;
+use 5.10.0;
 
 use DBI;
 use Encode qw(decode encode);
 use Getopt::Long;
+use Time::HiRes qw(time);
+
 my $zefix_root;
 
 # Input files seem to be in dos format.
@@ -60,6 +63,33 @@ $dbh -> commit;
 
 sub load_firmen { #  {
 
+ my $fi_firma         ; # my $fi_firma_last = -1; #  {
+ my $fi_Code13        ;
+ my $fi_RechtsformID  ;
+ my $fi_hauptsitz     ;
+ my $fi_GemeindeNR    ;
+ my $fi_GemeindeName  ;
+#my $fi_RegisteramtID ;
+ my $fi_Kapital       ;
+ my $fi_CurrencyID    ;
+ my $fi_statusID      ;
+ my $fi_Loeschdat     ;
+#my $fi_SHABDat       ;
+#my $fi_ShabNr        ;
+#my $fi_ShabSeite     ;
+#my $fi_MutTyp        ;
+#my $fi_DatumMutation ;
+ my $fi_ShabSequence  ;
+ my $fi_Address       ;
+ my $fi_CareOf        ;
+ my $fi_Strasse       ;
+ my $fi_Hausnummer    ;
+ my $fi_Addresszusatz ;
+ my $fi_Postfach      ;
+ my $fi_PLZ           ;
+ my $fi_Ort           ;
+ my $fi_Zweck         ; #  }
+
   print "load_firmen\n";
   my $cnt = 0;
 
@@ -77,43 +107,56 @@ sub load_firmen { #  {
      trunc_table_gemeinde();
      $sth_gemeinde = $dbh -> prepare('insert into gemeinde values(?, ?)') or die;
   }
-  my $sth_firma = $dbh -> prepare ('insert into firma values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)') or die;
-  my $sth_zweck = $dbh -> prepare ('insert into zweck values (?,?)                              ') or die;
+  my $sth_firma_stg = $dbh -> prepare ('insert into firma_stage values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)') or die;
+  my $sth_zweck     = $dbh -> prepare ('insert into zweck       values (?,?)                              ') or die;
 
 
   open (my $f_firmen, '<', $tsv_firmen) or die;
+  my $start_t = time;
   while (my $in = <$f_firmen>) { #  {
-    $cnt++;
+
+
     chomp $in;
-    $cnt ++;
+
     my @row = split("\t", $in);
 
-    my $fi_firma         = $row[ 0]; #  {
-    my $fi_Code13        = $row[ 1];
-    my $fi_RechtsformID  = $row[ 2];
-    my $fi_hauptsitz     = $row[ 3];
-    my $fi_GemeindeNR    = $row[ 4];
-    my $fi_GemeindeName  = to_txt($row[5]);
-#   my $fi_RegisteramtID = $row[ 6];
-    my $fi_Kapital       = $row[ 7];
-    my $fi_CurrencyID    = $row[ 8];
-    my $fi_statusID      = $row[ 9]; # 0: gelöscht, 2: aktiv, 3: in Auflösung (von Amtes wegen, Konkurs, Fusion)
-    my $fi_Loeschdat     = $row[10]; # Wenn status = 0
-#   my $fi_SHABDat       = $row[11]; # ignorieren, nur Zefix intern
-#   my $fi_ShabNr        = $row[12]; # ignorieren, nur Zefix intern
-#   my $fi_ShabSeite     = $row[13]; # ignorieren, nur Zefix intern
-#   my $fi_MutTyp        = $row[14]; # ignorieren, nur Zefix intern
-#   my $fi_DatumMutation = $row[15]; # ignorieren, nur Zefix intern
-    my $fi_ShabSequence  = $row[16];
-    my $fi_Address       = $row[17]; # Always emtpy?
-    my $fi_CareOf        = to_txt($row[18]);
-    my $fi_Strasse       = to_txt($row[19]);
-    my $fi_Hausnummer    = $row[20];
-    my $fi_Addresszusatz = to_txt($row[21]);
-    my $fi_Postfach      = $row[22];
-    my $fi_PLZ           = $row[23];
-    my $fi_Ort           = to_txt($row[24]);
-    my $fi_Zweck         = to_txt($row[25]); #  }
+    state $fi_firma_last = $row[0];
+    if ($fi_firma_last != $row[0]) {
+
+      $fi_Loeschdat =~ s/ 00:00:00$// if defined $fi_Loeschdat;
+  
+      $cnt++;
+      $sth_firma_stg -> execute($fi_firma, $fi_Code13, $fi_hauptsitz, $fi_GemeindeNR, $fi_Kapital, $fi_CurrencyID, $fi_statusID, $fi_Loeschdat, $fi_ShabSequence, $fi_CareOf, $fi_Strasse, $fi_Hausnummer, $fi_Addresszusatz, $fi_Postfach, $fi_PLZ, $fi_Ort, $fi_RechtsformID);
+      $sth_zweck -> execute($fi_firma, $fi_Zweck);
+
+    }
+
+    $fi_firma         = $row[ 0]; #  {
+    $fi_Code13        = $row[ 1];
+    $fi_RechtsformID  = $row[ 2];
+    $fi_hauptsitz     = $row[ 3] || undef;
+    $fi_GemeindeNR    = $row[ 4] || undef;
+    $fi_GemeindeName  = to_txt($row[5]);
+#   $fi_RegisteramtID = $row[ 6];
+    $fi_Kapital       = $row[ 7] || undef;
+    $fi_CurrencyID    = $row[ 8] || undef;
+    $fi_statusID      = $row[ 9] || undef; # 0: gelöscht, 2: aktiv, 3: in Auflösung (von Amtes wegen, Konkurs, Fusion)
+    $fi_Loeschdat     = $row[10] || undef; # Wenn status = 0
+#   $fi_SHABDat       = $row[11]; # ignorieren, nur Zefix intern
+#   $fi_ShabNr        = $row[12]; # ignorieren, nur Zefix intern
+#   $fi_ShabSeite     = $row[13]; # ignorieren, nur Zefix intern
+#   $fi_MutTyp        = $row[14]; # ignorieren, nur Zefix intern
+#   $fi_DatumMutation = $row[15]; # ignorieren, nur Zefix intern
+    $fi_ShabSequence  = $row[16] || undef;
+    $fi_Address       = $row[17]; # Always emtpy?
+    $fi_CareOf        = to_txt($row[18]);
+    $fi_Strasse       = to_txt($row[19]);
+    $fi_Hausnummer    = $row[20];
+    $fi_Addresszusatz = to_txt($row[21]);
+    $fi_Postfach      = $row[22];
+    $fi_PLZ           = $row[23];
+    $fi_Ort           = to_txt($row[24]);
+    $fi_Zweck         = to_txt($row[25]); #  }
 
     if ($load_gemeinden) { # {
       if (! $fi_GemeindeName) {
@@ -132,19 +175,23 @@ sub load_firmen { #  {
       }
     } # }
 
-    my $fi_name = '???';
 
-    $fi_Loeschdat =~ s/ 00:00:00$//;
-
-    $sth_firma -> execute($fi_firma, $fi_Code13, $fi_hauptsitz, $fi_GemeindeNR, $fi_Kapital, $fi_CurrencyID, $fi_statusID, $fi_Loeschdat, $fi_ShabSequence, $fi_CareOf, $fi_Strasse, $fi_Hausnummer, $fi_Addresszusatz, $fi_Postfach, $fi_PLZ, $fi_Ort, $fi_RechtsformID);
-    $sth_zweck -> execute($fi_firma, $fi_Zweck);
+    $fi_firma_last = $fi_firma;
 
     print "$cnt\n" unless $cnt % 10000;
   } #  }
 
+   $cnt++;
+   $sth_firma_stg -> execute($fi_firma, $fi_Code13, $fi_hauptsitz, $fi_GemeindeNR, $fi_Kapital, $fi_CurrencyID, $fi_statusID, $fi_Loeschdat, $fi_ShabSequence, $fi_CareOf, $fi_Strasse, $fi_Hausnummer, $fi_Addresszusatz, $fi_Postfach, $fi_PLZ, $fi_Ort, $fi_RechtsformID);
+   $sth_zweck -> execute($fi_firma, $fi_Zweck);
+
+   my $end_t = time;
+
+   printf("load_firmen: loaded %i records in %5.2f seconds (%7.2f recs/s)\n", $cnt, $end_t - $start_t, $cnt/($end_t - $start_t));
+
 } #  }
 
-sub load_firmen_bez {
+sub load_firmen_bez { #  {
   print "load_firmen_bez\n";
   my $cnt = 0;
   my $tsv_firmen_bez = "${zefix_downloads}firmen_bezeichnung";
@@ -154,6 +201,7 @@ sub load_firmen_bez {
   my $sth_firma_bez = $dbh -> prepare ('insert into firma_bez values (?,?,?,?,?,?,?,?)') or die;
 
   open (my $f_firmen_bez, '<', $tsv_firmen_bez) or die;
+  my $start_t = time;
   while (my $in = <$f_firmen_bez>) {
     $cnt++;
     chomp $in; 
@@ -173,7 +221,43 @@ sub load_firmen_bez {
     print "$cnt\n" unless $cnt % 10000;
   }
 
-}
+  my $end_t = time;
+  printf("load_firmen_bez: loaded %i records in %5.2f seconds (%7.2f recs/s)\n", $cnt, $end_t - $start_t, $cnt/($end_t - $start_t));
+
+  $start_t = time;
+  print "stage to firma\n";
+  $dbh -> do('
+
+    insert into firma select
+
+      s.id             ,
+      b.bezeichnung    ,
+      s.code13         ,
+      s.id_hauptsitz   ,
+      s.id_gemeinde    ,
+      s.kapital        ,
+      s.currency       ,
+      s.status         ,
+      s.loesch_dat     ,
+      s.shab_seq       ,
+      s.care_of        ,
+      s.strasse        ,
+      s.hausnummer     ,
+      s.address_zusatz ,
+      s.postfach       ,
+      s.plz            ,
+      s.ort            ,
+      s.rechtsform     
+    from
+      firma_stage   s       join
+      firma_bez     b on s.id = b.id_firma and b.status = 3 and b.typ = 1
+    ');
+  $dbh -> do('drop table firma_stage');
+  $end_t = time;
+  printf("done: in %5.2f seconds\n", $end_t - $start_t);
+
+
+} #  }
 
 sub trunc_table_firma_bez { # {
   $dbh -> do('drop table if exists firma_bez') or die;
@@ -196,12 +280,35 @@ create table firma_bez (
 
 sub trunc_table_firma { #  {
 
-  $dbh -> do('drop table if exists firma') or die;
-  $dbh -> do("
+  $dbh -> do('drop table if exists firma_stage') or die;
+  $dbh -> do('drop table if exists firma'      ) or die;
 
-create table firma (
+  $dbh -> do("
+create table firma_stage (
   id             int,
---name           varchar    not null,
+  code13         varchar,
+  id_hauptsitz   int,
+  id_gemeinde    int,
+  kapital        number,
+  currency       varchar,
+  status         int,
+  loesch_dat     text,
+  shab_seq       int,
+  care_of        text,
+  strasse        text,
+  hausnummer     text,
+  address_zusatz text,
+  postfach       text,
+  plz            text,
+  ort            text,
+  rechtsform     int
+)
+") or die;
+
+  $dbh -> do("
+create table firma (
+--id             int,
+  bezeichnung    varchar    not null,
   code13         varchar    not null,
   id_hauptsitz   int,
   id_gemeinde    int        not null,
@@ -216,10 +323,10 @@ create table firma (
   address_zusatz text,
   postfach       text,
   plz            text,
-  ort            text,
-  rechtsform     int,
+  ort            text       not null,
+  rechtsform     int        not null,
   -----
-  primary key (id)
+--primary key (code13)
 --foreign key (id_gemeinde) references gemeinden
 )
 ") or die;
@@ -231,7 +338,7 @@ sub trunc_table_zweck { #
   $dbh -> do("
     
 create table zweck (
-  id_firma          int,
+  id_firma          int   not null,
   zweck             text,
   constraint zweck_pk primary key (id_firma)
 )

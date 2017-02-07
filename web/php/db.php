@@ -9,6 +9,9 @@ function db_connect($env) {
   elseif ($env == 'dev') {
     $db_path = getenv('digitales_backup') . 'Zefix/zefix.db';
   }
+  elseif ($env == 'prod') {
+    $db_path = $_SERVER[DOCUMENT_ROOT] . '/../db/zefix.db';
+  }
   else {
     throw new Exception("Invalid env $env");
   }
@@ -37,25 +40,30 @@ function db_sel_1_row($dbh, $sql, $params = array()) {
   return $row;
 }
 
-function db_sel_1_row_1_col($dbh, $sql, $params = array()) {
+function db_sel_1_row_1_col($dbh, $sql, $params = array()) { // {
   $row = db_sel_1_row($dbh, $sql, $params);
-//if (count($row) != 1) {
-//  throw new Exception("db_sel_1_row_1_col selected more than one column! sql = $sql");
-//}
   return $row[0];
-}
+} // }
 
-function db_cnt_table($dbh, $table_name) {
+function db_cnt_table($dbh, $table_name) { // {
   return db_sel_1_row_1_col($dbh, "select count(*) from $table_name");
-}
+} // }
 
-function db_prep_exec($dbh, $sql, $params = array()) {
+function db_prep_exec($dbh, $sql, $params = array()) { // {
 
   $sth = $dbh -> prepare ($sql);
   $sth -> execute($params);
 
   return $sth;
 
-}
+} // }
+
+function db_prep_exec_fetchall($dbh, $sql, $params = array()) { // {
+
+  $sth = db_prep_exec($dbh, $sql, $params);
+
+  return $sth -> fetchAll();
+
+} // }
 
 ?>

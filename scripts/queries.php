@@ -10,7 +10,7 @@ $db = db_connect('dev');
 $firma = firma_info($db, $argv[1]);
 
 printf("\n");
-printf("  %s\n"   , $firma['bezeichnung']);
+printf("  %s (%d)\n"   , $firma['bezeichnung'], $firma['rechtsform']);
 if ($firma['care_of']) {
 printf("c/o:        %s\n"     , $firma['care_of']);
 }
@@ -37,6 +37,14 @@ printf("Hauptsitz:  %d\n"     , $firma['id_hauptsitz']);
 
 if ($firma['kapital']) {
 printf("Kapital:    %d %s\n"  , $firma['kapital'], $firma['currency']);
+}
+
+if ($firma['loesch_dat']) {
+printf("Gelöscht:   %s\n"  , $firma['loesch_dat']);
+}
+
+if ($firma['status'] == 3 ) {
+printf("In Auflösung\n");
 }
 
 
