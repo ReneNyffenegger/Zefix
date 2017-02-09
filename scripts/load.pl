@@ -13,19 +13,19 @@ my $zefix_root;
 # Input files seem to be in dos format.
 $/ = "\r\n";
 
-my $env = 'dev';
+my $env = 'test';
 
 GetOptions (
-  'test'    => \my $test
+  'prod'    => \my $prod
 ) or die;
 
-$env = 'test' if $test;
+$env = 'prod' if $prod;
 print "env = $env\n";
 
 if ($env eq 'test') {
   $zefix_root = "$ENV{github_root}Zefix/test/";
 }
-elsif ($env eq 'dev') {
+elsif ($env eq 'prod') {
   $zefix_root = "$ENV{digitales_backup}Zefix/";
 }
 else {
@@ -307,7 +307,7 @@ create table firma_stage (
 
   $dbh -> do("
 create table firma (
---id             int,
+  id             int,
   bezeichnung    varchar    not null,
   code13         varchar    not null,
   id_hauptsitz   int,
@@ -326,7 +326,7 @@ create table firma (
   ort            text       not null,
   rechtsform     int        not null,
   -----
---primary key (code13)
+  primary key (id)
 --foreign key (id_gemeinde) references gemeinden
 )
 ") or die;
@@ -371,6 +371,6 @@ sub to_dt {
 }
 
 sub to_txt {
-  return $_[0];
+# return $_[0];
   return encode('utf-8', decode('iso-8859-1', $_[0]));
 }

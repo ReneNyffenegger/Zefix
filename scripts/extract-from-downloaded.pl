@@ -20,8 +20,9 @@ for my $file (glob"$downloaded_dir*-*") {
   while (my $in = <$f>) {
 
     my @row = split("\t", $in);
-    if ($row[0] == $id_firma) {
-      print "found in $file\n";
+    
+    if (grep {$_ == $row[0]} @ids_firma) {
+      print "found $row[0] in $file\n";
       open (my $out, '>>', "$dest_dir$file_base") or die;
       print $out $in;
       close $out;
