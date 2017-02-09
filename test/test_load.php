@@ -11,12 +11,13 @@ check_firma_bez($dbh);
 check_firma    ($dbh);
 echo "Ok\n";
 
-function check_firma($dbh) {
+function check_firma($dbh) { #_{
 
-  check_count($dbh, 'firma', 10);
+  check_count($dbh, 'firma', 11);
 
   $sth = db_prep_exec($dbh, 'select * from firma order by id', array());
   #                    id,                                                           code13 ,    hpts,  gem, k apital,   cur, st,  del         ,   shab#,                                     ,                    ,       ,zus.,   pf, plz ,   ort           
+  cmp_firma($sth,   76284, 'Frédéric Hänni S.A., installations électriques', 'CH67730001455',    null,  6800,  210000, 'CHF',  2, null         , 5320100, null                                ,'rue du Temple'     ,   3   ,null, null,  2900 ,'Porrentruy'    , 3);
   cmp_firma($sth,  186673, 'Storella AG'                                   , 'CH50930004966',    null,	5097,	  50000, 'CHF',  0,'2001-05-09'  ,    null, null                                , null               , null  ,null, null,  null , null           , 3);
   cmp_firma($sth,  251792, 'Storella GmbH'                                 , 'CH32090204910',  468163,	3251,	   null,  null,  2, null         , 5723906,	null                                ,'Tiefenackerstrasse', '49'  ,null, null, '9450', 'Altstätten'   , 9);
   cmp_firma($sth,  451407, 'ADP Analyse Design Planung AG'                 , 'CH02040197464',    null,   261,  100000, 'CHF',  2, null         , 3242819, null                                ,'Glatttalstrasse'   ,'104 h',null, null, '8052', 'Zürich'       , 3);
@@ -30,9 +31,9 @@ function check_firma($dbh) {
 
   echo "firma ok\n";
 
-}
+} #_}
 
-function cmp_firma($sth, $id, $bezeichnung, $code13, $id_hauptsitz, $id_gemeinde, $kapital, $currency, $status, $loesch_dat, $shab_seq, $care_of, $strasse, $hausnummer, $address_zusatz, $postfach, $plz, $ort, $rechtsform) {
+function cmp_firma($sth, $id, $bezeichnung, $code13, $id_hauptsitz, $id_gemeinde, $kapital, $currency, $status, $loesch_dat, $shab_seq, $care_of, $strasse, $hausnummer, $address_zusatz, $postfach, $plz, $ort, $rechtsform) { #_{
 
   $row = $sth -> fetch();
 
@@ -91,14 +92,15 @@ function cmp_firma($sth, $id, $bezeichnung, $code13, $id_hauptsitz, $id_gemeinde
     throw new Exception("cmp_firma Rechtform $row[17] != $rechtsform");
   }
 
-}
+} #_}
 
-function check_firma_bez($dbh) {
+function check_firma_bez($dbh) { #_{
 
-  check_count($dbh, 'firma_bez', 17);
+  check_count($dbh, 'firma_bez', 18);
 
 
   $sth = db_prep_exec($dbh, 'select * from firma_bez order by id_firma, dt_ab', array());
+  cmp_firma_bez($sth,   76284, '940', 1, 'FR',  3, 'Frédéric Hänni S.A., installations électriques'                            , '1996-01-01', '9999-12-31');
   cmp_firma_bez($sth,  186673, '940', 1, 'IT',  3, 'Storella AG'                                                               , '1996-01-01', '9999-12-31');
   cmp_firma_bez($sth,  251792, '940', 1, 'DE',  3, 'Storella GmbH'                                                             , '1996-01-01', '9999-12-31');
   cmp_firma_bez($sth,  451407, '940', 1, 'DE', -1, 'adp Analyse, Design & Programmierung GmbH'                                 , '1996-01-01', '2007-05-10');
@@ -119,9 +121,9 @@ function check_firma_bez($dbh) {
 
   echo "firma_bez ok\n";
 
-}
+} #_}
 
-function cmp_firma_bez($sth, $id_firma, $seq, $typ, $sprachcode, $status, $bezeichnung, $dt_ab, $dt_bis) {
+function cmp_firma_bez($sth, $id_firma, $seq, $typ, $sprachcode, $status, $bezeichnung, $dt_ab, $dt_bis) { #_{
 
   
   $row = $sth -> fetch();
@@ -159,13 +161,14 @@ function cmp_firma_bez($sth, $id_firma, $seq, $typ, $sprachcode, $status, $bezei
 #  ) {
 #    throw new Exception("cmp_firma_bez $id_firma");
 #  }
-}
+} #_}
 
-function check_zweck($dbh) {
+function check_zweck($dbh) { #_{
 
-  check_count($dbh, 'zweck', 10);
+  check_count($dbh, 'zweck', 11);
 
   $sth = db_prep_exec($dbh, 'select * from zweck order by id_firma', array());
+  cmp_zweck($sth,   76284, 'L\'exploitation d\'une entreprise d\'électricité ainsi que l\'exploitation d\'une concession téléphonique. Elle pourra également s\'occuper de l\'achat et de la vente d\'appareils électriques.');
   cmp_zweck($sth,  186673, '');
   cmp_zweck($sth,  251792, '');
   cmp_zweck($sth,  451407, 'Die Gesellschaft bezweckt die Beratung und Schulung von Unternehmen und Verwaltungen in allen wirtschaftlichen, organisatorischen und technischen Belangen, insbesondere der Analyse, Konzeption, Planung und Projektierung sowie Entwicklung, Lieferung und Unterhalt von IT-Software und -Infrastruktur.  Die Gesellschaft kann Zweigniederlassungen und Tochtergesellschaften im In- und Ausland errichten und sich an anderen Unternehmen im In- und Ausland beteiligen sowie alle Geschäfte tätigen, die direkt oder indirekt mit ihrem Zweck in Zusammenhang stehen. Die Gesellschaft kann im In- und Ausland Grundeigentum erwerben, belasten, veräussern und verwalten. Sie kann auch Finanzierungen für eigene oder fremde Rechnung vornehmen sowie Garantien und Bürgschaften für Tochtergesellschaften und Dritte eingehen.');
@@ -179,9 +182,9 @@ function check_zweck($dbh) {
 
   echo "zweck ok\n";
 
-}
+} #_}
 
-function cmp_zweck($sth, $id_firma, $zweck) {
+function cmp_zweck($sth, $id_firma, $zweck) { #_{
 
   $row = $sth -> fetch();
 
@@ -192,11 +195,11 @@ function cmp_zweck($sth, $id_firma, $zweck) {
     throw new Exception ("cmp_gemeinde: $id, $id_firma");
   }
 
-}
+} #_}
 
-function check_gemeinde($dbh) {
+function check_gemeinde($dbh) { #_{
 
-  check_count($dbh, 'gemeinde', 7);
+  check_count($dbh, 'gemeinde', 8);
 
   $sth = db_prep_exec($dbh, 'select * from gemeinde order by id', array());
   cmp_gemeinde($sth,   56, 'Embrach'      );
@@ -206,11 +209,12 @@ function check_gemeinde($dbh) {
   cmp_gemeinde($sth, 3251, 'Altstätten'   );
   cmp_gemeinde($sth, 4021, 'Baden'        );
   cmp_gemeinde($sth, 5097, 'Brissago'     );
+  cmp_gemeinde($sth, 6800, 'Porrentruy'   );
 
   echo "gemeinde ok\n";
-}
+} #_}
 
-function cmp_gemeinde($sth, $id, $gemeinde) {
+function cmp_gemeinde($sth, $id, $gemeinde) { #_{
 
   $row = $sth -> fetch();
 
@@ -221,16 +225,16 @@ function cmp_gemeinde($sth, $id, $gemeinde) {
     throw new Exception ("cmp_gemeinde: $id, $gemeinde, $row[0], $row[1]");
   }
 
-}
+} #_}
 
-function check_count($dbh, $table_name, $expected_cnt) {
+function check_count($dbh, $table_name, $expected_cnt) { #_{
 
   $cnt = db_cnt_table($dbh, $table_name);
   
   if ($cnt != $expected_cnt) {
     throw new Exception("$table_name cnt: $cnt");
   }
-}
+} #_}
 
 
 ?>
