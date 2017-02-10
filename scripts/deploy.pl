@@ -8,9 +8,12 @@ use lib "$ENV{github_top_root}lib/tq84-PerlModules";
 use tq84_ftp;
 use tq84_timestamp_last_script_execution;
 
+my $ftp_last_cwd = '';
+
 my $env = 'test';
 GetOptions (
-  'prod'    => \my $prod
+  'prod'             => \my $prod,
+  'ftp-db-restart:i' => \my $ftp_db_restart
 ) or die;
 $env = 'prod' if $prod;
 
@@ -31,27 +34,27 @@ die unless -e $db_file;
 my $ftp = new tq84_ftp('TQ84_RN');
 # $ftp->binary;
 
-$ftp -> cwd("${ftp_root}php/") or die;
+ftp_cwd("${ftp_root}php/") or die;
 put('../web/php/db.php'   );
 put('../web/php/zefix.php');
 
-# $ftp -> cwd("${ftp_root}db/") or die;
-# put("$ENV{digitales_backup}Zefix/zefix.db");
 
 if ($env eq 'test') {
-  $ftp -> cwd('/httpdocs/Virmen/') or die;
+  ftp_cwd('/httpdocs/Virmen/') or die;
 }
 else {
-  $ftp -> cwd('/httpdocs/Firmen/') or die;
+  ftp_cwd('/httpdocs/Firmen/') or die;
 }
 put('../web/.htaccess'  );
 put('../web/handler.php');
 
-$ftp -> cwd('/cgi-bin/') or die;
+ftp_cwd('/cgi-bin/') or die;
 put('../web/cgi-bin/merge-zefix-db.pl');
 
 
-if (is_file_modified_since_last_script_execution($db_file)) {
+print "db_file=$db_file\n";
+if ($ftp_db_restart or is_file_modified_since_last_script_execution($db_file)) {
+  print "Putting $db_file\n";
   put_db();
 }
 else {
@@ -61,44 +64,59 @@ else {
 
 sub put_db { #_{
 
-  $ftp ->cwd("${ftp_root}/upload") or die;
+  ftp_cwd("${ftp_root}/upload") or die;
 
-  for my $remote_db_file_part (grep {/^zefix.db\./} $ftp->ls) {
-    print "deleting remote file $remote_db_file_part\n";
-    $ftp -> delete ($remote_db_file_part) or die
-  }
+  unless ($ftp_db_restart) { #_{
 
-  for my $tmp_db_file_part (glob '/tmp/zefix.db.*') {
-    print "deleting $tmp_db_file_part\n";
-    unlink $tmp_db_file_part or die;
-  }
-
-# unlink glob ("$db_file.*");
-
-  if ($env eq 'test') {
-    system "split-file.pl -b 777 -c 2181      -d /tmp $db_file";
-  }
-  else {
-    system "split-file.pl        -c 10000000  -d /tmp $db_file";
-  }
+    for my $remote_db_file_part (grep {/^zefix.db\./} $ftp->ls) {
+      print "deleting remote file $remote_db_file_part\n";
+      $ftp -> delete ($remote_db_file_part) or die
+    }
   
+    for my $tmp_db_file_part (glob '/tmp/zefix.db.*') {
+      print "deleting $tmp_db_file_part\n";
+      unlink $tmp_db_file_part or die;
+    }
+  
+  
+    if ($env eq 'test') {
+      system "split-file.pl -b 777 -c 2181      -d /tmp $db_file";
+    }
+    else {
+      system "split-file.pl        -c 10000000  -d /tmp $db_file";
+    }
+
+  } #_}
+  
+  print "Looping over /tmp/zefix.db.*\n";
   for my $zefix_part (glob "/tmp/zefix.db.*") {
 
-    system("gzip $zefix_part");
-  
-#   my $remote_name_part = $zefix_part;
-  
-#   if ($env eq 'test') {
-#     $remote_name_part =~ s/.*zefix\.db.(\d+)/zefix-test.db.$1/;
-#   }
-#   else {
-#   $remote_name_part =~ s/.*zefix\.db.(\d+)/zefix.db.$1/;
-#   }
-  
-  # print "$remote_name_part\n";
-  
-    put("${zefix_part}.gz");
-#   put(, remote_file => $remote_name_part, force => 1);
+    my $file_to_put;
+
+    print "  $zefix_part\n";
+    if ($zefix_part !~ /\.gz$/) { #_{
+      print "     gzip $zefix_part\n";
+      system("gzip $zefix_part");
+      $file_to_put = "${zefix_part}.gz";
+    }
+    else {
+      $file_to_put = ${zefix_part};
+    } #_}
+
+    if ($ftp_db_restart) {
+
+      my ($num) = $file_to_put =~ /(\d+)/;
+
+      if ($num >= $ftp_db_restart) {
+         print "    restarting num $num > ftp_db_restart $ftp_db_restart, putting $file_to_put\n";
+         put($file_to_put, force => 1);
+      }
+
+    }
+    else { 
+      print "  putting $file_to_put\n";
+      put($file_to_put);
+    }
   }
 
 } #_}
@@ -117,7 +135,12 @@ sub put { #_{
   }
   else {
     print "ftp put $local_file\n";
-    $ftp -> put($local_file) or die;
+    while (! $ftp -> put($local_file)) {
+      print "Could not put $local_file to $ftp_last_cwd ... reconnecting\n";
+      $ftp = new tq84_ftp('TQ84_RN');
+      ftp_cwd($ftp_last_cwd);
+    }
+    print "I've successfully(?) put $local_file to $ftp_last_cwd\n";
   }
 
 # if ($chmod_755) {
@@ -126,3 +149,10 @@ sub put { #_{
 # }
 
 } #_}
+
+sub ftp_cwd {
+  my $path = shift;
+  $ftp -> cwd($path) or die;
+  print "ftp: changed working directory to $path\n";
+  $ftp_last_cwd = $path;
+}

@@ -63,8 +63,8 @@ function print_firma($db, $id_firma) { // {
 
   printf ("<h1>%s</h1>\n", $firma['bezeichnung']);
 
-  printf("%s %s<br>\n", tq84_enc($firma['strasse']), tq84_enc($firma['hausnummer']));
   if ($firma['care_of'       ]) { printf("  %s<br>\n"   , tq84_enc($firma['care_of'])); }
+  printf("%s %s<br>\n", tq84_enc($firma['strasse']), tq84_enc($firma['hausnummer']));
   if ($firma['address_zusatz']) { printf("  %s<br>\n"   , tq84_enc($firma['address_zusatz'])); }
   if ($firma['postfach'])       { printf("  %s<br>\n"   , tq84_enc($firma['postfach'      ])); }
   printf("  %s %s<br>\n", $firma['plz'], tq84_enc($firma['ort']));
@@ -84,10 +84,20 @@ function print_firma($db, $id_firma) { // {
 
   if ($firma['zweck']) {
     print "<p>\n";
-    print ($firma['zweck']);
+    $zweck = $firma['zweck'];
+
+    if (is_tq84()) {
+      $zweck = preg_replace('(Die Gesellschaft kann .*|; kann .*)', "\n<br><span style=\"color:grey\">$0</span>", $zweck);
+    }
+    else {
+      br('HTTP_USER_AGENT: ' .  $_SERVER['HTTP_USER_AGENT']) ;
+      $zweck = preg_replace('(Die Gesellschaft kann .*|; kann .*)', '', $zweck);
+    }
+
+    print ($zweck);
   }
 
-  print "<hr>";
+  print "\n<hr>";
 
   printf ("Weitere Firmen in <a href='g%d'>%s</a>", $firma['id_gemeinde'], gemeinde_name($db, $firma['id_gemeinde']));
 
@@ -139,5 +149,8 @@ function print_html_end() { // {
   print "</body></html>";
 } // }
 
+function is_tq84() { #_{
+  return $_SERVER['HTTP_USER_AGENT'] == 'Mozilla/5.0 (TQ)';
+} #_}
 
 ?>
