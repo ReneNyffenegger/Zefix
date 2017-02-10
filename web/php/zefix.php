@@ -17,7 +17,8 @@ function gemeinde_name($dbh, $id_gemeinde) {
 }
 
 function tq84_enc($str) { // {
-  return utf8_encode($str);
+  return $str;
+//return utf8_encode($str);
 } // }
 
 ?>

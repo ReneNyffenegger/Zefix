@@ -1,13 +1,28 @@
 <?php
 
-include($_SERVER[DOCUMENT_ROOT] . '/../php/db.php');
-include($_SERVER[DOCUMENT_ROOT] . '/../php/zefix.php');
+$V_or_F = substr($_SERVER['REQUEST_URI'], 1, 1);
 
-main();
+if ($V_or_F == 'V') {
+  $test_or_prod = 'test';
+}
+elseif ($V_or_F == 'F') {
+  $test_or_prod = 'prod';
+}
+else {
+#   $db = db_connect('prod');
+  throw new Exception("V_or_F neither V nor F, but: >$V_or_F<");
+}
 
-function main() { // {
+include($_SERVER[DOCUMENT_ROOT] . "/../$test_or_prod/php/db.php");
+include($_SERVER[DOCUMENT_ROOT] . "/../$test_or_prod/php/zefix.php");
 
-  $db = db_connect('prod');
+$db = db_connect("web-$test_or_prod");
+
+main($db);
+
+function main($db) { // {
+
+
   $topic = urldecode(substr($_SERVER['REQUEST_URI'], 8));
 
 
@@ -49,6 +64,7 @@ function print_firma($db, $id_firma) { // {
   printf ("<h1>%s</h1>\n", $firma['bezeichnung']);
 
   printf("%s %s<br>\n", tq84_enc($firma['strasse']), tq84_enc($firma['hausnummer']));
+  if ($firma['care_of'       ]) { printf("  %s<br>\n"   , tq84_enc($firma['care_of'])); }
   if ($firma['address_zusatz']) { printf("  %s<br>\n"   , tq84_enc($firma['address_zusatz'])); }
   if ($firma['postfach'])       { printf("  %s<br>\n"   , tq84_enc($firma['postfach'      ])); }
   printf("  %s %s<br>\n", $firma['plz'], tq84_enc($firma['ort']));
@@ -95,7 +111,7 @@ function print_gemeinden($db) { // {
   $res = db_prep_exec_fetchall($db, 'select id, name from gemeinde order by name');
 
   foreach ($res as $row) {
-    printf ("<a href='/Firmen/g%d'>%s</a> - ", $row['id'], tq84_enc($row['name']));
+    printf ("<a href='g%d'>%s</a> - ", $row['id'], tq84_enc($row['name']));
   }
 
   print_html_end();

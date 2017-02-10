@@ -9,15 +9,18 @@ function db_connect($env) {
   elseif ($env == 'dev') {
     $db_path = getenv('digitales_backup') . 'Zefix/zefix.db';
   }
-  elseif ($env == 'prod') {
-    $db_path = $_SERVER[DOCUMENT_ROOT] . '/../db/zefix.db';
+  elseif ($env == 'web-prod') {
+    $db_path = $_SERVER[DOCUMENT_ROOT] . '/../prod/db/zefix.db';
+  }
+  elseif ($env == 'web-test') {
+    $db_path = $_SERVER[DOCUMENT_ROOT] . '/../test/db/zefix.db';
   }
   else {
     throw new Exception("Invalid env $env");
   }
 
   if (! file_exists($db_path)) {
-   throw new Exception("DB does not exist!");
+   throw new Exception("DB does not exist env=$env, db_path=$db_path!");
   }
 
 
