@@ -13,11 +13,16 @@ import re
 import os
 import os.path
 
-path_to_archive = sys.argv[1]
+# path_to_archive = sys.argv[1]
+path_to_archive = os.environ['digitales_backup'] + 'Zefix/downloaded/'
 
 #  Make sure path_to_archive ends with a slash:
-if path_to_archive[-1:] not in ('/', '\\'):
-   path_to_archive += '/'
+# if path_to_archive[-1:] not in ('/', '\\'):
+#    path_to_archive += '/'
+
+if  not os.path.isdir(path_to_archive):
+    print path_to_archive + ' is not a directory'
+    sys.exit(0)
 
 def get_gz(ftp, ftp_filename, local_filename):
 
