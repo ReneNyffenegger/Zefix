@@ -61,9 +61,9 @@ load_firmen_bez();
 
 $dbh -> commit;
 
-sub load_firmen { #  {
+sub load_firmen { #_{
 
- my $fi_firma         ; # my $fi_firma_last = -1; #  {
+ my $fi_firma         ; # my $fi_firma_last = -1; #_{
  my $fi_Code13        ;
  my $fi_RechtsformID  ;
  my $fi_hauptsitz     ;
@@ -88,7 +88,7 @@ sub load_firmen { #  {
  my $fi_Postfach      ;
  my $fi_PLZ           ;
  my $fi_Ort           ;
- my $fi_Zweck         ; #  }
+ my $fi_Zweck         ; #_}
 
   print "load_firmen\n";
   my $cnt = 0;
@@ -113,7 +113,7 @@ sub load_firmen { #  {
 
   open (my $f_firmen, '<', $tsv_firmen) or die;
   my $start_t = time;
-  while (my $in = <$f_firmen>) { #  {
+  while (my $in = <$f_firmen>) { #_{
 
 
     chomp $in;
@@ -131,7 +131,7 @@ sub load_firmen { #  {
 
     }
 
-    $fi_firma         = $row[ 0]; #  {
+    $fi_firma         = $row[ 0]; #_{
     $fi_Code13        = $row[ 1];
     $fi_RechtsformID  = $row[ 2];
     $fi_hauptsitz     = $row[ 3] || undef;
@@ -156,9 +156,9 @@ sub load_firmen { #  {
     $fi_Postfach      = $row[22];
     $fi_PLZ           = $row[23];
     $fi_Ort           = to_txt($row[24]);
-    $fi_Zweck         = to_txt($row[25]); #  }
+    $fi_Zweck         = to_txt($row[25]); #_}
 
-    if ($load_gemeinden) { # {
+    if ($load_gemeinden) { #_{
       if (! $fi_GemeindeName) {
         print "fi_GemeindeName is empty\n";
       }
@@ -173,13 +173,13 @@ sub load_firmen { #  {
           $Gemeinde_NR_2_Name{$fi_GemeindeNR} = $fi_GemeindeName;
         }
       }
-    } # }
+    } #_}
 
 
     $fi_firma_last = $fi_firma;
 
     print "$cnt\n" unless $cnt % 10000;
-  } #  }
+  } #_}
 
    $cnt++;
    $sth_firma_stg -> execute($fi_firma, $fi_Code13, $fi_hauptsitz, $fi_GemeindeNR, $fi_Kapital, $fi_CurrencyID, $fi_statusID, $fi_Loeschdat, $fi_ShabSequence, $fi_CareOf, $fi_Strasse, $fi_Hausnummer, $fi_Addresszusatz, $fi_Postfach, $fi_PLZ, $fi_Ort, $fi_RechtsformID);
@@ -189,9 +189,9 @@ sub load_firmen { #  {
 
    printf("load_firmen: loaded %i records in %5.2f seconds (%7.2f recs/s)\n", $cnt, $end_t - $start_t, $cnt/($end_t - $start_t));
 
-} #  }
+} #_}
 
-sub load_firmen_bez { #  {
+sub load_firmen_bez { #_{
   print "load_firmen_bez\n";
   my $cnt = 0;
   my $tsv_firmen_bez = "${zefix_downloads}firmen_bezeichnung";
@@ -257,9 +257,9 @@ sub load_firmen_bez { #  {
   printf("done: in %5.2f seconds\n", $end_t - $start_t);
 
 
-} #  }
+} #_}
 
-sub trunc_table_firma_bez { # {
+sub trunc_table_firma_bez { #_{
   $dbh -> do('drop table if exists firma_bez') or die;
 
   $dbh -> do("
@@ -276,9 +276,9 @@ create table firma_bez (
 )
 ") or die;
 
-} # }
+} #_}
 
-sub trunc_table_firma { #  {
+sub trunc_table_firma { #_{
 
   $dbh -> do('drop table if exists firma_stage') or die;
   $dbh -> do('drop table if exists firma'      ) or die;
@@ -331,9 +331,9 @@ create table firma (
 )
 ") or die;
 
-} #  }
+} #_}
 
-sub trunc_table_zweck { #
+sub trunc_table_zweck { #_{
   $dbh -> do('drop table if exists zweck');
   $dbh -> do("
     
@@ -344,9 +344,9 @@ create table zweck (
 )
 ") or die;
 
-} # }
+} #_}
 
-sub trunc_table_gemeinde { # {
+sub trunc_table_gemeinde { #_{
   $dbh -> do('drop table if exists gemeinde') or die;
   $dbh -> do("
 create table gemeinde (
@@ -354,9 +354,9 @@ create table gemeinde (
   name           text       not null
 )
 ") or die;
-} # }
+} #_}
 
-sub to_dt {
+sub to_dt { #_{
   my $str = shift;
 
   return '9999-12-31' unless $str; # 1082610, Trimos Ltd
@@ -373,4 +373,4 @@ sub to_dt {
 sub to_txt {
 # return $_[0];
   return encode('utf-8', decode('iso-8859-1', $_[0]));
-}
+} #_}
