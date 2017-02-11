@@ -90,7 +90,7 @@ function print_firma($db, $id_firma) { // {
       $zweck = preg_replace('(Die Gesellschaft kann .*|; kann .*)', "\n<br><span style=\"color:grey\">$0</span>", $zweck);
     }
     else {
-      br('HTTP_USER_AGENT: ' .  $_SERVER['HTTP_USER_AGENT']) ;
+#     br('HTTP_USER_AGENT: ' .  $_SERVER['HTTP_USER_AGENT']) ;
       $zweck = preg_replace('(Die Gesellschaft kann .*|; kann .*)', '', $zweck);
     }
 
