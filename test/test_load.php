@@ -18,7 +18,7 @@ function check_firma($dbh) { #_{
   $sth = db_prep_exec($dbh, 'select * from firma order by id', array());
   #                    id,                                                           code13 ,    hpts,  gem, k apital,   cur, st,  del         ,   shab#,                                     ,                    ,       ,zus.,   pf, plz ,   ort           
   cmp_firma($sth,   76284, 'Frédéric Hänni S.A., installations électriques', 'CH67730001455',    null,  6800,  210000, 'CHF',  2, null         , 5320100, null                                ,'rue du Temple'     ,   3   ,null, null,  2900 ,'Porrentruy'    , 3);
-  cmp_firma($sth,  186673, 'Storella AG'                                   , 'CH50930004966',    null,	5097,	  50000, 'CHF',  0,'2001-05-09'  ,    null, null                                , null               , null  ,null, null,  null , null           , 3);
+  cmp_firma($sth,  186673, 'Storella AG'                                   , 'CH50930004966',    null,	5097,	  50000, 'CHF',  0,'2001-05-09'  ,    null, null                                ,''                  , null  ,null, null,  null , null           , 3);
   cmp_firma($sth,  251792, 'Storella GmbH'                                 , 'CH32090204910',  468163,	3251,	   null,  null,  2, null         , 5723906,	null                                ,'Tiefenackerstrasse', '49'  ,null, null, '9450', 'Altstätten'   , 9);
   cmp_firma($sth,  451407, 'ADP Analyse Design Planung AG'                 , 'CH02040197464',    null,   261,  100000, 'CHF',  2, null         , 3242819, null                                ,'Glatttalstrasse'   ,'104 h',null, null, '8052', 'Zürich'       , 3);
   cmp_firma($sth,  468163, 'Storella Sagl'                                 , 'CH50940068681',    null,  5097,   50000, 'CHF',  2, null         , 2942553, null                                ,'Via Gabbietta'     ,  '3'  ,null, null, '6614', 'Brissago'     , 4);
@@ -37,37 +37,37 @@ function cmp_firma($sth, $id, $bezeichnung, $code13, $id_hauptsitz, $id_gemeinde
 
   $row = $sth -> fetch();
 
-  if ($row[0] != $id) {
+  if ( ! eq($row[0], $id)) {
     throw new Exception("cmp_firma id $row[0] != $id");
   }
-  if ($row[1] != $bezeichnung) {
+  if ( ! eq($row[1], $bezeichnung)) {
     throw new Exception("cmp_firma $id: bezeichnung $row[1] != $bezeichnung");
   }
-  if ($row[2] != $code13) {
+  if ( ! eq($row[2], $code13)) {
     throw new Exception("cmp_firma $id: code13 $row[2] != $code13");
   }
-  if ($row[3] != $id_hauptsitz) {
+  if ( ! eq($row[3], $id_hauptsitz)) {
     throw new Exception("cmp_firma $id: hauptsitz $row[3] != $id_hauptsitz");
   }
-  if ($row[4] != $id_gemeinde) {
+  if ( ! eq($row[4], $id_gemeinde)) {
     throw new Exception("cmp_firma $id: id_gemeinde $row[4] != $id_gemeinde");
   }
-  if ($row[5] != $kapital) {
+  if ( ! eq($row[5], $kapital)) {
     throw new Exception("cmp_firma $id: kapital $row[5] != $kapital");
   }
-  if ($row[6] != $currency) {
+  if ( ! eq($row[6], $currency)) {
     throw new Exception("cmp_firma $id: currency $row[6] != $currency");
   }
-  if ($row[7] != $status) {
+  if (! eq($row[7], $status)) {
     throw new Exception("cmp_firma $id: status $row[7] != $status");
   }
-  if ($row[8] != $loesch_dat) {
+  if ( ! eq($row[8], $loesch_dat)) {
     throw new Exception("cmp_firma $id: loeschdat $row[8] != $loesch_dat");
   }
-  if ($row[9] != $shab_seq) {
+  if ( ! eq($row[9], $shab_seq)) {
     throw new Exception("cmp_firma $id: shab_seq $row[9] != $shab_seq");
   }
-  if ($row[11] != $strasse) {
+  if ( ! eq($row[11], $strasse)) {
     throw new Exception("cmp_firma $id: strasse $row[11] != $strasse");
   }
 
@@ -88,7 +88,7 @@ function cmp_firma($sth, $id, $bezeichnung, $code13, $id_hauptsitz, $id_gemeinde
     throw new Exception("cmp_firma $id");
   }
 
-  if ($row[17] != $rechtsform) {
+  if ( ! eq($row[17], $rechtsform)) {
     throw new Exception("cmp_firma Rechtform $row[17] != $rechtsform");
   }
 
@@ -127,28 +127,28 @@ function cmp_firma_bez($sth, $id_firma, $seq, $typ, $sprachcode, $status, $bezei
 
   
   $row = $sth -> fetch();
-  if ($row[0] != $id_firma) {
+  if ( ! eq($row[0], $id_firma)) {
     throw new Exception("cmp_firma_bez id_firma: $row[0] != $id_firma");
   }
-  if ($row[1] != $seq) {
+  if ( ! eq($row[1], $seq)) {
     throw new Exception("cmp_firma_bez $id_firma seq $row[1] != $seq");
   }
-  if ($row[2] != $typ) {
+  if ( ! eq($row[2], $typ)) {
     throw new Exception("cmp_firma_bez $id_firma typ $row[2] != $typ");
   }
-  if ($row[3] != $sprachcode) {
+  if ( ! eq($row[3], $sprachcode)) {
     throw new Exception("cmp_firma_bez $id_firma sprachcode $row[3] != $sprachcode");
   }
-  if ($row[4] != $status) {
+  if ( ! eq($row[4], $status)) {
     throw new Exception("cmp_firma_bez $id_firma status $row[4] != $status");
   }
-  if ($row[5] != $bezeichnung) {
+  if ( ! eq($row[5], $bezeichnung)) {
     throw new Exception("cmp_firma_bez $id_firma bezeichnung $row[5] != $bezeichnung");
   }
-  if ($row[6] != $dt_ab) {
+  if ( ! eq($row[6], $dt_ab)) {
     throw new Exception("cmp_firma_bez $id_firma dt_ab $row[6] != $dt_ab");
   }
-  if ($row[7] != $dt_bis) {
+  if ( ! eq($row[7], $dt_bis)) {
     throw new Exception("cmp_firma_bez $dt_bis dt_bis $row[7] != $dt_bis");
   }
 #  if (# $row[1] != $seq           or
@@ -188,10 +188,10 @@ function cmp_zweck($sth, $id_firma, $zweck) { #_{
 
   $row = $sth -> fetch();
 
-  if ($row[0] != $id_firma) {
+  if (! eq($row[0], $id_firma)) {
     throw new Exception ("cmp_zweck $id_firma $row[0]");
   }
-  if ($row[1] != $zweck) {
+  if (! eq($row[1], $zweck)) {
     throw new Exception ("cmp_gemeinde: $id, $id_firma");
   }
 
@@ -218,10 +218,10 @@ function cmp_gemeinde($sth, $id, $gemeinde) { #_{
 
   $row = $sth -> fetch();
 
-  if ($row[0] != $id) {
+  if (! eq($row[0], $id)) {
     throw new Exception ("cmp_gemeinde: $id, $gemeinde, $row[0], $row[1]");
   }
-  if ($row[1] != $gemeinde) {
+  if (! eq($row[1], $gemeinde)) {
     throw new Exception ("cmp_gemeinde: $id, $gemeinde, $row[0], $row[1]");
   }
 
@@ -236,5 +236,17 @@ function check_count($dbh, $table_name, $expected_cnt) { #_{
   }
 } #_}
 
+function eq($a, $b) { #_{
+  if (is_null($a) && ! is_null($b)) {
+    return false;
+  }
+  if (is_null($b) && ! is_null($a)) {
+    return false;
+  }
+  if (is_null($a) && is_null($a)) {
+    return true;
+  }
+  return $a == $b;
+} #_}
 
 ?>

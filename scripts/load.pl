@@ -1,17 +1,25 @@
 #!/usr/bin/perl
+# .mode column
+# .width 9 20 100
+# select f.id, s.stichwort, f.bezeichnung  from firma f join stichwort_firma sf on sf.id_firma = f.id join stichwort s on sf.id_stichwort = s.id order by s.stichwort, f.bezeichnung;
 use warnings;
 use strict;
+use utf8;
 use 5.10.0;
-
+use Encode;
 use DBI;
 use Encode qw(decode encode);
 use Getopt::Long;
 use Time::HiRes qw(time);
 
 my $zefix_root;
+my %stichwoerter;
 
-# Input files seem to be in dos format.
-$/ = "\r\n";
+unless ($^O eq 'MSWin32') {
+  # Input files seem to be in dos format.
+  # Why it does not need be changed in a windows environment is still a mystery to me.
+  $/ = "\r\n";
+}
 
 my $env = 'test';
 
@@ -44,16 +52,23 @@ my $db = "${zefix_root}zefix.db";
 my $dbh = DBI->connect("dbi:SQLite:dbname=$db") or die "Could not open/create $db";
 $dbh->{AutoCommit} = 0;
 
-print "connected\n";
+my %word_cnt;
+load_stichwoerter();
+$dbh -> commit;
+for my $word (sort { $word_cnt{$b} <=> $word_cnt{$a} } keys %word_cnt) {
+  printf "%5d: $word\n", $word_cnt{$word};
+}
+# exit;
 
+print "TODO: Forcing gemeinden to be loaded\n";
+# $load_gemeinden = 1;
+trunc_table_gemeinde();
 my $cnt_gemeinden = $dbh->selectrow_array('select count(*) from gemeinde');
 print "cnt_gemeinden=$cnt_gemeinden\n";
 
 
 my $load_gemeinden = ! $cnt_gemeinden;
 
-print "TODO: Forcing gemeinden to be loaded\n";
-$load_gemeinden = 1;
 
 
 load_firmen();
@@ -104,7 +119,7 @@ sub load_firmen { #_{
 
   my $sth_gemeinde;
   if ($load_gemeinden) {
-     trunc_table_gemeinde();
+#    trunc_table_gemeinde();
      $sth_gemeinde = $dbh -> prepare('insert into gemeinde values(?, ?)') or die;
   }
   my $sth_firma_stg = $dbh -> prepare ('insert into firma_stage values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)') or die;
@@ -140,7 +155,7 @@ sub load_firmen { #_{
 #   $fi_RegisteramtID = $row[ 6];
     $fi_Kapital       = $row[ 7] || undef;
     $fi_CurrencyID    = $row[ 8] || undef;
-    $fi_statusID      = $row[ 9] || undef; # 0: gelöscht, 2: aktiv, 3: in Auflösung (von Amtes wegen, Konkurs, Fusion)
+    $fi_statusID      = $row[ 9]; #  || undef; # 0: gelöscht, 2: aktiv, 3: in Auflösung (von Amtes wegen, Konkurs, Fusion)
     $fi_Loeschdat     = $row[10] || undef; # Wenn status = 0
 #   $fi_SHABDat       = $row[11]; # ignorieren, nur Zefix intern
 #   $fi_ShabNr        = $row[12]; # ignorieren, nur Zefix intern
@@ -259,6 +274,215 @@ sub load_firmen_bez { #_{
 
 } #_}
 
+sub load_stichwoerter { #_{
+  my $start_t = time;
+  trunc_table_stichwort();
+  trunc_table_stichwort_firma();
+
+  init_stichwoerter();
+  load_stichwoerter_table(%stichwoerter);
+  
+  my $sth_ins_stichwort_firma = $dbh->prepare('insert into stichwort_firma values(?, ?)') or die;
+  my $sth = $dbh -> prepare( #_{
+    '
+    select
+      f.id           id_firma,
+      f.bezeichnung  bezeichnung,
+      z.zweck
+    from
+      firma f join
+      zweck z on f.id = z.id_firma'
+  ) or die; #_}
+  $sth -> execute;
+
+  my $cnt = 0;
+  while (my $r = $sth -> fetchrow_hashref) { #_{
+#   print $r->{bezeichnung},"\n";
+    my $zweck = lc decode_utf8($r->{zweck});
+#   my $zweck = lc ($r->{zweck});
+
+    $zweck =~ s/\bdie gesellschaft kann.*//;
+    $zweck =~ s/; (sie )?kann.*//;
+
+    my $stichwort_already_inserted = {};
+
+    fill_stichwort_firma($r->{id_firma}, $zweck                           , $sth_ins_stichwort_firma, $stichwort_already_inserted);
+    fill_stichwort_firma($r->{id_firma}, lc decode_utf8($r->{bezeichnung}), $sth_ins_stichwort_firma, $stichwort_already_inserted);
+
+    $cnt ++;
+# # return if $cnt > 10000;
+    print "$cnt\n" unless $cnt % 1000;
+  } #_}
+
+   my $end_t = time;
+   printf("load_stichwoerter_table in %5.2f seconds\n", $end_t - $start_t);
+   print "cnt = $cnt\n";
+
+} #_}
+
+sub fill_stichwort_firma { #_{
+  my $id_firma                   = shift;
+  my $text                       = shift;
+  my $sth_ins                    = shift;
+  my $stichwort_already_inserted = shift;
+
+  for my $stichwort (keys %stichwoerter) {
+
+    next if $stichwort_already_inserted->{$stichwort};
+    for my $qr (@{$stichwoerter{$stichwort}{qrs}}) {
+      if ($text =~ $qr) {
+
+         $sth_ins -> execute($id_firma, $stichwoerter{$stichwort}{id}) or die;
+         $stichwort_already_inserted->{$stichwort} = 1;
+
+      }
+    }
+  }
+
+# q  $text =~ s/[ &?".,;'()!_:]/ /g;
+# q  $text =~ s/-//g;
+# q
+# q  my @words = split ' ', $text;
+# q  for my $word (@words) { #_{
+# q
+# q    $word =~ s/n$//; #_{
+# q    $word =~ s/r$//;
+# q    $word =~ s/e$//;
+# q    $word =~ s/s$//;
+# q    $word =~ s/ä/a/;
+# q    $word =~ s/ö/o/;
+# q    $word =~ s/ü/u/;
+# q    $word =~ s/é/e/;
+# q    $word =~ s/è/e/;
+# q    $word =~ s/á/a/;
+# q    $word =~ s/à/a/;
+# q    $word =~ s/ó/o/; #_}
+# q
+# q    next if $word eq 'd'; #_{
+# q    next if $word eq 'vo';
+# q    next if $word eq 'und';
+# q    next if $word eq 'et';
+# q    next if $word eq 'sowi';
+# q    next if $word eq 'fu';
+# q    next if $word eq 'verwaltung';
+# q    next if $word eq 'verkauf';
+# q    next if $word eq 'od';
+# q    next if $word eq 'o';
+# q    next if $word eq 'insbesonder';         #  !!!!!!
+# q    next if $word eq 'AG';
+# q    next if $word eq 'i';
+# q    next if $word eq 'di';
+# q    next unless $word;
+# q    next if $word eq 'a';
+# q    next if $word eq 'all';
+# q    next if $word eq 'la';
+# q    next if $word eq 'l';
+# q    next if $word eq 'mit';
+# q    next if $word eq 'art';
+# q    next if $word eq 'liquidatio';
+# q    next if $word eq 'handel';
+# q    next if $word eq 'im';
+# q    next if $word eq 'de';
+# q    next if $word eq 'erwerb';
+# q    next if $word eq 'gesellschaft';
+# q    next if $word eq 'gmbh';
+# q    next if $word eq 'ag';
+# q    next if $word eq 'bezweckt';
+# q    next if $word eq 'sagl'; #_}
+# q
+# q    $word_cnt{$word} ++;
+# q
+# q    for my $stichwort (keys %stichwoerter) {
+# q
+# q      next if $stichwort_already_inserted->{$stichwort};
+# q
+# q      for my $qr (@{$stichwoerter{$stichwort}{qrs}}) {
+# q        if ($word =~ $qr) {
+# q          $sth_ins -> execute($id_firma, $stichwoerter{$stichwort}{id}) or die;
+# q          $stichwort_already_inserted->{$stichwort} = 1;
+# q        }
+# q      }
+# q
+# q    }
+# q
+# q  } #_}
+
+} #_}
+
+sub load_stichwoerter_table { #_{
+  my %stichwoerter = @_;
+
+  my $sth_stichwort = $dbh->prepare('insert into stichwort values(?,?)') or die;
+  my $id_ = 1;
+  for my $stichwort (keys %stichwoerter) {
+    $stichwoerter{$stichwort}{id}=$id_;
+
+    $sth_stichwort->execute($id_, $stichwort);
+
+    $id_++;
+  }
+
+} #_}
+
+sub init_stichwoerter { #_{
+
+  %stichwoerter =  (
+#    'Reiseagentur'             => {qrs => [ qr/reiseagentur/, qr/agences? de voyage/, qr/agenzi\w* di viaggio/ ] },
+#    'Lebensmittel'             => {qrs => [ qr/lebensmittel/            ] },
+#    'Pizzeria'                 => {qrs => [ qr/pizzeria/                ] },
+#    'Drogerie'                 => {qrs => [ qr/drogeri/                 ] },
+#    'Coiffeur'                 => {qrs => [ qr/coiffeur/                ] },
+#    'Autohandel'               => {qrs => [ qr/autohandel/              ] },
+#    'Recycling'                => {qrs => [ qr/recycling/, qr/abfall/, qr/entsorg/   ] },  # Sonderabfall
+#    'Waffen'                   => {qrs => [ qr/waff/                    ] },
+#    'Apotheke'                 => {qrs => [ qr/apothek/                 ] },
+#    'Haustiere'                => {qrs => [ qr/haustier/                ] },
+#    'Umweltschutz'             => {qrs => [ qr/umweltschutz/            ] },
+#    'Früchte'                  => {qrs => [ qr/frucht/                  ] },
+#    'glutenfrei'               => {qrs => [ qr/glutenfrei/              ] },
+#    'laktosefrei'              => {qrs => [ qr/la[ck]tosen?frei/        ] },
+#    'Kräuter'                  => {qrs => [ qr/kraut/                   ] },
+#    'Bestattungen'             => {qrs => [ qr/bestattung/              ] },
+#    'Übernachtungsmöglichkeit' => {qrs => [ qr/ubernachtung/            ] },
+#    'Artist'                   => {qrs => [ qr/clown/, qr/pantomim/, qr/komik/, qr/animation/            ] },  # Firmen/f844659
+#    'Hundetraining'            => {qrs => [ qr/hundetraining/           ] },
+#    'Stahl'                    => {qrs => [ qr/stahl/                   ] },
+#    'Kupfer'                   => {qrs => [ qr/kupfer/                  ] },
+#    'Zink'                     => {qrs => [ qr/zink/                    ] }, # --> Verzinkerei
+#    'Gold'                     => {qrs => [ qr/gold/                    ] },
+#    'Silber'                   => {qrs => [ qr/silber/                  ] },
+#    'Ressourcen'               => {qrs => [ qr/ress?ource/              ] },
+#    'Eisenerz'                 => {qrs => [ qr/eisenerz/                ] },
+#    'Kohle'                    => {qrs => [ qr/kohle/                   ] },
+#    'seltene Erden'            => {qrs => [ qr/seltene\w* Erde/         ] },
+#    'Kohlenwasserstoff'        => {qrs => [ qr/kohlenwasserstoff/       ] }, # --> id_firma = 1227880;
+#    'Mineralien'               => {qrs => [ qr/minerali?en/             ] },
+#    'Batterien'                => {qrs => [ qr/batteri/                 ] },
+#    'Dachisolationen'          => {qrs => [ qr/dachisolation/           ] },
+#    'Multimedia'               => {qrs => [ qr/musik/, qr/film/, qr/foto/, qr/kamera/         ] },  # Spielfilm, Fernsehfilm, Dokumentarfilm, Serien, Dokusoaps … f534794
+#    'Mediizin'                 => {qrs => [ qr/medizin/                 ] },
+#    'Bedachungen'              => {qrs => [ qr/bedachung/               ] },
+#    'Versicherungsberatung'    => {qrs => [ qr/versicherungsberatung/   ] },
+#    'Drehbücher'               => {qrs => [ qr/drehbuch/, qr/storrytelling/, qr/regie/ ] }, # Warum ist Joe/Volltext nicht erfasst
+#    'Journalismus'             => {qrs => [ qr/journalismus/ ] },
+#    'Public relation'          => {qrs => [ qr/public relation/ ] },
+#    'Werbung'                  => {qrs => [ qr/werbung/ ] },
+#    'Datenverarbeitung'        => {qrs => [ qr/datenverarbeitung/       ] },
+#    'Radio'                    => {qrs => [ qr/radio/                   ] },
+#    'Programmierung'           => {qrs => [ qr/programmierung/          ] },
+#    'Betrug'                   => {qrs => [ qr/betrug/                  ] }, # !!!
+#    'Kleintier'                => {qrs => [ qr/kleintier/               ] }, #     Kleintierpraxis...
+#    'Tierarzt'                 => {qrs => [ qr/tierarzt/, qr[veterinär/ ] }, #     TODO Testcase für Verinär
+#    'Detektei'                 => {qrs => [ qr/detekt/                  ] },
+#    'Alternativ'               => {qrs => [ qr/alternativ/              ] },
+#    'Keramik'                  => {qrs => [ qr/keramik/                 ] },
+# #  'Food recycling'           => {qrs => [ qr/food recycling/          ] },  # f84593
+#    'Naturstein'               => {qrs => [ qr/naturstein/              ] },
+     'Spengler'                 => {qrs => [ qr/spengler.*/              ] },
+  );
+
+} #_}
+
 sub trunc_table_firma_bez { #_{
   $dbh -> do('drop table if exists firma_bez') or die;
 
@@ -314,7 +538,7 @@ create table firma (
   id_gemeinde    int        not null,
   kapital        number,
   currency       varchar,
-  status         int,
+  status         int        not null,  -- Firmen/f621
   loesch_dat     text,
   shab_seq       int,
   care_of        text,
@@ -356,6 +580,28 @@ create table gemeinde (
 ") or die;
 } #_}
 
+sub trunc_table_stichwort { #_{
+  $dbh -> do('drop table if exists stichwort') or die;
+  $dbh -> do("
+
+create table stichwort (
+  id             int  primary key,
+  stichwort      text not null
+)
+") or die;
+} #_}
+
+sub trunc_table_stichwort_firma { #_{
+  $dbh -> do('drop table if exists stichwort_firma') or die;
+  $dbh -> do("
+
+create table stichwort_firma (
+  id_firma       int not null,
+  id_stichwort   int not null
+)
+") or die;
+} #_}
+
 sub to_dt { #_{
   my $str = shift;
 
@@ -368,9 +614,9 @@ sub to_dt { #_{
   $dt = '9999-12-31' if $dt eq '2100-12-31';
 
   return $dt;
-}
+} #_}
 
-sub to_txt {
+sub to_txt { #_{
 # return $_[0];
   return encode('utf-8', decode('iso-8859-1', $_[0]));
 } #_}

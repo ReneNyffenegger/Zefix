@@ -1,6 +1,6 @@
 <?php
 
-function firma_info($dbh, $id) {
+function firma_info($dbh, $id) { #_{
 
   $firma = db_sel_1_row($dbh, 'select * from firma where id = :1', array($id));
 
@@ -10,15 +10,20 @@ function firma_info($dbh, $id) {
 
   return $firma;
 
-}
+} #_}
 
-function gemeinde_name($dbh, $id_gemeinde) {
+function gemeinde_name($dbh, $id_gemeinde) { #_{
   return tq84_enc(db_sel_1_row_1_col($dbh, 'select name from gemeinde where id = :1', array($id_gemeinde)));
-}
+} #_}
 
-function tq84_enc($str) { // {
+function stichwort_name($dbh, $id_stichwort) { #_{
+  print "stichwort_name: $id_stichwort<br>";
+  return tq84_enc(db_sel_1_row_1_col($dbh, 'select stichwort from stichwort where id = :1', array($id_stichwort)));
+} #_}
+
+function tq84_enc($str) { #_{
   return $str;
 //return utf8_encode($str);
-} // }
+} #_}
 
 ?>

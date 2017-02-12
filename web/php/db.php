@@ -1,6 +1,6 @@
 <?php
 
-function db_connect($env) {
+function db_connect($env) { #_{
 
 
   if ($env == 'test') {
@@ -28,9 +28,9 @@ function db_connect($env) {
   $db -> setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
   return $db;
-}
+} #_}
 
-function db_sel_1_row($dbh, $sql, $params = array()) {
+function db_sel_1_row($dbh, $sql, $params = array()) { #_{
 
 
   $sth = $dbh->prepare($sql);
@@ -41,32 +41,32 @@ function db_sel_1_row($dbh, $sql, $params = array()) {
     throw new Exception("db_sel_1_row selected more than one row! sql = $sql");
   }
   return $row;
-}
+} #_}
 
-function db_sel_1_row_1_col($dbh, $sql, $params = array()) { // {
+function db_sel_1_row_1_col($dbh, $sql, $params = array()) { #_{
   $row = db_sel_1_row($dbh, $sql, $params);
   return $row[0];
-} // }
+} #_}
 
-function db_cnt_table($dbh, $table_name) { // {
+function db_cnt_table($dbh, $table_name) { #_{
   return db_sel_1_row_1_col($dbh, "select count(*) from $table_name");
-} // }
+} #_}
 
-function db_prep_exec($dbh, $sql, $params = array()) { // {
+function db_prep_exec($dbh, $sql, $params = array()) { #_{
 
   $sth = $dbh -> prepare ($sql);
   $sth -> execute($params);
 
   return $sth;
 
-} // }
+} #_}
 
-function db_prep_exec_fetchall($dbh, $sql, $params = array()) { // {
+function db_prep_exec_fetchall($dbh, $sql, $params = array()) { #_{
 
   $sth = db_prep_exec($dbh, $sql, $params);
 
   return $sth -> fetchAll();
 
-} // }
+} #_}
 
 ?>
