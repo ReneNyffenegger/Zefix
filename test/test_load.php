@@ -5,10 +5,11 @@ include (getenv('github_root') . 'Zefix/web/php/db.php');
 $dbh = db_connect('test');
 
 
-check_gemeinde ($dbh);
-check_zweck    ($dbh);
-check_firma_bez($dbh);
-check_firma    ($dbh);
+check_gemeinde    ($dbh);
+check_zweck       ($dbh);
+check_firma_bez   ($dbh);
+check_firma       ($dbh);
+check_person_firma($dbh);
 echo "Ok\n";
 
 function check_firma($dbh) { #_{
@@ -196,6 +197,45 @@ function cmp_zweck($sth, $id_firma, $zweck) { #_{
   }
 
 } #_}
+
+function check_person_firma($dbh) { #_{
+
+  check_count($dbh, 'person_firma', 11);
+  $sth = db_prep_exec($dbh, 'select * from person_firma order by dt_journal, id_firma');
+
+
+  cmp_person_firma($sth, 251792, '2001-07-30', '-', 'Dettwiler'  , 'Werner'         , 'Reigoldswil'                       , NULL                         , NULL, 0, 0);
+  cmp_person_firma($sth, 451407, '2005-07-04', '-', NULL         , NULL             , NULL                                , 'Künzler Communications GmbH', NULL, 1, 0);
+  cmp_person_firma($sth, 823465, '2006-05-16', '-', 'Rossbacher' , 'Albert'         , 'Röthenbach bei Herzogenbuchsee'    , NULL                         , NULL, 0, 0);
+  cmp_person_firma($sth, 451407, '2008-09-08', '-', 'Nyffenegger', 'René'           , 'Eriswil'                           , NULL                         , NULL, 0, 0);
+  cmp_person_firma($sth, 251792, '2010-07-07', '-', 'Riedmüller' , 'Josef'          , 'deutscher Staatsangehöriger'       , NULL                         , NULL, 0, 0);
+  cmp_person_firma($sth, 251792, '2010-07-07', '-', 'Wüst'       , 'Günter'         , 'Oberriet SG'                       , NULL                         , NULL, 0, 0);
+  cmp_person_firma($sth, 823465, '2013-07-29', '-', 'Brabec'     , 'St. Bernhard'   , 'österreichischer Staatsangehöriger', NULL                         , NULL, 0, 0);
+  cmp_person_firma($sth, 823465, '2013-07-29', '-', 'Hausmann'   , 'Alexander'      , 'Dietikon'                          , NULL                         , NULL, 0, 0);
+  cmp_person_firma($sth, 823465, '2014-08-13', '-', 'Hagger'     , 'Joachim Andreas', 'Basel'                             , NULL                         , NULL, 0, 0);
+  cmp_person_firma($sth, 934296, '2016-12-15', '-', 'Kuhn'       , 'Roland'         , 'Illnau-Effretikon'                 , NULL                         , NULL, 0, 0);
+  cmp_person_firma($sth, 934296, '2016-12-15', '-', 'Keller'     , 'Primin'         , 'Altendorf'                         , NULL                         , NULL, 0, 0);
+
+  echo "person_firma ok\n";
+
+} #_}
+
+function cmp_person_firma($sth, $id_firma, $dt_journal, $add_rm, $nachname, $vorname, $von, $bezeichnung, $in_, $gesellschafterin, $revisionsstelle) {
+
+  $row = $sth -> fetch();
+
+  if (! eq($row[0], $id_firma        )) {throw new Exception('cmp_person_firma 0'); }
+  if (! eq($row[1], $dt_journal      )) {throw new Exception('cmp_person_firma 1'); }
+  if (! eq($row[2], $add_rm          )) {throw new Exception('cmp_person_firma 2'); }
+  if (! eq($row[3], $nachname        )) {throw new Exception('cmp_person_firma 3'); }
+  if (! eq($row[4], $vorname         )) {throw new Exception('cmp_person_firma 4'); }
+  if (! eq($row[5], $von             )) {throw new Exception('cmp_person_firma 5'); }
+  if (! eq($row[6], $bezeichnung     )) {throw new Exception('cmp_person_firma 6'); }
+  if (! eq($row[7], $in_             )) {throw new Exception('cmp_person_firma 7'); }
+  if (! eq($row[8], $gesellschafterin)) {throw new Exception('cmp_person_firma 8'); }
+  if (! eq($row[9], $revisionsstelle )) {throw new Exception('cmp_person_firma 9'); }
+
+}
 
 function check_gemeinde($dbh) { #_{
 
