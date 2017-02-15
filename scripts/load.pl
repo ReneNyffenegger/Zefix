@@ -58,7 +58,7 @@ $dbh -> commit;
 for my $word (sort { $word_cnt{$b} <=> $word_cnt{$a} } keys %word_cnt) {
   printf "%5d: $word\n", $word_cnt{$word};
 }
-# exit;
+exit;
 
 print "TODO: Forcing gemeinden to be loaded\n";
 # $load_gemeinden = 1;
@@ -303,6 +303,7 @@ sub load_stichwoerter { #_{
 
     $zweck =~ s/\bdie gesellschaft kann.*//;
     $zweck =~ s/; (sie )?kann.*//;
+    $zweck =~ tr/äöüéê/aouee/;
 
     my $stichwort_already_inserted = {};
 
@@ -317,6 +318,13 @@ sub load_stichwoerter { #_{
    my $end_t = time;
    printf("load_stichwoerter_table in %5.2f seconds\n", $end_t - $start_t);
    print "cnt = $cnt\n";
+
+   for my $stichwort (sort keys %stichwoerter) {
+     for my $qr (@{$stichwoerter{$stichwort}{qrs}}) {
+       printf "%-30s %-30s %6d\n", $stichwort, $qr, $stichwoerter{$stichwort}{qrs_cnt}{$qr} // 0;
+
+     }
+   }
 
 } #_}
 
@@ -334,6 +342,8 @@ sub fill_stichwort_firma { #_{
 
          $sth_ins -> execute($id_firma, $stichwoerter{$stichwort}{id}) or die;
          $stichwort_already_inserted->{$stichwort} = 1;
+
+         $stichwoerter{$stichwort}{qrs_cnt}{$qr}++;
 
       }
     }
@@ -426,59 +436,375 @@ sub load_stichwoerter_table { #_{
 
 sub init_stichwoerter { #_{
 
+
+  #  Holz / Spielwaren ---> automatisch: Holzspielwaren
+  #  Blech / Bearbeitung ---> Blechbearbeitung
+  #  Freizeit / Artikel ---> Freizeitarikel
+  #  Telefon  / Anlagen  ---> Telefonanlagen
+  #  ... / Liebhaber ----> ...liebhaber
+  #  Lebensmittel ... laden
+  #  Antennen ... bau
+  #
+  #  dienst == service
+  #
+  #  adj. digitaler Publikationen
+  #
+
+
   %stichwoerter =  (
-#    'Reiseagentur'             => {qrs => [ qr/reiseagentur/, qr/agences? de voyage/, qr/agenzi\w* di viaggio/ ] },
-#    'Lebensmittel'             => {qrs => [ qr/lebensmittel/            ] },
-#    'Pizzeria'                 => {qrs => [ qr/pizzeria/                ] },
-#    'Drogerie'                 => {qrs => [ qr/drogeri/                 ] },
-#    'Coiffeur'                 => {qrs => [ qr/coiffeur/                ] },
-#    'Autohandel'               => {qrs => [ qr/autohandel/              ] },
-#    'Recycling'                => {qrs => [ qr/recycling/, qr/abfall/, qr/entsorg/   ] },  # Sonderabfall
-#    'Waffen'                   => {qrs => [ qr/waff/                    ] },
-#    'Apotheke'                 => {qrs => [ qr/apothek/                 ] },
-#    'Haustiere'                => {qrs => [ qr/haustier/                ] },
-#    'Umweltschutz'             => {qrs => [ qr/umweltschutz/            ] },
-#    'Früchte'                  => {qrs => [ qr/frucht/                  ] },
-#    'glutenfrei'               => {qrs => [ qr/glutenfrei/              ] },
-#    'laktosefrei'              => {qrs => [ qr/la[ck]tosen?frei/        ] },
-#    'Kräuter'                  => {qrs => [ qr/kraut/                   ] },
-#    'Bestattungen'             => {qrs => [ qr/bestattung/              ] },
-#    'Übernachtungsmöglichkeit' => {qrs => [ qr/ubernachtung/            ] },
-#    'Artist'                   => {qrs => [ qr/clown/, qr/pantomim/, qr/komik/, qr/animation/            ] },  # Firmen/f844659
-#    'Hundetraining'            => {qrs => [ qr/hundetraining/           ] },
-#    'Stahl'                    => {qrs => [ qr/stahl/                   ] },
-#    'Kupfer'                   => {qrs => [ qr/kupfer/                  ] },
-#    'Zink'                     => {qrs => [ qr/zink/                    ] }, # --> Verzinkerei
-#    'Gold'                     => {qrs => [ qr/gold/                    ] },
-#    'Silber'                   => {qrs => [ qr/silber/                  ] },
-#    'Ressourcen'               => {qrs => [ qr/ress?ource/              ] },
-#    'Eisenerz'                 => {qrs => [ qr/eisenerz/                ] },
-#    'Kohle'                    => {qrs => [ qr/kohle/                   ] },
-#    'seltene Erden'            => {qrs => [ qr/seltene\w* Erde/         ] },
-#    'Kohlenwasserstoff'        => {qrs => [ qr/kohlenwasserstoff/       ] }, # --> id_firma = 1227880;
-#    'Mineralien'               => {qrs => [ qr/minerali?en/             ] },
-#    'Batterien'                => {qrs => [ qr/batteri/                 ] },
-#    'Dachisolationen'          => {qrs => [ qr/dachisolation/           ] },
-#    'Multimedia'               => {qrs => [ qr/musik/, qr/film/, qr/foto/, qr/kamera/         ] },  # Spielfilm, Fernsehfilm, Dokumentarfilm, Serien, Dokusoaps … f534794
-#    'Mediizin'                 => {qrs => [ qr/medizin/                 ] },
-#    'Bedachungen'              => {qrs => [ qr/bedachung/               ] },
-#    'Versicherungsberatung'    => {qrs => [ qr/versicherungsberatung/   ] },
-#    'Drehbücher'               => {qrs => [ qr/drehbuch/, qr/storrytelling/, qr/regie/ ] }, # Warum ist Joe/Volltext nicht erfasst
-#    'Journalismus'             => {qrs => [ qr/journalismus/ ] },
-#    'Public relation'          => {qrs => [ qr/public relation/ ] },
-#    'Werbung'                  => {qrs => [ qr/werbung/ ] },
-#    'Datenverarbeitung'        => {qrs => [ qr/datenverarbeitung/       ] },
-#    'Radio'                    => {qrs => [ qr/radio/                   ] },
-#    'Programmierung'           => {qrs => [ qr/programmierung/          ] },
-#    'Betrug'                   => {qrs => [ qr/betrug/                  ] }, # !!!
-#    'Kleintier'                => {qrs => [ qr/kleintier/               ] }, #     Kleintierpraxis...
-#    'Tierarzt'                 => {qrs => [ qr/tierarzt/, qr[veterinär/ ] }, #     TODO Testcase für Verinär
-#    'Detektei'                 => {qrs => [ qr/detekt/                  ] },
-#    'Alternativ'               => {qrs => [ qr/alternativ/              ] },
-#    'Keramik'                  => {qrs => [ qr/keramik/                 ] },
-# #  'Food recycling'           => {qrs => [ qr/food recycling/          ] },  # f84593
-#    'Naturstein'               => {qrs => [ qr/naturstein/              ] },
-     'Spengler'                 => {qrs => [ qr/spengler.*/              ] },
+
+   'Abdichten'                  => {qrs => [ qr/\babdicht/               ] },
+   'Abwasser'                   => {qrs => [ qr/abwasser/                ] },
+   'Accessoires'                => {qrs => [ qr/\baccessoir/             ] },
+   'Aluminium'                  => {qrs => [ qr/aluminium/               ] },
+   'Alternativ'                 => {qrs => [ qr/alternativ/              ] },
+   'Anhänger'                   => {qrs => [ qr/anhanger/                ] },
+   'Anlässe'                    => {qrs => [ qr/\banlasse?\b/            ] },
+   'Antennenbau'                => {qrs => [ qr/antennenbau/             ] },
+   'Apotheke'                   => {qrs => [ qr/apothek/                 ] },
+   'Archäologie'                => {qrs => [ qr/archaolog/               ] },
+   'Architekt'                  => {qrs => [ qr/architekt/               ] },
+   'Artist'                     => {qrs => [ qr/clown/, qr/pantomim/, qr/komik/, qr/animation/            ] },  # Firmen/f844659
+   'Autohandel'                 => {qrs => [ qr/autohandel/              ] },
+   'Automobil'                  => {qrs => [ qr/automobil/               ] },
+   'Baby'                       => {qrs => [ qr/\bbab(y|i)/, qr/saugling/  ] },
+   'Bäckerei'                   => {qrs => [ qr/backerei/                ] },
+   'Balkon'                     => {qrs => [ qr/balkon/                  ] },
+   'Banak'                      => {qrs => [ qr/bank/                    ] },
+   'Batterien'                  => {qrs => [ qr/batteri/                 ] },
+   'Baugewerbe'                 => {qrs => [ qr/baugewerbe/              ] },
+   'Baumaterialien'             => {qrs => [ qr/baumaterial/             ] },
+   'Bautenschutz'               => {qrs => [ qr/bautenschutz/            ] },
+   'Bauunternehmung'            => {qrs => [ qr/bauunternehm/            ] },
+   'Beauty'                     => {qrs => [ qr/beauty/                  ] },
+   'Bedachungen'                => {qrs => [ qr/bedachung/               ] },
+   'Bekleidung'                 => {qrs => [ qr/bekleidung/              ] },
+   'Bestattungen'               => {qrs => [ qr/bestattung/              ] },
+   'Begrünung'                  => {qrs => [ qr/begrunung/               ] },
+   'Betrug'                     => {qrs => [ qr/betrug/                  ] }, # !!!
+   'Bier'                       => {qrs => [ qr/\bbier/                  ] },
+   'Bildhauer'                  => {qrs => [ qr/bildhauer/               ] },
+   'Bildung'                    => {qrs => [ qr/bildung/                 ] },
+   'biologisch'                 => {qrs => [ qr/\bbio(logisch)?/         ] },
+   'Blech'                      => {qrs => [ qr/blech/                   ] },
+   'Blechbearbeitung'           => {qrs => [ qr/blechbearbeitung/        ] },
+   'Blumen'                     => {qrs => [ qr/\bblume/                 ] },
+   'Brandschutz'                => {qrs => [ qr/brandschutz/             ] },
+   'Brot'                       => {qrs => [ qr/\bbrot/                  ] },
+   'Buchhaltung'                => {qrs => [ qr/buchhaltung/             ] },
+   'Bügelservice'               => {qrs => [ qr/bugel(n|service)/        ] },
+   'Bürsten'                    => {qrs => [ qr/\bburste/                ] },
+   'Catering'                   => {qrs => [ qr/catering/                ] },
+   'Chrom'                      => {qrs => [ qr/chrom/                   ] },
+   'Cafe'                       => {qrs => [ qr/\bcafe\b/                ] },
+   'Coiffeur'                   => {qrs => [ qr/coiffeur/                ] },
+   'Container'                  => {qrs => [ qr/container/               ] },
+   'Crêpes'                     => {qrs => [ qr/crepes/                  ] },
+   'Dach'                       => {qrs => [ qr/\b(be)?dach/             ] },
+   'Dachisolationen'            => {qrs => [ qr/dachisolation/           ] },
+   'Dämmschutz'                 => {qrs => [ qr/dammschutz/              ] },
+   'Datacenter'                 => {qrs => [ qr/data-?center/            ] },
+   'Datenverarbeitung'          => {qrs => [ qr/datenverarbeitung/       ] },
+   'Dekoration'                 => {qrs => [ qr/dekoration/              ] },
+   'Detektei'                   => {qrs => [ qr/detekt/                  ] },
+   'Deutschland'                => {qrs => [ qr/\bdeutsch\b/             ] },
+   'Digitaldruck'               => {qrs => [ qr/digitaldruck/            ] },
+   'Dorfzeitung'                => {qrs => [ qr/dorfzeitung/             ] },
+   'Drehbücher'                 => {qrs => [ qr/drehbuch/, qr/storrytelling/ ] }, # Warum ist Joe/Volltext nicht erfasst
+   'Druck'                      => {qrs => [ qr/(be)?druck/, qr/litho/, qr/\bsatz\b/, qr/print/   ] },
+   'Drogerie'                   => {qrs => [ qr/drogeri/                 ] },
+   'Düngemittel'                => {qrs => [ qr/dungemittel/] },
+   'Edelmetall'                 => {qrs => [ qr/edelmetall/              ] },
+   'Edelstahl'                  => {qrs => [ qr/edelstahl/               ] },
+   'EDV'                        => {qrs => [ qr/\bedv\b/                 ] },
+   'Eherecht'                   => {qrs => [ qr/ehe-?.*recht/            ] },
+   'Einbruchschutz'             => {qrs => [ qr/einbruchschutz/          ] },
+   'Eisenerz'                   => {qrs => [ qr/eisenerz/                ] },
+   'Elektro'                    => {qrs => [ qr/elektro/                 ] },
+   'Elektrosmog'                => {qrs => [ qr/elektrosmog/             ] },
+   'Energie'                    => {qrs => [ qr/energie/                 ] },
+   'Energiegewinnung'           => {qrs => [ qr/energiegewinnung/        ] },
+   'Erdarbeiten'                => {qrs => [ qr/erdarbeiten/             ] },
+   'Ersatzteile'                => {qrs => [ qr/ersatzteile/             ] },
+   'Export'                     => {qrs => [ qr/export/                  ] },
+   'Fahrrad'                    => {qrs => [ qr/(fahr|zwei)rad/, qr/\bvelos?/ ] }, 
+   'Fahrschule'                 => {qrs => [ qr/fahrschule/              ] }, 
+   'Fahrzeuge'                  => {qrs => [ qr/fahrzeug/                ] }, 
+   'Fassadensysteme'            => {qrs => [ qr/fassadensystem/          ] }, 
+   'Fitness'                    => {qrs => [ qr/fitness/                 ] },
+   'Floristik'                  => {qrs => [ qr/floristik/               ] },
+   'Food recycling'             => {qrs => [ qr/food recycling/          ] },  # f84593
+   'Förderung'                  => {qrs => [ qr/forderung/               ] }, 
+   'Forschung'                  => {qrs => [ qr/forschung/               ] }, 
+   'Frankreich'                 => {qrs => [ qr/\bfrankreich/, qr/\bfranzosisch/]},
+   'Freizeit'                   => {qrs => [ qr/freizeit/                ] },
+   'Freizeitartikel'            => {qrs => [ qr/freizeitartikel/         ] },
+   'Frischwasser'               => {qrs => [ qr/frischwasser/            ] },
+   'Fugenabdichtung'            => {qrs => [ qr/fugenabdichtung/         ] },
+   'Früchte'                    => {qrs => [ qr/frucht/                  ] },
+   'Galvanik'                   => {qrs => [ qr/galvani/                 ] },  # sa Verchromen, Vernickeln, Verzinken, Verkupfern, insbesondere Versilbern und Vergolden // 
+   'Gastronomie'                => {qrs => [ qr/gastronomie/             ] },
+   'Garage'                     => {qrs => [ qr/garage/                  ] },
+   'Garagentore'                => {qrs => [ qr/garagentore/             ] },
+   'Garten'                     => {qrs => [ qr/garten/                  ] },  # sa Verchromen, Vernickeln, Verzinken, Verkupfern, insbesondere Versilbern und Vergolden // 
+   'Gärtnerei'                  => {qrs => [ qr/gartnerei/               ] },
+   'Gebäck'                     => {qrs => [ qr/geback/                  ] },
+   'Gebäudereinigungen'         => {qrs => [ qr/gebaudereinigungen/      ] },
+   'Geburtshilfe'               => {qrs => [ qr/geburtshilfe/            ] },
+   'Gemüse'                     => {qrs => [ qr/gemuse/                  ] },
+   'Genussmittel'               => {qrs => [ qr/genussmittel/            ] },
+   'Getränke'                   => {qrs => [ qr/getranke/                ] },
+   'Gips'                       => {qrs => [ qr/\bgips\b/                ] },
+   'Gipser'                     => {qrs => [ qr/\bgipser/                ] },
+   'Glasfaser'                  => {qrs => [ qr/glasfaser/               ] },
+   'glutenfrei'                 => {qrs => [ qr/glutenfrei/              ] },
+   'Geld'                       => {qrs => [ qr/geld/                    ] }, 
+   'Gesundheit'                 => {qrs => [ qr/gesundheit/              ] }, 
+   'Gold'                       => {qrs => [ qr/gold/                    ] }, # s.a. Edelmetall
+   'Grabbepflanzung'            => {qrs => [ qr/grabbepflanzung/         ] },
+   'Grafik'                     => {qrs => [ qr/gra(f|ph)i[ck]/          ] },
+   'Gynäkologie'                => {qrs => [ qr/gynakologie/, qr/frauenarzt/ ]},
+   'Handel'                     => {qrs => [ qr/handel/                  ] }, # how, not what!
+   'Handelsrecht'               => {qrs => [ qr/handels-?.*recht/        ] },
+   'Hardware'                   => {qrs => [ qr/\bhard-?.*ware\b/        ] },
+   'Haushalt'                   => {qrs => [ qr/haushalt/                ] },
+   'Haushaltsbedarf'            => {qrs => [ qr/haushaltsbedarf/         ] },
+   'Hauslieferdienst'           => {qrs => [ qr/hausliefer(dienst|service)/ ] },
+   'Haustiere'                  => {qrs => [ qr/haustier/                ] },
+   'Haustierbetreuung'          => {qrs => [ qr/haustierbetreuung/       ] },
+   'Hauswartung'                => {qrs => [ qr/hauswart/                ] },
+   'Heizöl'                     => {qrs => [ qr/heizol/                  ] },
+   'Heizung'                    => {qrs => [ qr/heizung/, qr/chauffage/  ] },
+   'Helium'                     => {qrs => [ qr/helium/                  ] },
+   'herstellung'                => {qrs => [ qr/herstellung/, qr/fabrikation/, qr/fertigung/ ]},
+   'Hochbau'                    => {qrs => [ qr/\bhoch-?.*baus\b/        ] },
+   'Hochtemperatur'             => {qrs => [ qr/hochtemperatur/          ] },
+   'Holz'                       => {qrs => [ qr/\bholz/                  ] },
+   'Hotel'                      => {qrs => [ qr/hotel/                   ] },
+   'Hund'                       => {qrs => [ qr/\bhund/                  ] },
+   'Hundetraining'              => {qrs => [ qr/hundetraining/           ] },
+   'Human Ressource'            => {qrs => [ qr/human ressource/         ] },
+   'Immobilien'                 => {qrs => [ qr/immobilien/              ] },
+   'Immobilienverwaltung'       => {qrs => [ qr/immobilien-?verwaltung/  ] },
+   'Import'                     => {qrs => [ qr/import/                  ] },
+   'Industrie'                  => {qrs => [ qr/industrie/               ] },
+   'Industrieöfen'              => {qrs => [ qr/industrieofen/           ] },
+   'Informatik'                 => {qrs => [ qr/informatik/              ] },
+   'Innenarchitektur'           => {qrs => [ qr/innenarchitektur/        ] },
+   'Internet'                   => {qrs => [ qr/internet/                ] },
+   'Italien'                    => {qrs => [ qr/\bitalien/               ] },
+   'IT-Dienstleistung'          => {qrs => [ qr/it-.*dienstleistung/     ] },
+   'Jagd'                       => {qrs => [ qr/jagd/                    ] },
+   'Jugend'                     => {qrs => [ qr/jugend/                  ] },
+   'Journalismus'               => {qrs => [ qr/journalismus/            ] },
+   'Kamin'                      => {qrs => [ qr/\bkamin/                 ] },
+   'Käminfeger'                 => {qrs => [ qr/\bkaminfeger/            ] },
+   'Kanalbau'                   => {qrs => [ qr/kanalbau/                ] },
+   'Kanalreinigung'             => {qrs => [ qr/kanal-?.*reinigung/      ] },
+   'Kälte'                      => {qrs => [ qr/\bkalte/                 ] },
+   'Kartonagen'                 => {qrs => [ qr/kartonage/               ] },
+   'käse'                       => {qrs => [ qr/kase/                    ] },
+   'Käserei'                    => {qrs => [ qr/kaserei/                 ] },
+   'Keramik'                    => {qrs => [ qr/\bkerami/                ] },
+   'Kinderkrippe'               => {qrs => [ qr/kinderkrippe/, qr/kinderhort/         ] },
+   'Kleintier'                  => {qrs => [ qr/kleintier/               ] }, #     Kleintierpraxis...
+   'Klimatechnik'               => {qrs => [ qr/klimatechnik/            ] },
+   'Konditorei'                 => {qrs => [ qr/konditorei/              ] },
+   'Kohle'                      => {qrs => [ qr/kohle/                   ] },
+   'Konserven'                  => {qrs => [ qr/\bkonserve/              ] },
+   'Kokillen'                   => {qrs => [ qr/kokille/                 ] }, #   ????
+   'Kohlenwasserstoff'          => {qrs => [ qr/kohlenwasserstoff/       ] }, # --> id_firma = 1227880;
+   'Kommunikationstechnik'      => {qrs => [ qr/kommunikationstechnik/   ] },
+   'Korrosion'                  => {qrs => [ qr/korrosion/               ] },
+   'Kosmetik'                   => {qrs => [ qr/\b(c|k)osmeti/           ] },
+   'Kräuter'                    => {qrs => [ qr/kraut/                   ] },
+   'Kredit'                     => {qrs => [ qr/kredit/                  ] },
+   'Kunst'                      => {qrs => [ qr/\bkunst(ler)?\b/, qr/artist/         ] },
+   'Kunststoff'                 => {qrs => [ qr/kunststoff/              ] },
+   'Kurierdienst'               => {qrs => [ qr/kurierdienst/                        ] },
+   'Kultur'                     => {qrs => [ qr/kultur/                  ] },
+   'Kupfer'                     => {qrs => [ qr/kupfer/                  ] },
+   'Lack'                       => {qrs => [ qr/\black/                  ] },
+   'Lagerung'                   => {qrs => [ qr/\blagerung/              ] },
+   'laktosefrei'                => {qrs => [ qr/la[ck]tosen?frei/        ] },
+   'Laminat'                    => {qrs => [ qr/laminat/                 ] },
+   'Laufservice'                => {qrs => [ qr/laufservice/             ] },
+   'Lebensmittel'               => {qrs => [ qr/lebensmittel/            ] },
+   'Lebensmittelladen'          => {qrs => [ qr/lebensmittelladen/       ] },
+   'Landwirtschaft'             => {qrs => [ qr/landwirt/                ] },
+   'Laser'                      => {qrs => [ qr/laser/                   ] },
+   'Licht'                      => {qrs => [ qr/licht/, qr/leucht/       ] },
+   'Liebhaber'                  => {qrs => [ qr/liebhaber/               ] },
+   'Liegenschaften'             => {qrs => [ qr/liegenschaften/, qr/neubau/, qr/immobil/     ] },
+   'Liegenschaftenunterhalt'    => {qrs => [ qr/liegenschaftenunterhalt/                     ] },
+   'Logistik'                   => {qrs => [ qr/logistik/                                    ] },
+   'Lüftung'                    => {qrs => [ qr/luftung/                 ] },
+   'Maler'                      => {qrs => [ qr/maler/                   ] },  # Exclude Familiennam
+   'Maurer'                     => {qrs => [ qr/kundenmaurer/            ] },  # Exclude Familiennam
+   'Magnesium'                  => {qrs => [ qr/magnesium/               ] },
+   'Maler'                      => {qrs => [ qr/\bmaler/                 ] },
+   'Medizin'                    => {qrs => [ qr/medizin/                 ] },
+   'Messinstrumente'            => {qrs => [ qr/mess-?instrument/        ] },
+   'Messtechnik'                => {qrs => [ qr/messtechnik/             ] },
+   'Metall'                     => {qrs => [ qr/metall/                  ] },
+   'Metzgerei'                  => {qrs => [ qr/metzgerei/               ] },
+   'Messing'                    => {qrs => [ qr/messing/                 ] },
+   'Milch'                      => {qrs => [ qr/milch/                   ] },
+   'Mineralien'                 => {qrs => [ qr/minerali?en/             ] },
+   'Mineralöl'                  => {qrs => [ qr/mineralol/               ] },
+   'Möbel'                      => {qrs => [ qr/mobel/                   ] },
+   'Mode'                       => {qrs => [ qr/\bmode/                  ] },
+   'Montage'                    => {qrs => [ qr/montage/, qr/monteur/    ] }, 
+   'Motorrad'                   => {qrs => [ qr/motorrad/                ] }, 
+   'Multimedia'                 => {qrs => [ qr/musik/, qr/film/, qr/foto/, qr/kamera/, qr/video/, qr/fernseh/         ] },  # Spielfilm, Fernsehfilm, Dokumentarfilm, Serien, Dokusoaps â€¦ f534794
+   'Nähmaschine'                => {qrs => [ qr/nähmaschinen/            ] },
+   'Nahrungsmittel'             => {qrs => [ qr/nahrungsmittel/          ] },
+   'Naturprodukte'              => {qrs => [ qr/naturprodukt/            ] },
+   'Naturstein'                 => {qrs => [ qr/naturstein/              ] },
+   'Neuronale Netzwerke'        => {qrs => [ qr/neuronal\w* netz/        ] },
+   'Nickel'                     => {qrs => [ qr/nickel/                  ] },
+   'Oberflächenbehandlung'      => {qrs => [ qr/oberflachenbehandlung/   ] },
+   'Ofenbau'                    => {qrs => [ qr/ofenbau/                 ] },
+   'Öl'                         => {qrs => [ qr/\boe?l(en)?\b/           ] },
+   'Olivenöl'                   => {qrs => [ qr/olivenol/                ] },
+   'Optik'                      => {qrs => [ qr/optik/                   ] },
+   'Palladium'                  => {qrs => [ qr/palladium/               ] },
+   'Parkett'                    => {qrs => [ qr/parkett/                 ] },
+   'Parfümerie'                 => {qrs => [ qr/parfumerie/              ] },
+   'Partyservice'               => {qrs => [ qr/party-?service/          ] },
+   'Persönlichkeitsentwicklung' => {qrs => [ qr/personlichkeitsentwicklung/] },
+   'Pharma'                     => {qrs => [ qr/\bpharma/                ] },
+   'Pizzeria'                   => {qrs => [ qr/pizzeria/                ] },
+   'Pizzakurier'                => {qrs => [ qr/pizza.?kurrier/          ] },
+   'Pferd'                      => {qrs => [ qr/pferd/                   ] },
+   'Pflege'                     => {qrs => [ qr/pflege/                  ] },
+   'Plattenleger'               => {qrs => [ qr/plattenleger/            ] },
+   'Polieren'                   => {qrs => [ qr/polieren/                ] },
+   'Prävention'                 => {qrs => [ qr/pravention/, qr/\bvorbeug/ ] },
+   'Präxis'                     => {qrs => [ qr/praxis/                  ] },
+   'Programmierung'             => {qrs => [ qr/programmier/             ] },  # TODO Entfernen neurolinguistisch (f401976)
+   'Projektmanagement'          => {qrs => [ qr/projektmanagement/       ] },
+   'Public relation'            => {qrs => [ qr/public relation/         ] },
+   'Radio'                      => {qrs => [ qr/radio/                   ] },
+   'Raiffeisen'                 => {qrs => [ qr/raiffeisen/              ] },
+   'Raumgestaltung'             => {qrs => [ qr/raumgestaltung/          ] },
+   'Recycling'                  => {qrs => [ qr/recycling/, qr/abfall/, qr/entsorg/   ] },  # Sonderabfall
+   'Reform'                     => {qrs => [ qr/reform/                  ] },
+   'Rekrutierung'               => {qrs => [ qr/rekrutierung/, qr/recruiting/, qr/arbeitsvermittlung/ ]},
+   'Reinigung'                  => {qrs => [ qr/reinigung/               ] },
+   'Reiten'                     => {qrs => [ qr/\breite(r|n)/            ] },
+   'Reisen'                     => {qrs => [ qr/\breisen\b/              ] },
+   'Reiseagentur'               => {qrs => [ qr/reiseagentur/, qr/reiseburo/, qr/agences? de voyage/, qr/agenzi\w* di viaggio/ ] },
+   'Renovation'                 => {qrs => [ qr/renovation/              ] },
+   'Refigerator'                => {qrs => [ qr/refigerator/             ] },
+   'Reparatur'                  => {qrs => [ qr/reparatur/               ] },
+   'Reparaturwerkstätte'        => {qrs => [ qr/reparaturwerkstatte/     ] },
+   'Ressourcen'                 => {qrs => [ qr/ress?ource/              ] },  # ohne «Human Ressource» !
+   'Restaurant'                 => {qrs => [ qr/restaurant/, qr/beiz\b/, qr/kaffee?haus/, qr/\bcafe\b/  ] },
+   'Regie'                      => {qrs => [ qr/regie\b/                 ] },
+   'Roboter'                    => {qrs => [ qr/roboter/                 ] },
+   'Rohrreinigungen'            => {qrs => [ qr/rohr-?reinigung/         ] },
+   'Rohstoff'                   => {qrs => [ qr/rohstoff/                ] },
+   'Rückbau'                    => {qrs => [ qr/ruckbau/                 ] },
+   'Sachenrecht'                => {qrs => [ qr/sachen-?.*recht/         ] },
+   'Sandstrahlen'               => {qrs => [ qr/sandstrahl/              ] },
+   'Sanierung'                  => {qrs => [ qr/sanierung/               ] },
+   'Sanitär'                    => {qrs => [ qr/sanitai?r/               ] },
+   'Sauce'                      => {qrs => [ qr/\bsauce/                 ] },
+   'Schachtentleerung'          => {qrs => [ qr/schachtentleerung/       ] },
+   'Schall'                     => {qrs => [ qr/schall/                  ] },
+   'Schaufenster'               => {qrs => [ qr/schaufenster/            ] },
+   'Schleifen'                  => {qrs => [ qr/schleif/                 ] },
+   'Schmuck'                    => {qrs => [ qr/schmuck/                 ] },
+   'Schrauben'                  => {qrs => [ qr/schrauben/               ] },
+   'Schreinerei'                => {qrs => [ qr/schreinerei/             ] },
+   'Schulung'                   => {qrs => [ qr/schulung/                ] },
+   'Schwimmbad'                 => {qrs => [ qr/schwimmbad/              ] },
+   'seltene Erden'              => {qrs => [ qr/seltene\w* erde/         ] }, # f1019843 ???
+   'Seniorenbetreuung'          => {qrs => [ qr/seniorenbetreuung/       ] },
+   'Shakes'                     => {qrs => [ qr/\bshakes?\b/             ] },
+   'Shop'                       => {qrs => [ qr/\bshops?\b/              ] },
+   'Schuhe'                     => {qrs => [ qr/\bschuheb/               ] },
+   'Sicherheit'                 => {qrs => [ qr/sicherheit/              ] },
+   'Sicherheitsdienstleistungen'=> {qrs => [ qr/sicherheitsdienstleistungen/ ] },
+   'Siebdruck'                  => {qrs => [ qr/siebdruck/               ] },
+   'Signaletik'                 => {qrs => [ qr/signaletik/              ] },
+   'Silber'                     => {qrs => [ qr/silber/                  ] }, # s.a Edelmetall
+   'Software'                   => {qrs => [ qr/software/                ] },
+   'Sondermetall'               => {qrs => [ qr/sondermetall/            ] },
+   'Spengler'                   => {qrs => [ qr/spengler/                ] },
+   'Spielwaren'                 => {qrs => [ qr/spiel(ware|zeug)/        ] },
+   'Spritzarbeiten'             => {qrs => [ qr/spritzarbeiten/          ] },
+   'Sport'                      => {qrs => [ qr/\bsport/                 ] }, # Transport
+   'Sportartikel'               => {qrs => [ qr/\bsport-?.*artikel/      ] },
+   'Sportbekleidung'            => {qrs => [ qr/\bsportbekleidung/       ] },
+   'Stahl'                      => {qrs => [ qr/stahl/                   ] },
+   'Stellenvermittlung'         => {qrs => [ qr/stellenvermittlung/      ] }, # s.a. recruiting
+   'Steuerberatung'             => {qrs => [ qr/steuerberatung/          ] }, 
+   'Steuerrecht'                => {qrs => [ qr/steuerrecht/             ] }, 
+   'Steuerung'                  => {qrs => [ qr/steuerung/               ] }, 
+   'Take-Away'                  => {qrs => [ qr/take.?away/              ] }, # 
+   'Tankstelle'                 => {qrs => [ qr/tankstelle/              ] }, # 
+   'Tauchen'                    => {qrs => [ qr/tauchausrustung/, qr/tauchen/, qr/\btauch/ ] }, # 
+   'Tanzen'                     => {qrs => [ qr/\btanz/                  ] },
+   'Teigwaren'                  => {qrs => [ qr/teigwaren/               ] }, # 
+   'Telefon'                    => {qrs => [ qr/telefon/                 ] },
+   'Telefonanlagen'             => {qrs => [ qr/telefonanlagen/          ] },
+   'Tennis'                     => {qrs => [ qr/tennis/                  ] },
+   'Teppich'                    => {qrs => [ qr/teppich/                 ] }, # 
+   'Terrasse'                   => {qrs => [ qr/terrasse/                ] },
+   'Texte'                      => {qrs => [ qr/\btexte?n?\b/            ] },
+   'Textilien'                  => {qrs => [ qr/textilien/               ] },
+   'Tiefbau'                    => {qrs => [ qr/\btief-?.*baus?\b/       ] },
+   'Tierarzt'                   => {qrs => [ qr/tierarzt/, qr/veterinar/ ] }, #     TODO Testcase für VerinÃ¤r
+   'Tore'                       => {qrs => [ qr/\btore?n?/               ] },
+   'Tormonteur'                 => {qrs => [ qr/tormonteur/              ] },
+   'Transport'                  => {qrs => [ qr/transport/               ] },
+   'Treuhand'                   => {qrs => [ qr/treuhand/                ] },
+   'Turbine'                    => {qrs => [ qr/turbine/                 ] },
+   'Turen'                      => {qrs => [ qr/\bture?n?\b/             ] },
+   'Übersetzungen'              => {qrs => [ qr/\bubersetzung/, qr/dolmetsch/ ]},
+   'Übernachtungsmöglichkeit'   => {qrs => [ qr/ubernachtung/            ] },
+   'Uhren'                      => {qrs => [ qr/\buhr(en)?\b/            ] },
+   'Ungarn'                     => {qrs => [ qr/ungarn/                  ] },
+   'Unternehmungsberatung'      => {qrs => [ qr/unternehumungsberatung/  ] },
+   'Unterhalt'                  => {qrs => [ qr/unterhalt\b/             ] },
+   'Unterhaltung'               => {qrs => [ qr/unterhaltung/            ] },
+   'Unterhaltungselektronik'    => {qrs => [ qr/unterhaltungselektronik/ ] },
+   'Unterhaltsarbeiten'         => {qrs => [ qr/unterhaltsarbeiten/      ] },
+   'Umbau'                      => {qrs => [ qr/\bumbau/                 ] },
+   'Umwelt'                     => {qrs => [ qr/umwelt/                  ] },
+   'Umweltschutz'               => {qrs => [ qr/umweltschutz/            ] },
+   'Umwelttechnik'              => {qrs => [ qr/umwelttechnik/           ] },
+   'Umzug'                      => {qrs => [ qr/\bumzug/                 ] },
+   'Veranstaltung'              => {qrs => [ qr/veranstaltung/           ] },
+   'Verflüssigung'              => {qrs => [ qr/\bverflussig/            ] },
+   'Vermietung'                 => {qrs => [ qr/vermietung/              ] },
+   'Verpflegung'                => {qrs => [ qr/verpflegung/             ] },
+   'Versicherung'               => {qrs => [ qr/versicherung/            ] },
+   'Versicherungsberatung'      => {qrs => [ qr/versicherungsberatung/   ] },
+   'Vintage'                    => {qrs => [ qr/vintage/                 ] },
+   'Visualisierung'             => {qrs => [ qr/visualisierung/          ] },
+   'Waffen'                     => {qrs => [ qr/waff/                    ] },
+   'Wärme'                      => {qrs => [ qr/\bwarme/                 ] },
+   'Wäscherei'                  => {qrs => [ qr/wascherei/               ] },
+   'Wasser'                     => {qrs => [ qr/wasser/                  ] },
+   'Wasseraufbereitung'         => {qrs => [ qr/wasseraufbereitung/      ] },
+   'Wasserstoff'                => {qrs => [ qr/wasserstoff/             ] },
+   'Wasserversorgung'           => {qrs => [ qr/wasserversorgung/        ] },
+   'Werbung'                    => {qrs => [ qr/\bwer(b|e)/              ] },
+   'Wertschriften'              => {qrs => [ qr/wertschriften/           ] },
+   'Wein'                       => {qrs => [ qr/\bwein/                  ] },
+   'Weiterbildung'              => {qrs => [ qr/weiterbildung/           ] },
+   'Wellness'                   => {qrs => [ qr/wellness/                ] },
+   'Zahlungsverkehr'            => {qrs => [ qr/zahlungsverkehr/         ] }, #
+   'Zahnarzt'                   => {qrs => [ qr/zahnarzt/                ] }, #
+   'Ziegellei'                  => {qrs => [ qr/ziegelei/                ] }, 
+   'Zink'                       => {qrs => [ qr/zink/                    ] }, # --> Verzinkerei
+   'Zinn'                       => {qrs => [ qr/zinn/                    ] }, #
+   'Zubehör'                    => {qrs => [ qr/zubehor/                 ] }, #
+
+
   );
 
 } #_}
