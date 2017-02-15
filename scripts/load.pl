@@ -196,13 +196,15 @@ sub load_firmen { #_{
     print "$cnt\n" unless $cnt % 10000;
   } #_}
 
-   $cnt++;
-   $sth_firma_stg -> execute($fi_firma, $fi_Code13, $fi_hauptsitz, $fi_GemeindeNR, $fi_Kapital, $fi_CurrencyID, $fi_statusID, $fi_Loeschdat, $fi_ShabSequence, $fi_CareOf, $fi_Strasse, $fi_Hausnummer, $fi_Addresszusatz, $fi_Postfach, $fi_PLZ, $fi_Ort, $fi_RechtsformID);
-   $sth_zweck -> execute($fi_firma, $fi_Zweck);
+  $cnt++;
+  $sth_firma_stg -> execute($fi_firma, $fi_Code13, $fi_hauptsitz, $fi_GemeindeNR, $fi_Kapital, $fi_CurrencyID, $fi_statusID, $fi_Loeschdat, $fi_ShabSequence, $fi_CareOf, $fi_Strasse, $fi_Hausnummer, $fi_Addresszusatz, $fi_Postfach, $fi_PLZ, $fi_Ort, $fi_RechtsformID);
+  $sth_zweck -> execute($fi_firma, $fi_Zweck);
 
-   my $end_t = time;
+  $dbh->do('create index firma_gemeinde_ix on firma (id_gemeinde)');
 
-   printf("load_firmen: loaded %i records in %5.2f seconds (%7.2f recs/s)\n", $cnt, $end_t - $start_t, $cnt/($end_t - $start_t));
+  my $end_t = time;
+
+  printf("load_firmen: loaded %i records in %5.2f seconds (%7.2f recs/s)\n", $cnt, $end_t - $start_t, $cnt/($end_t - $start_t));
 
 } #_}
 
@@ -315,16 +317,24 @@ sub load_stichwoerter { #_{
     print "$cnt\n" unless $cnt % 1000;
   } #_}
 
-   my $end_t = time;
-   printf("load_stichwoerter_table in %5.2f seconds\n", $end_t - $start_t);
-   print "cnt = $cnt\n";
 
-   for my $stichwort (sort keys %stichwoerter) {
-     for my $qr (@{$stichwoerter{$stichwort}{qrs}}) {
-       printf "%-30s %-30s %6d\n", $stichwort, $qr, $stichwoerter{$stichwort}{qrs_cnt}{$qr} // 0;
+  $dbh->do('create index stichwort_firma_firma_ix     on stichwort_firma(id_firma)');
+  $dbh->do('create index stichwort_firma_stichwort_ix on stichwort_firma(id_stichwort)');
+  $dbh->do('create index stichwort__ix on stichwort(stichwort)');
 
-     }
-   }
+  $dbh->do('analyze stichwort');
+  $dbh->do('analyze stichwort_firma');
+
+  my $end_t = time;
+  printf("load_stichwoerter_table in %5.2f seconds\n", $end_t - $start_t);
+  print "cnt = $cnt\n";
+
+  for my $stichwort (sort keys %stichwoerter) {
+    for my $qr (@{$stichwoerter{$stichwort}{qrs}}) {
+      printf "%-30s %-30s %6d\n", $stichwort, $qr, $stichwoerter{$stichwort}{qrs_cnt}{$qr} // 0;
+
+    }
+  }
 
 } #_}
 
@@ -442,8 +452,13 @@ sub init_stichwoerter { #_{
   #  Freizeit / Artikel ---> Freizeitarikel
   #  Telefon  / Anlagen  ---> Telefonanlagen
   #  ... / Liebhaber ----> ...liebhaber
+  #  Gesundheit ... produkte --> Gesundheitsprodukte
   #  Lebensmittel ... laden
   #  Antennen ... bau
+  #  Körper ... Pflege ... mittel  
+  #
+  #  Vital-, Wild-, Roh-, Reformhaus-, glutenfreie und vegane Kost
+  #
   #
   #  dienst == service
   #
@@ -469,8 +484,9 @@ sub init_stichwoerter { #_{
    'Automobil'                  => {qrs => [ qr/automobil/               ] },
    'Baby'                       => {qrs => [ qr/\bbab(y|i)/, qr/saugling/  ] },
    'Bäckerei'                   => {qrs => [ qr/backerei/                ] },
+   'Backwaren'                  => {qrs => [ qr/backwaren/               ] },
    'Balkon'                     => {qrs => [ qr/balkon/                  ] },
-   'Banak'                      => {qrs => [ qr/bank/                    ] },
+   'Bank'                       => {qrs => [ qr/\bbank/                  ] }, # Datenbank
    'Batterien'                  => {qrs => [ qr/batteri/                 ] },
    'Baugewerbe'                 => {qrs => [ qr/baugewerbe/              ] },
    'Baumaterialien'             => {qrs => [ qr/baumaterial/             ] },
@@ -490,7 +506,9 @@ sub init_stichwoerter { #_{
    'Blechbearbeitung'           => {qrs => [ qr/blechbearbeitung/        ] },
    'Blumen'                     => {qrs => [ qr/\bblume/                 ] },
    'Brandschutz'                => {qrs => [ qr/brandschutz/             ] },
+   'Brockenhaus'                => {qrs => [ qr/brockenhaus/             ] },
    'Brot'                       => {qrs => [ qr/\bbrot/                  ] },
+   'Bücher'                     => {qrs => [ qr/\bbuch(er)?n?\b/         ] },
    'Buchhaltung'                => {qrs => [ qr/buchhaltung/             ] },
    'Bügelservice'               => {qrs => [ qr/bugel(n|service)/        ] },
    'Bürsten'                    => {qrs => [ qr/\bburste/                ] },
@@ -504,6 +522,7 @@ sub init_stichwoerter { #_{
    'Dachisolationen'            => {qrs => [ qr/dachisolation/           ] },
    'Dämmschutz'                 => {qrs => [ qr/dammschutz/              ] },
    'Datacenter'                 => {qrs => [ qr/data-?center/            ] },
+   'Datenbank'                  => {qrs => [ qr/datenbank/               ] },
    'Datenverarbeitung'          => {qrs => [ qr/datenverarbeitung/       ] },
    'Dekoration'                 => {qrs => [ qr/dekoration/              ] },
    'Detektei'                   => {qrs => [ qr/detekt/                  ] },
@@ -531,6 +550,7 @@ sub init_stichwoerter { #_{
    'Fahrschule'                 => {qrs => [ qr/fahrschule/              ] }, 
    'Fahrzeuge'                  => {qrs => [ qr/fahrzeug/                ] }, 
    'Fassadensysteme'            => {qrs => [ qr/fassadensystem/          ] }, 
+   'Fenster'                    => {qrs => [ qr/fenster/                 ] }, 
    'Fitness'                    => {qrs => [ qr/fitness/                 ] },
    'Floristik'                  => {qrs => [ qr/floristik/               ] },
    'Food recycling'             => {qrs => [ qr/food recycling/          ] },  # f84593
@@ -558,11 +578,13 @@ sub init_stichwoerter { #_{
    'Gipser'                     => {qrs => [ qr/\bgipser/                ] },
    'Glasfaser'                  => {qrs => [ qr/glasfaser/               ] },
    'glutenfrei'                 => {qrs => [ qr/glutenfrei/              ] },
+   'Geländer'                   => {qrs => [ qr/gelander/                ] }, 
    'Geld'                       => {qrs => [ qr/geld/                    ] }, 
    'Gesundheit'                 => {qrs => [ qr/gesundheit/              ] }, 
    'Gold'                       => {qrs => [ qr/gold/                    ] }, # s.a. Edelmetall
    'Grabbepflanzung'            => {qrs => [ qr/grabbepflanzung/         ] },
    'Grafik'                     => {qrs => [ qr/gra(f|ph)i[ck]/          ] },
+   'Grafit'                     => {qrs => [ qr/gra(f|ph)it/             ] },
    'Gynäkologie'                => {qrs => [ qr/gynakologie/, qr/frauenarzt/ ]},
    'Handel'                     => {qrs => [ qr/handel/                  ] }, # how, not what!
    'Handelsrecht'               => {qrs => [ qr/handels-?.*recht/        ] },
@@ -576,7 +598,7 @@ sub init_stichwoerter { #_{
    'Heizöl'                     => {qrs => [ qr/heizol/                  ] },
    'Heizung'                    => {qrs => [ qr/heizung/, qr/chauffage/  ] },
    'Helium'                     => {qrs => [ qr/helium/                  ] },
-   'herstellung'                => {qrs => [ qr/herstellung/, qr/fabrikation/, qr/fertigung/ ]},
+   'Herstellung'                => {qrs => [ qr/herstellung/, qr/fabrikation/, qr/fertigung/ ]},
    'Hochbau'                    => {qrs => [ qr/\bhoch-?.*baus\b/        ] },
    'Hochtemperatur'             => {qrs => [ qr/hochtemperatur/          ] },
    'Holz'                       => {qrs => [ qr/\bholz/                  ] },
@@ -603,7 +625,7 @@ sub init_stichwoerter { #_{
    'Kanalreinigung'             => {qrs => [ qr/kanal-?.*reinigung/      ] },
    'Kälte'                      => {qrs => [ qr/\bkalte/                 ] },
    'Kartonagen'                 => {qrs => [ qr/kartonage/               ] },
-   'käse'                       => {qrs => [ qr/kase/                    ] },
+   'Käse'                       => {qrs => [ qr/kase/                    ] },
    'Käserei'                    => {qrs => [ qr/kaserei/                 ] },
    'Keramik'                    => {qrs => [ qr/\bkerami/                ] },
    'Kinderkrippe'               => {qrs => [ qr/kinderkrippe/, qr/kinderhort/         ] },
@@ -611,12 +633,14 @@ sub init_stichwoerter { #_{
    'Klimatechnik'               => {qrs => [ qr/klimatechnik/            ] },
    'Konditorei'                 => {qrs => [ qr/konditorei/              ] },
    'Kohle'                      => {qrs => [ qr/kohle/                   ] },
+   'Kohlenstoff'                => {qrs => [ qr/kohlenstoff/             ] },
    'Konserven'                  => {qrs => [ qr/\bkonserve/              ] },
    'Kokillen'                   => {qrs => [ qr/kokille/                 ] }, #   ????
    'Kohlenwasserstoff'          => {qrs => [ qr/kohlenwasserstoff/       ] }, # --> id_firma = 1227880;
    'Kommunikationstechnik'      => {qrs => [ qr/kommunikationstechnik/   ] },
    'Korrosion'                  => {qrs => [ qr/korrosion/               ] },
    'Kosmetik'                   => {qrs => [ qr/\b(c|k)osmeti/           ] },
+   'Kücheneinrichtung'          => {qrs => [ qr/kucheneinrichtung/       ] }, #  Küchen vs Kuchen!
    'Kräuter'                    => {qrs => [ qr/kraut/                   ] },
    'Kredit'                     => {qrs => [ qr/kredit/                  ] },
    'Kunst'                      => {qrs => [ qr/\bkunst(ler)?\b/, qr/artist/         ] },
@@ -667,8 +691,10 @@ sub init_stichwoerter { #_{
    'Ofenbau'                    => {qrs => [ qr/ofenbau/                 ] },
    'Öl'                         => {qrs => [ qr/\boe?l(en)?\b/           ] },
    'Olivenöl'                   => {qrs => [ qr/olivenol/                ] },
+   'Online-Shop'                => {qrs => [ qr/online.shop/             ] },
    'Optik'                      => {qrs => [ qr/optik/                   ] },
    'Palladium'                  => {qrs => [ qr/palladium/               ] },
+   'Papeterie'                  => {qrs => [ qr/papeterie/               ] },
    'Parkett'                    => {qrs => [ qr/parkett/                 ] },
    'Parfümerie'                 => {qrs => [ qr/parfumerie/              ] },
    'Partyservice'               => {qrs => [ qr/party-?service/          ] },
@@ -715,9 +741,10 @@ sub init_stichwoerter { #_{
    'Schall'                     => {qrs => [ qr/schall/                  ] },
    'Schaufenster'               => {qrs => [ qr/schaufenster/            ] },
    'Schleifen'                  => {qrs => [ qr/schleif/                 ] },
+   'Schlosserei'                => {qrs => [ qr/schlosserei/             ] }, # ö vs o!
    'Schmuck'                    => {qrs => [ qr/schmuck/                 ] },
    'Schrauben'                  => {qrs => [ qr/schrauben/               ] },
-   'Schreinerei'                => {qrs => [ qr/schreinerei/             ] },
+   'Schreinerei'                => {qrs => [ qr/schreiner/               ] },
    'Schulung'                   => {qrs => [ qr/schulung/                ] },
    'Schwimmbad'                 => {qrs => [ qr/schwimmbad/              ] },
    'seltene Erden'              => {qrs => [ qr/seltene\w* erde/         ] }, # f1019843 ???
@@ -762,7 +789,7 @@ sub init_stichwoerter { #_{
    'Transport'                  => {qrs => [ qr/transport/               ] },
    'Treuhand'                   => {qrs => [ qr/treuhand/                ] },
    'Turbine'                    => {qrs => [ qr/turbine/                 ] },
-   'Turen'                      => {qrs => [ qr/\bture?n?\b/             ] },
+   'Türen'                      => {qrs => [ qr/\bture?n?\b/             ] },
    'Übersetzungen'              => {qrs => [ qr/\bubersetzung/, qr/dolmetsch/ ]},
    'Übernachtungsmöglichkeit'   => {qrs => [ qr/ubernachtung/            ] },
    'Uhren'                      => {qrs => [ qr/\buhr(en)?\b/            ] },
@@ -777,6 +804,7 @@ sub init_stichwoerter { #_{
    'Umweltschutz'               => {qrs => [ qr/umweltschutz/            ] },
    'Umwelttechnik'              => {qrs => [ qr/umwelttechnik/           ] },
    'Umzug'                      => {qrs => [ qr/\bumzug/                 ] },
+   'vegan'                      => {qrs => [ qr/vegan/                   ] },
    'Veranstaltung'              => {qrs => [ qr/veranstaltung/           ] },
    'Verflüssigung'              => {qrs => [ qr/\bverflussig/            ] },
    'Vermietung'                 => {qrs => [ qr/vermietung/              ] },
@@ -797,11 +825,14 @@ sub init_stichwoerter { #_{
    'Wein'                       => {qrs => [ qr/\bwein/                  ] },
    'Weiterbildung'              => {qrs => [ qr/weiterbildung/           ] },
    'Wellness'                   => {qrs => [ qr/wellness/                ] },
+   'Wintergarten'               => {qrs => [ qr/wintergarten/            ] },
+   'Würste'                     => {qrs => [ qr/\bwurst/                 ] },
    'Zahlungsverkehr'            => {qrs => [ qr/zahlungsverkehr/         ] }, #
    'Zahnarzt'                   => {qrs => [ qr/zahnarzt/                ] }, #
    'Ziegellei'                  => {qrs => [ qr/ziegelei/                ] }, 
    'Zink'                       => {qrs => [ qr/zink/                    ] }, # --> Verzinkerei
    'Zinn'                       => {qrs => [ qr/zinn/                    ] }, #
+   'Zöliakie'                   => {qrs => [ qr/zoliakie/                ] }, #
    'Zubehör'                    => {qrs => [ qr/zubehor/                 ] }, #
 
 

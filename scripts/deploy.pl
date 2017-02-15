@@ -66,6 +66,15 @@ sub put_db { #_{
 
   ftp_cwd("${ftp_root}/upload") or die;
 
+  my $temp_dir;
+  if ($^O eq 'MSWin32') {
+     $temp_dir = 'C:\\temp';
+  }
+  else {
+     $temp_dir = '/tmp';
+  }
+  print "temp_dir = $temp_dir\n";
+
   unless ($ftp_db_restart) { #_{
 
     for my $remote_db_file_part (grep {/^zefix.db\./} $ftp->ls) {
@@ -73,23 +82,23 @@ sub put_db { #_{
       $ftp -> delete ($remote_db_file_part) or die
     }
   
-    for my $tmp_db_file_part (glob '/tmp/zefix.db.*') {
+    for my $tmp_db_file_part (glob "$temp_dir/zefix.db.*") {
       print "deleting $tmp_db_file_part\n";
       unlink $tmp_db_file_part or die;
     }
   
   
     if ($env eq 'test') {
-      system "split-file.pl -b 777 -c 2181      -d /tmp $db_file";
+      system "split-file.pl -b 777 -c 2181      -d $temp_dir $db_file";
     }
     else {
-      system "split-file.pl        -c 10000000  -d /tmp $db_file";
+      system "split-file.pl        -c 10000000  -d $temp_dir $db_file";
     }
 
   } #_}
   
-  print "Looping over /tmp/zefix.db.*\n";
-  for my $zefix_part (glob "/tmp/zefix.db.*") {
+  print "Looping over $temp_dir/zefix.db.*\n";
+  for my $zefix_part (glob "$temp_dir/zefix.db.*") {
 
     my $file_to_put;
 
