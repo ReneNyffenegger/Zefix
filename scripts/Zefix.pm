@@ -224,6 +224,8 @@ sub s_back { #_{
   $text =~ s/##-(.)##/-$1./g;
   $text =~ s/##(.)_(.)_##/$1.$2./g;
 
+# $text =~ s/##S_A_##/S.A./g;
+
   $text =~ s/##([^#]+)##/$1./g;
   $text =~ s/##(\d)d(\d)##/$1.$2/g;
 
@@ -235,7 +237,7 @@ sub find_persons_from_daily_summary_rec { #_{
   my $rec  = shift;
   my $text = $rec ->{text};
 
-  $text =~ s/(.)\.(.)\./##$1_$1_##/g; # a.A.
+  $text =~ s/(.)\.(.)\./##$1_$2_##/g; # a.A. / S.A.
   $text =~ s/ (.)\./## $1##/g;
   $text =~ s/-(.)\./##-$1##/g;
 
@@ -246,6 +248,7 @@ sub find_persons_from_daily_summary_rec { #_{
   $text =~ s/\bgeb\./##geb##/g;
   $text =~ s/Gde\./##Gde##/g;
   $text =~ s/StA\./##StA##/g;
+# $text =~ s/S\.A\./##S_A_##/g;
 
   $text =~ s/Prof\./##Prof##/g;
   $text =~ s/(\d)\.(\d)/##$1d$2d##/g;
@@ -257,7 +260,7 @@ sub find_persons_from_daily_summary_rec { #_{
 
 
 # while ($text =~ s/Ausgeschiedene Personen und erloschene Unterschriften:? *(.*?)(?<!(Dr)\.(?!,)//) { # |Eingetragene Personen neu oder mutierend|Inscription ou modification de personne\(s\)|Nuove persone iscritte o modifiche|Procuration collective à deux, limitée aux affaires de la succursale, a été conférée à|Inscription ou modification de personnes)//) {
-  while ($text =~ s/(Ausgeschiedene Personen und erloschene Unterschriften|Eingetragene Personen(?: neu oder mutierend)?):? *(.*?)\.//) { # ||Inscription ou modification de personne\(s\)|Nuove persone iscritte o modifiche|Procuration collective à deux, limitée aux affaires de la succursale, a été conférée à|Inscription ou modification de personnes)//) {
+  while ($text =~ s/(Ausgeschiedene Personen und erloschene Unterschriften|Eingetragene Personen(?: neu oder mutierend)?|Personne et signature radiée|Inscription ou modification de personne):? *(.*?)\.//) { # ||Inscription ou modification de personne\(s\)|Nuove persone iscritte o modifiche|Procuration collective à deux, limitée aux affaires de la succursale, a été conférée à|Inscription ou modification de personnes)//) {
 
     my ($intro_text, $personen_text) = ($1, $2);
 
@@ -265,27 +268,27 @@ sub find_persons_from_daily_summary_rec { #_{
 
       my $person_rec = {};
 
-      if ($intro_text =~ /^Eingetragene Personen/) {
+      if ($intro_text =~ /^Eingetragene Personen/ or $intro_text =~ /^Inscription/) {
          $person_rec = {'add_rm' => '+'};
       }
       else {
          $person_rec = {'add_rm' => '-'};
       }
 
-#     if ($person_text =~ s!<R>([^<]+)<E>! TODO: FIRMA-ABC $1!g)  {
-
-#       $person_rec->{firma} =$person_text;
-
-#     }
-      if ($person_text =~ / *(.+), (Zweigniederlassung )?in ([^,]+), (Revisionsstelle|Gesellschafterin|Liquidatorin)/) {
+      if ($person_text =~ s! *\(?<R>([^<]+)<E>\)?!!g)  {
+        $person_rec->{firma} = s_back($1);
+      }
+      if ($person_text =~ / *(.+), (Zweigniederlassung )?(?:in|à) ([^,]+), (Revisionsstelle|organe de révision|Gesellschafterin|Liquidatorin)/) {
 
         $person_rec->{bezeichnung} = s_back($1);
         $person_rec->{in}          = s_back($3);
 
+        print "$4\n";
+
         if ($4 eq 'Gesellschafterin') {
           $person_rec->{gesellschafterin} = 1;
         }
-        elsif ($4 eq 'Revisionsstelle') {
+        elsif ($4 eq 'Revisionsstelle' or $4 eq 'organe de révision') {
           $person_rec->{revisionsstelle} = 1;
         }
         elsif ($4 eq 'Liquidatorin') {
@@ -293,7 +296,7 @@ sub find_persons_from_daily_summary_rec { #_{
         }
 
       }
-      elsif ($person_text =~ / *([^,]+), *([^,]+), (von )?([^,]+), in ([^,]+), *(.*)/) {
+      elsif ($person_text =~ / *([^,]+), *([^,]+), (von )?([^,]+), (?:in|à) ([^,]+), *(.*)/) {
 
         
         $person_rec->{nachname} = s_back($1);

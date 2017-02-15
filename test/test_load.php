@@ -200,7 +200,7 @@ function cmp_zweck($sth, $id_firma, $zweck) { #_{
 
 function check_person_firma($dbh) { #_{
 
-  check_count($dbh, 'person_firma', 48);
+  check_count($dbh, 'person_firma', 50);
   $sth = db_prep_exec($dbh, 'select * from person_firma order by dt_journal, id_firma');
 
   cmp_person_firma($sth, 251792   ,'2001-07-30'  ,'-'  ,'Dettwiler'    ,'Werner'           ,'Reigoldswil'                         ,NULL                                               ,'Eichberg'                  ,0  ,0  ,0);
@@ -219,6 +219,8 @@ function check_person_firma($dbh) { #_{
   cmp_person_firma($sth, 451407   ,'2008-09-08'  ,'+'  ,'Weber'        ,'Melanie'          ,'Gränichen'                           ,NULL                                               ,'Zell ZH'                   ,0  ,0  ,0);
   cmp_person_firma($sth, 934296   ,'2009-01-28'  ,'+'  ,'Ginnow'       ,'Richard'          ,'Volketswil'                          ,NULL                                               ,'Mettmenstetten'            ,0  ,0  ,0);
   cmp_person_firma($sth, 934296   ,'2009-01-28'  ,'+'  ,'Kuhn'         ,'Roland'           ,'Illnau-Effretikon'                   ,NULL                                               ,'St. Gallen'                ,0  ,0  ,0);
+  cmp_person_firma($sth,  76284   ,'2009-10-26'  ,'-'  , null          , null              , null                                 ,'Fiduciaire Jean-Maurice Maitre S.A.'              ,'Porrentruy'                ,0  ,1  ,0);
+  cmp_person_firma($sth,  76284   ,'2009-10-26'  ,'+'  , null          , null              , null                                 ,'RéviAjoie Sàrl'                                   ,'Porrentruy'                ,0  ,1  ,0);
   cmp_person_firma($sth, 934296   ,'2009-11-06'  ,'+'  ,'Ginnow'       ,'Richard'          ,'Volketswil'                          ,NULL                                               ,'Mettmenstetten'            ,0  ,0  ,0);
   cmp_person_firma($sth, 934296   ,'2009-11-06'  ,'+'  ,'Kuhn'         ,'Roland'           ,'Illnau-Effretikon'                   ,NULL                                               ,'St. Gallen'                ,0  ,0  ,0);
   cmp_person_firma($sth, 934296   ,'2009-11-06'  ,'+'  ,'Norgate'      ,'Thomas Aylwin'    ,'britischer Staatsangehöriger'        ,NULL                                               ,'Freienbach'                ,0  ,0  ,0);
@@ -238,7 +240,7 @@ function check_person_firma($dbh) { #_{
   cmp_person_firma($sth, 823465   ,'2012-12-05'  ,'+'  ,'Stefanakos'   ,'Stamatios'        ,'griechischer Staatsangehöriger'      ,NULL                                               ,'Zürich'                    ,0  ,0  ,0);
   cmp_person_firma($sth, 823465   ,'2013-07-29'  ,'-'  ,'Brabec'       ,'Dr. Bernhard'     ,'österreichischer Staatsangehöriger'  ,NULL                                               ,'Zollikon'                  ,0  ,0  ,0);
   cmp_person_firma($sth, 823465   ,'2013-07-29'  ,'-'  ,'Hausmann'     ,'Alexander'        ,'Dietikon'                            ,NULL                                               ,'Dietikon'                  ,0  ,0  ,0);
-  cmp_person_firma($sth, 823465   ,'2013-07-29'  ,'+'  ,NULL           ,NULL               ,NULL                                  ,'ORTAG AG (<R>CH020.0.919d3d.455<E>)'              ,'Zürich'                    ,0  ,1  ,0);
+  cmp_person_firma($sth, 823465   ,'2013-07-29'  ,'+'  ,NULL           ,NULL               ,NULL                                  ,'ORTAG AG'                                         ,'Zürich'                    ,0  ,1  ,0);
   cmp_person_firma($sth, 823465   ,'2014-08-13'  ,'-'  ,'Hagger'       ,'Joachim Andreas'  ,'Basel'                               ,NULL                                               ,'Zürich'                    ,0  ,0  ,0);
   cmp_person_firma($sth, 823465   ,'2014-08-13'  ,'+'  ,'Franz'        ,'Mike'             ,'Frick'                               ,NULL                                               ,'Gipf-Oberfrick'            ,0  ,0  ,0);
   cmp_person_firma($sth, 451407   ,'2016-10-04'  ,'+'  ,'Ginnow'       ,'Richard'          ,'Volketswil'                          ,NULL                                               ,'Mettmenstetten'            ,0  ,0  ,0);
@@ -267,7 +269,7 @@ function cmp_person_firma($sth, $id_firma, $dt_journal, $add_rm, $nachname, $vor
   if (! eq($row[ 4], $vorname         )) {throw new Exception('cmp_person_firma 4'); }
   if (! eq($row[ 5], $von             )) {throw new Exception('cmp_person_firma 5'); }
   if (! eq($row[ 6], $bezeichnung     )) {throw new Exception('cmp_person_firma bezeichnung: ' . $row[6] . ' != '  . $bezeichnung); }
-  if (! eq($row[ 7], $in_             )) {throw new Exception('cmp_person_firma 7'); }
+  if (! eq($row[ 7], $in_             )) {throw new Exception("cmp_person_firma 7 journal=$dt_journal, id_firma=$id_firma, in=$in_, row[7]=$row[7]"); }
   if (! eq($row[ 8], $gesellschafterin)) {throw new Exception("cmp_person_firma 8 journal=$dt_journal, id_firma=$id_firma, revisionsstelle=$revisionsstelle, row[8]=$row[8]"); }
   if (! eq($row[ 9], $revisionsstelle )) {throw new Exception("cmp_person_firma 9 journal=$dt_journal, id_firma=$id_firma, revisionsstelle=$revisionsstelle, row[9]=$row[9]"); }
   if (! eq($row[10], $liquidatorin    )) {throw new Exception("cmp_person_firma 10 dt_journal=$dt_journal, id_firma=$id_firma, liquidatorin=$liquidatorin"); }
