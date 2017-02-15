@@ -117,13 +117,13 @@ sub parse_daily_summary_row { #_{
 
   $i++;
   $i++;
-  $rec->{dt_journal}     = $row[$i];
+  $rec->{dt_journal}     = to_dt($row[$i]);
 
   $i ++;
   $rec->{no_journal}     = $row[$i];
 
   $i ++;
-  $rec->{dt_publikation} = $row[$i];
+  $rec->{dt_publikation} = to_dt($row[$i]);
 
   $i ++;
   $rec->{no_ausgabe} = $row[$i];
@@ -252,6 +252,8 @@ sub find_persons_from_daily_summary_rec { #_{
 # $text =~ s/Dr\./##Dr##/g;
 # $text =~ s/Dr\./##Dr##/g;
 
+  $text =~ s/\bjun\./##jun##/g;
+  $text =~ s/\bgeb\./##geb##/g;
   $text =~ s/Gde\./##Gde##/g;
   $text =~ s/StA\./##StA##/g;
 
@@ -264,27 +266,25 @@ sub find_persons_from_daily_summary_rec { #_{
 
 
 # while ($text =~ s/Ausgeschiedene Personen und erloschene Unterschriften:? *(.*?)(?<!(Dr)\.(?!,)//) { # |Eingetragene Personen neu oder mutierend|Inscription ou modification de personne\(s\)|Nuove persone iscritte o modifiche|Procuration collective à deux, limitée aux affaires de la succursale, a été conférée à|Inscription ou modification de personnes)//) {
-  while ($text =~ s/Ausgeschiedene Personen und erloschene Unterschriften:? *(.*?)\.//) { # |Eingetragene Personen neu oder mutierend|Inscription ou modification de personne\(s\)|Nuove persone iscritte o modifiche|Procuration collective à deux, limitée aux affaires de la succursale, a été conférée à|Inscription ou modification de personnes)//) {
-    my ($ausgesch_pers) = ($1, $2);
-    for my $person_text (split ';', $ausgesch_pers) {
+  while ($text =~ s/(Ausgeschiedene Personen und erloschene Unterschriften|Eingetragene Personen neu oder mutierend):? *(.*?)\.//) { # ||Inscription ou modification de personne\(s\)|Nuove persone iscritte o modifiche|Procuration collective à deux, limitée aux affaires de la succursale, a été conférée à|Inscription ou modification de personnes)//) {
 
-      my $person_rec = {'add_rm' => '-'};
+    my ($intro_text, $personen_text) = ($1, $2);
+
+    for my $person_text (split ';', $personen_text) {
+
+      my $person_rec = {};
+
+      if ($intro_text eq 'Eingetragene Personen neu oder mutierend') {
+         $person_rec = {'add_rm' => '+'};
+      }
+      else {
+         $person_rec = {'add_rm' => '-'};
+      }
 
       if ($person_text =~ s!<R>([^<]+)<E>! TODO: FIRMA-ABC $1!g)  {
 
         $person_rec->{firma} =$person_text;
 
-      }
-      elsif ($person_text =~ / *([^,]+), (Zweigniederlassung )?in ([^,]+), Revisionsstelle/) {
-        $person_rec->{revisionsstelle} = 1;
-        $person_rec->{bezeichnung} = s_back($1);
-        $person_rec->{in} = s_back($3);
-
-      }
-      elsif ($person_text =~ / *([^,]+), in ([^,]+), Gesellschafterin, /) {
-        $person_rec->{gesellschafterin} = 1;
-        $person_rec->{bezeichnung} = s_back($1);
-        $person_rec->{in         } = s_back($2);
       }
       elsif ($person_text =~ / *([^,]+), *([^,]+), (von )?([^,]+), in ([^,]+), *(.*)/) {
 
@@ -295,6 +295,34 @@ sub find_persons_from_daily_summary_rec { #_{
         $person_rec->{in      } = s_back($5);
 
       }
+      elsif ($person_text =~ / *([^,]+), (Zweigniederlassung )?in ([^,]+), (Revisionsstelle|Gesellschafterin|Liquidatorin)/) {
+
+        $person_rec->{bezeichnung} = s_back($1);
+        $person_rec->{in}          = s_back($3);
+
+        if ($4 eq 'Revisionsstelle') {
+          $person_rec->{revisionsstelle} = 1;
+        }
+        elsif ($4 eq 'Gesellschafterin') {
+          $person_rec->{Gesellschafterin} = 1;
+        }
+        elsif ($4 eq 'Liquidatorin') {
+          $person_rec->{liquidatorin} = 1;
+        }
+
+      }
+#     elsif ($person_text =~ / *([^,]+), in ([^,]+), Stammeinlage: \w+ ([\d']+)/) {
+
+#       $person_rec->{bezeichnung} = s_back($1);
+#       $person_rec->{in}          = s_back($2);
+
+
+#     }
+#     elsif ($person_text =~ / *([^,]+), in ([^,]+), Gesellschafterin, /) {
+#       $person_rec->{gesellschafterin} = 1;
+#       $person_rec->{bezeichnung} = s_back($1);
+#       $person_rec->{in         } = s_back($2);
+#     }
       else {
         print "$rec->{id_firma} $person_text\n";
       }
@@ -383,5 +411,19 @@ sub True_False_to_1_0 { #_{
   die "$tf";
 } #_}
 
+
+sub to_dt { #_{
+  my $str = shift;
+
+  return '9999-12-31' unless $str; # 1082610, Trimos Ltd
+  
+  die "$str" unless $str =~ /^((\d\d\d\d)-(\d\d)-(\d\d)) 00:00:00$/;
+
+  my $dt = $1;
+
+  $dt = '9999-12-31' if $dt eq '2100-12-31';
+
+  return $dt;
+} #_}
 
 1;

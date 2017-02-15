@@ -12,6 +12,8 @@ use Encode qw(decode encode);
 use Getopt::Long;
 use Time::HiRes qw(time);
 
+use Zefix;
+
 my $zefix_root;
 my %stichwoerter;
 
@@ -29,6 +31,8 @@ GetOptions (
 
 $env = 'prod' if $prod;
 print "env = $env\n";
+
+Zefix::init($env);
 
 if ($env eq 'test') {
   $zefix_root = "$ENV{github_root}Zefix/test/";
@@ -52,13 +56,18 @@ my $db = "${zefix_root}zefix.db";
 my $dbh = DBI->connect("dbi:SQLite:dbname=$db") or die "Could not open/create $db";
 $dbh->{AutoCommit} = 0;
 
+load_daily_summaries();
+
+$dbh -> commit;
+#exit;
+
 my %word_cnt;
 load_stichwoerter();
 $dbh -> commit;
 for my $word (sort { $word_cnt{$b} <=> $word_cnt{$a} } keys %word_cnt) {
   printf "%5d: $word\n", $word_cnt{$word};
 }
-exit;
+#exit;
 
 print "TODO: Forcing gemeinden to be loaded\n";
 # $load_gemeinden = 1;
@@ -75,6 +84,38 @@ load_firmen();
 load_firmen_bez();
 
 $dbh -> commit;
+
+sub load_daily_summaries { #_{
+
+  trunc_table_person_firma();
+
+  my $sth_ins_person_firma = $dbh->prepare('insert into person_firma values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+
+  for my $file (Zefix::daily_summary_files()) {
+
+    my $zefix_file = Zefix::open_daily_summary_file($file);
+    while (my $rec = Zefix::parse_next_daily_summary_line($zefix_file)) {
+
+      my @personen = Zefix::find_persons_from_daily_summary_rec($rec);
+      for my $personen_rec (@personen) {
+        $sth_ins_person_firma->execute(
+                 $rec         ->{id_firma},
+                 $rec         ->{dt_journal},
+                 $personen_rec->{add_rm},
+                 $personen_rec->{nachname},
+                 $personen_rec->{vorname},
+                 $personen_rec->{von},
+                 $personen_rec->{bezeichnung},
+                 $personen_rec->{in},
+                 $personen_rec->{gesellschafterin} // 0,
+                 $personen_rec->{revisisionstelle} // 0,
+                 $personen_rec->{liquidatorin    } // 0
+        );
+
+      }
+    }
+  }
+} #_}
 
 sub load_firmen { #_{
 
@@ -230,8 +271,8 @@ sub load_firmen_bez { #_{
     my $sprachcode    = $row[3]; # DE, FR, IT, EN, XX
     my $status        = $row[4]; # -1: nicht mehr gültige Bezeichnung, 3: letztgültige Bezeichnung
     my $bezeichnung   = to_txt($row[5]);
-    my $dt_ab         = to_dt ($row[6]);
-    my $dt_bis        = to_dt ($row[7]);
+    my $dt_ab         = Zefix::to_dt ($row[6]);
+    my $dt_bis        = Zefix::to_dt ($row[7]);
 
     $sth_firma_bez -> execute($fi_id, $seq, $typ, $sprachcode, $status, $bezeichnung, $dt_ab, $dt_bis);
   
@@ -272,7 +313,6 @@ sub load_firmen_bez { #_{
   $dbh -> do('drop table firma_stage');
   $end_t = time;
   printf("done: in %5.2f seconds\n", $end_t - $start_t);
-
 
 } #_}
 
@@ -959,19 +999,39 @@ create table stichwort_firma (
 ") or die;
 } #_}
 
-sub to_dt { #_{
-  my $str = shift;
+sub trunc_table_person_firma { #_{
+  $dbh -> do('drop table if exists person_firma') or die;
+  $dbh -> do("
 
-  return '9999-12-31' unless $str; # 1082610, Trimos Ltd
-  
-  die "$str" unless $str =~ /^((\d\d\d\d)-(\d\d)-(\d\d)) 00:00:00$/;
-
-  my $dt = $1;
-
-  $dt = '9999-12-31' if $dt eq '2100-12-31';
-
-  return $dt;
+create table person_firma (
+  id_firma          int  not null,
+  dt_journal        text not null,
+  add_rm            text not null,
+  nachname          text,
+  vorname           text,
+  von               text,
+  bezeichnung       text,
+  in_               text,
+  gesellschafterin  int(1) not null check(gesellschafterin in (0, 1)),
+  revisionsstelle   int(1) not null check(revisionsstelle  in (0, 1)),
+  liquidatorin      int(1) not null check(liquidatorin     in (0, 1))
+)
+") or die;
 } #_}
+
+# sub to_dt { #_{
+#   my $str = shift;
+# 
+#   return '9999-12-31' unless $str; # 1082610, Trimos Ltd
+#   
+#   die "$str" unless $str =~ /^((\d\d\d\d)-(\d\d)-(\d\d)) 00:00:00$/;
+# 
+#   my $dt = $1;
+# 
+#   $dt = '9999-12-31' if $dt eq '2100-12-31';
+# 
+#   return $dt;
+# } #_}
 
 sub to_txt { #_{
 # return $_[0];
