@@ -24,8 +24,8 @@ function main($db) { #_{
 
   $topic = urldecode(substr($_SERVER['REQUEST_URI'], 8));
 
+//br("Topic: $topic");
 
-   br("Topic: $topic");
    if ($topic == '') { #_{
 
     print_index($db);
@@ -41,22 +41,18 @@ function main($db) { #_{
   if (preg_match('/f(\d+)/', $topic,  $id_firma_m)) { #_{
     $id_firma = $id_firma_m[1];
     print_firma($db, $id_firma);
-#   br("matched firma $id_firma");
     return;
   } #_}
 
   if (preg_match('/g(\d+)/', $topic,  $id_gemeinde_m)) { #_{
     $id_gemeinde = $id_gemeinde_m[1];
     print_gemeinde($db, $id_gemeinde);
-#   br("matched firma $id_firma");
     return;
   } #_}
 
-  if (preg_match('/s(\w+)/', $topic,  $id_stichwort_m)) { #_{
-    br('matched s');
-    $id_stichwort = $id_stichwort_m[1];
-    br("id_stichwort = $id_stichwort");
-    print_stichwort($db, $id_stichwort);
+  if (preg_match('/Stichwort-(.+)/', $topic,  $stichwort_m)) { #_{
+    $stichwort_name = $stichwort_m[1];
+    print_stichwort($db, $stichwort_name);
     return;
   } #_}
 
@@ -72,8 +68,19 @@ function print_firma($db, $id_firma) { #_{
 
   $firma = firma_info($db, $id_firma);
 
-  print_html_start($firma['bezeichnung']);
+  $firma_bezeichnung = $firma['bezeichnung'];
+  if ($firma['status'] == 0) {
+    $firma_bezeichnung .= ' (gelöscht)';
+  }
+  elseif ($firma['status'] == 3) {
+    $firma_bezeichnung .= ' (in Auflösung)';
+  }
+
+
+  print_html_start($firma_bezeichnung);
 # printf ("<h1>%s</h1>\n", $firma['bezeichnung']);
+
+  print $firma['rechtsform_bezeichnung']. "<p>";
 
   if ($firma['care_of'       ]) { printf("  %s<br>\n"   , tq84_enc($firma['care_of'])); }
   printf("%s %s<br>\n", tq84_enc($firma['strasse']), tq84_enc($firma['hausnummer']));
@@ -98,31 +105,99 @@ function print_firma($db, $id_firma) { #_{
     print "<p>\n";
     $zweck = $firma['zweck'];
 
+
+    # zweck-reduktion, vgl f401976
     if (is_tq84()) {
-      $zweck = preg_replace('(Die Gesellschaft kann .*|; (sie )?kann .*)', "\n<br><span style=\"color:grey\">$0</span>", $zweck);
+      $zweck = preg_replace('((Die|; die) Gesellschaft kann .*|; (sie )?kann .*|\. Kann .*|Sie kann .*)', "\n<br><span style=\"color:grey\">$0</span>", $zweck);
     }
     else {
-#     br('HTTP_USER_AGENT: ' .  $_SERVER['HTTP_USER_AGENT']) ;
-      $zweck = preg_replace('(Die Gesellschaft kann .*|; kann .*)', '', $zweck);
+      $zweck = preg_replace('((Die|; die) Gesellschaft kann .*|; (sie )?kann .*|\. Kann .*|Sie kann .*)', ''                                          , $zweck);
     }
 
     print ($zweck);
   }
 
+
+
   print "\n<hr>";
 
+  $stichwort_shown = 0;
+  $res = db_prep_exec_fetchall($db, 
+    'select
+      s.stichwort
+    from
+      stichwort_firma   sf    join
+      stichwort         s
+    on
+      sf.id_stichwort = s.id
+    where
+      sf.id_firma = ?
+    order by
+      s.stichwort
+    ', array($id_firma));
+
+  foreach ($res as $row) {
+    if (! $stichwort_shown) {
+      print "Die Firma erscheint unter den folgenden " . link_stichwoerter("Stichwörtern") . "<ul>\n";
+      $stichwort_shown = 1;
+    }
+    printf ("  <li><a href='Stichwort-%s'>%s</a>\n", $row['stichwort'], $row['stichwort']);
+  }
+  if ($stichwort_shown) {
+    print "</ul><hr>\n";
+  }
+
   printf ("Weitere Firmen in <a href='g%d'>%s</a>", $firma['id_gemeinde'], gemeinde_name($db, $firma['id_gemeinde']));
+
+  printf("<p><a href='.'>Hauptseite</a>");
+
 
 } #_}
 
 function print_gemeinde($db, $id_gemeinde) { #_{
 
   print_html_start("Firmen in " . gemeinde_name($db, $id_gemeinde));
-  $res = db_prep_exec_fetchall($db, 'select id, bezeichnung from firma where status != 0 and id_hauptsitz is null and id_gemeinde = ?', array($id_gemeinde));
 
+  info("id_gemeinde: $id_gemeinde");
+
+# $db->exec('analyze sqlite_master');
+
+  $res = db_prep_exec_fetchall($db, 
+
+    #  'explain query plan 
+   "select
+      f.id                 id_firma,
+      f.bezeichnung,
+      s.stichwort
+    from
+      firma           f                               left join 
+      stichwort_firma sf   on f.id = sf.id_firma      left join
+      stichwort       s    on s.id = sf.id_stichwort
+    where
+      f.status != 0          and
+      f.id_hauptsitz is null and
+      f.id_gemeinde = $id_gemeinde
+    order
+      by s.stichwort is null, s.stichwort", array() # $id_gemeinde)
+
+  );
+
+  $last_stichwort = '';
   foreach ($res as $row) {
-    printf ("<br><a href='f%d'>%s</a>", $row['id'], tq84_enc($row['bezeichnung']));
+    if ($last_stichwort != $row['stichwort']) {
+      printf ("<h2>Stichwort: <a href='Stichwort-%s'>%s</a></h2>\n", $row['stichwort'], $row['stichwort']);
+      $last_stichwort = $row['stichwort'];
+    }
+    printf ("<br><a href='f%d'>%s</a>", $row['id_firma'], tq84_enc($row['bezeichnung']));
   }
+
+# $res = db_prep_exec_fetchall($db, 'select id, bezeichnung from firma where status != 0 and id_hauptsitz is null and id_gemeinde = ?', array($id_gemeinde));
+
+# foreach ($res as $row) {
+#   printf ("<br><a href='f%d'>%s</a>", $row['id'], tq84_enc($row['bezeichnung']));
+# }
+
+  print "<p><hr><p><a href='.'>Hauptseite</a>";
 } #_}
 
 function print_gemeinden($db) { #_{
@@ -139,31 +214,49 @@ function print_gemeinden($db) { #_{
 
 } #_}
 
-function print_stichwort($db, $id_stichwort) { #_{
+function print_stichwort($db, $stichwort_name) { #_{
 
-  print_html_start("Stichwort: " . stichwort_name($db, $id_stichwort));
+  print_html_start("Stichwort: $stichwort_name"); #  . stichwort_name($db, $id_stichwort));
 
-  print "foo<br>";
-
-  $res = db_prep_exec_fetchall($db, 'select sf.id_firma, f.bezeichnung from stichwort_firma sf join firma f on sf.id_firma =f.id where sf.id_stichwort = ?', array($id_stichwort));
-
-  foreach ($res as $row) {
-    printf ("<br><a href='f%d'>%s</a>", $row['id_firma'], tq84_enc($row['bezeichnung']));
+  if (is_tq84()) {
+    print 'id_stichwort: ' . db_sel_1_row_1_col($db, 'select id from stichwort where stichwort = ?', array($stichwort_name));
   }
 
-  print "<hr><a href='.'>Index</a>";
+  $res = db_prep_exec_fetchall($db, 
+    'select
+       sf.id_firma,
+       f.bezeichnung,
+       f.id_gemeinde,
+       g.name          name_gemeinde
+     from
+       stichwort       s                            join
+       stichwort_firma sf on s.id = sf.id_stichwort join
+       firma           f  on f.id = sf.id_firma     join
+       gemeinde        g  on g.id = f .id_gemeinde
+     where
+       s.stichwort = ?
+     order by
+       g.name', array($stichwort_name));
+
+  foreach ($res as $row) {
+    printf ("<br><a href='f%d'>%s</a> - <a href='g%d'>%s</a>", $row['id_firma'], tq84_enc($row['bezeichnung']), $row['id_gemeinde'], $row['name_gemeinde']);
+  }
+
+  print "<hr>
+    " . link_stichwoerter("Weitere Stichwörter") . "<br>
+    <a href='.'>Index</a>";
   print_html_end();
 } #_}
 
 function print_index($db) { #_{
   print_html_start("Firmen der Schweiz");
 
-  print "<h1>Stichwörter</h1>\n";
+  print "<h1 id='stichwoerter'>Stichwörter</h1>\n";
 
   $res = db_prep_exec_fetchall($db, 'select id, stichwort from stichwort order by stichwort');
   foreach ($res as $row) {
 
-    printf ("<a href='s%d'>%s</a><br>", $row['id'], $row['stichwort']);
+    printf ("<a href='Stichwort-%s'>%s</a><br>", $row['stichwort'], $row['stichwort']);
 
   }
 
@@ -173,8 +266,19 @@ function print_index($db) { #_{
   print_html_end();
 } #_}
 
+function link_stichwoerter($link_text) { #_{
+  return "<a href='.#stichwoerter'>$link_text</a>";
+} #_}
+
 function br($text) { #_{
-  print "2017-02-06 $text<br>\n";
+  print "$text<br>\n";
+} #_}
+
+function info($text) { #_{
+  if (is_tq84()) {
+    br($text);
+  }
+
 } #_}
 
 function print_html_start($title) { #_{
@@ -191,7 +295,7 @@ print "<!DOCTYPE html>
 } #_}
 
 function print_html_end() { #_{
-  print "</body></html>";
+  print "<div style='height:2000px'></div></body></html>";
 } #_}
 
 function is_tq84() { #_{
