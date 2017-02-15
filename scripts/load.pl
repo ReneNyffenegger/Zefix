@@ -108,7 +108,7 @@ sub load_daily_summaries { #_{
                  $personen_rec->{bezeichnung},
                  $personen_rec->{in},
                  $personen_rec->{gesellschafterin} // 0,
-                 $personen_rec->{revisisionstelle} // 0,
+                 $personen_rec->{revisionsstelle } // 0,
                  $personen_rec->{liquidatorin    } // 0
         );
 

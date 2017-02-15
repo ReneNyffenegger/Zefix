@@ -19,25 +19,21 @@ print $out '<!DOCTYPE HTML>
 while (my $rec = Zefix::parse_next_daily_summary_line($zefix_file)) {
 
 
-# my $text_2 = $rec->{text_2};
 
-
-# $text_2 =~ s/&/&amp;/g;
-# $text_2 =~ s/</&lt;/g;
-# $text_2 =~ s/>/&gt;/g;
-
-  my $personen_trs = '<tr><td>+/-</td><td>Nachname</td><td>Vorname</td><td>von</td><td>Bezeichung</td><td>in</td><td>G</td></tr>';
+  my $personen_trs = '<tr><td>+/-</td><td>Nachname</td><td>Vorname</td><td>von</td><td>Bezeichung</td><td>in</td><td>G</td><td>R</td><td>L</td></tr>';
   my @personen = Zefix::find_persons_from_daily_summary_rec($rec);
 
   for my $personen_rec (@personen) {
-    $personen_trs .= sprintf("<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%d</td></tr>",
+    $personen_trs .= sprintf("<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%d</td><td>%d</td><td>%d</td></tr>",
       $personen_rec->{add_rm},
       $personen_rec->{nachname} //'',
       $personen_rec->{vorname} //'',
       $personen_rec->{von} //'',
       $personen_rec->{bezeichnung} // '',
       $personen_rec->{in} //'',
-      $personen_rec->{gesellschafterin} // 0 
+      $personen_rec->{gesellschafterin} // 0,
+      $personen_rec->{revisionsstelle } // 0,
+      $personen_rec->{liquidatorin    } // 0 
    );
   }
 

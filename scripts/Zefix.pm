@@ -224,15 +224,8 @@ sub s_back { #_{
   $text =~ s/##-(.)##/-$1./g;
   $text =~ s/##(.)_(.)_##/$1.$2./g;
 
-  $text =~ s/##([^#]+)##/$1./;
-
-# $text =~ s/##DR##/Dr./g;
-# $text =~ s/##ST##/St./g;
-
-# $text =~ s/##Gde##/Gde./g;
-# $text =~ s/##StA##/S./g;
-
-# $text =~ s/##Prof##/Prof./g;
+  $text =~ s/##([^#]+)##/$1./g;
+  $text =~ s/##(\d)d(\d)##/$1.$2/g;
 
   return $text;
 
@@ -246,11 +239,8 @@ sub find_persons_from_daily_summary_rec { #_{
   $text =~ s/ (.)\./## $1##/g;
   $text =~ s/-(.)\./##-$1##/g;
 
-  $text =~ s/\b([A-Z][a-z])\./##St##/g;
+  $text =~ s/\b([A-Z][a-z])\./##$1##/g;
 
-# $text =~ s/St\./##St##/g;
-# $text =~ s/Dr\./##Dr##/g;
-# $text =~ s/Dr\./##Dr##/g;
 
   $text =~ s/\bjun\./##jun##/g;
   $text =~ s/\bgeb\./##geb##/g;
@@ -258,6 +248,7 @@ sub find_persons_from_daily_summary_rec { #_{
   $text =~ s/StA\./##StA##/g;
 
   $text =~ s/Prof\./##Prof##/g;
+  $text =~ s/(\d)\.(\d)/##$1d$2d##/g;
 
   $text =~ s/(<(R|M)>CH.*?<E>)/ my $x = $1; $x =~ s![.-]!!g; $x /eg;
 # $text =~ s/\( *\)//g;
@@ -281,21 +272,21 @@ sub find_persons_from_daily_summary_rec { #_{
          $person_rec = {'add_rm' => '-'};
       }
 
-      if ($person_text =~ s!<R>([^<]+)<E>! TODO: FIRMA-ABC $1!g)  {
+#     if ($person_text =~ s!<R>([^<]+)<E>! TODO: FIRMA-ABC $1!g)  {
 
-        $person_rec->{firma} =$person_text;
+#       $person_rec->{firma} =$person_text;
 
-      }
-      elsif ($person_text =~ / *(.+), (Zweigniederlassung )?in ([^,]+), (Revisionsstelle|Gesellschafterin|Liquidatorin)/) {
+#     }
+      if ($person_text =~ / *(.+), (Zweigniederlassung )?in ([^,]+), (Revisionsstelle|Gesellschafterin|Liquidatorin)/) {
 
         $person_rec->{bezeichnung} = s_back($1);
         $person_rec->{in}          = s_back($3);
 
-        if ($4 eq 'Revisionsstelle') {
-          $person_rec->{revisionsstelle} = 1;
+        if ($4 eq 'Gesellschafterin') {
+          $person_rec->{gesellschafterin} = 1;
         }
-        elsif ($4 eq 'Gesellschafterin') {
-          $person_rec->{Gesellschafterin} = 1;
+        elsif ($4 eq 'Revisionsstelle') {
+          $person_rec->{revisionsstelle} = 1;
         }
         elsif ($4 eq 'Liquidatorin') {
           $person_rec->{liquidatorin} = 1;
