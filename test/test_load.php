@@ -203,63 +203,79 @@ function check_person_firma($dbh) { #_{
   check_count($dbh, 'person_firma', 51);
   $sth = db_prep_exec($dbh, 'select * from person_firma order by dt_journal, id_firma');
 
-  cmp_person_firma($sth, 251792   ,'2001-07-30'  ,'-'  ,'Dettwiler'    ,'Werner'           ,'Reigoldswil'                         ,NULL                                               ,'Eichberg'                  ,0  ,0  ,0);
-  cmp_person_firma($sth, 251792   ,'2001-07-30'  ,'+'  ,'Wüst'         ,'Günter'           ,'Oberriet SG'                         ,NULL                                               ,'Lüchingen (Altstätten)'    ,0  ,0  ,0);
-  cmp_person_firma($sth, 451407   ,'2005-07-04'  ,'-'  ,NULL           ,NULL               ,NULL                                  ,'Künzler Communications GmbH'                      ,'Bassersdorf'               ,1  ,0  ,0);
-  cmp_person_firma($sth, 451407   ,'2005-07-04'  ,'+'  ,'Nyffenegger'  ,'René'             ,'Eriswil'                             ,NULL                                               ,'Zürich'                    ,0  ,0  ,0);
-  cmp_person_firma($sth, 823465   ,'2005-12-22'  ,'+'  ,'Rossbacher'   ,'Albert'           ,'Röthenbach bei Herzogenbuchsee'      ,NULL                                               ,'Herrliberg'                ,0  ,0  ,0);
-  cmp_person_firma($sth, 823465   ,'2005-12-22'  ,'+'  ,NULL           ,NULL               ,NULL                                  ,'Ortag, Organisations-, Revisions- und Treuhand-AG','Zürich'                    ,0  ,1  ,0);
-  cmp_person_firma($sth, 823465   ,'2006-05-16'  ,'-'  ,'Rossbacher'   ,'Albert'           ,'Röthenbach bei Herzogenbuchsee'      ,NULL                                               ,'Herrliberg'                ,0  ,0  ,0);
-  cmp_person_firma($sth, 823465   ,'2006-05-16'  ,'+'  ,'Hagger'       ,'Joachim Andreas'  ,'Basel'                               ,NULL                                               ,'Zürich'                    ,0  ,0  ,0);
-  cmp_person_firma($sth, 823465   ,'2006-05-16'  ,'+'  ,'Gränicher'    ,'Hans Peter'       ,'Röthenbach bei Herzogenbuchsee'      ,NULL                                               ,'Zürich'                    ,0  ,0  ,0);
-  cmp_person_firma($sth, 823465   ,'2006-05-16'  ,'+'  ,'Hefti'        ,'Simon'            ,'Thun'                                ,NULL                                               ,'Zürich'                    ,0  ,0  ,0);
-  cmp_person_firma($sth, 451407   ,'2007-05-07'  ,'+'  ,'Ginnow'       ,'Richard'          ,'Volketswil'                          ,NULL                                               ,'Rüschlikon'                ,0  ,0  ,0);
-  cmp_person_firma($sth, 451407   ,'2007-05-07'  ,'+'  ,'Nyffenegger'  ,'René'             ,'Eriswil'                             ,NULL                                               ,'Zürich'                    ,0  ,0  ,0);
-  cmp_person_firma($sth, 451407   ,'2008-09-08'  ,'-'  ,'Nyffenegger'  ,'René'             ,'Eriswil'                             ,NULL                                               ,'Zürich'                    ,0  ,0  ,0);
-  cmp_person_firma($sth, 451407   ,'2008-09-08'  ,'+'  ,'Ginnow'       ,'Richard'          ,'Volketswil'                          ,NULL                                               ,'Rüschlikon'                ,0  ,0  ,0);
-  cmp_person_firma($sth, 451407   ,'2008-09-08'  ,'+'  ,'Weber'        ,'Melanie'          ,'Gränichen'                           ,NULL                                               ,'Zell ZH'                   ,0  ,0  ,0);
-  cmp_person_firma($sth, 934296   ,'2009-01-28'  ,'+'  ,'Ginnow'       ,'Richard'          ,'Volketswil'                          ,NULL                                               ,'Mettmenstetten'            ,0  ,0  ,0);
-  cmp_person_firma($sth, 934296   ,'2009-01-28'  ,'+'  ,'Kuhn'         ,'Roland'           ,'Illnau-Effretikon'                   ,NULL                                               ,'St. Gallen'                ,0  ,0  ,0);
-  cmp_person_firma($sth,  76284   ,'2009-10-26'  ,'-'  , null          , null              , null                                 ,'Fiduciaire Jean-Maurice Maitre S.A.'              ,'Porrentruy'                ,0  ,1  ,0);
-  cmp_person_firma($sth,  76284   ,'2009-10-26'  ,'+'  , null          , null              , null                                 ,'RéviAjoie Sàrl'                                   ,'Porrentruy'                ,0  ,1  ,0);
-  cmp_person_firma($sth, 934296   ,'2009-11-06'  ,'+'  ,'Ginnow'       ,'Richard'          ,'Volketswil'                          ,NULL                                               ,'Mettmenstetten'            ,0  ,0  ,0);
-  cmp_person_firma($sth, 934296   ,'2009-11-06'  ,'+'  ,'Kuhn'         ,'Roland'           ,'Illnau-Effretikon'                   ,NULL                                               ,'St. Gallen'                ,0  ,0  ,0);
-  cmp_person_firma($sth, 934296   ,'2009-11-06'  ,'+'  ,'Norgate'      ,'Thomas Aylwin'    ,'britischer Staatsangehöriger'        ,NULL                                               ,'Freienbach'                ,0  ,0  ,0);
-  cmp_person_firma($sth, 934296   ,'2009-11-06'  ,'+'  ,'Keller'       ,'Primin'           ,'Altendorf'                           ,NULL                                               ,'Waldkirch'                 ,0  ,0  ,0);
-  cmp_person_firma($sth, 934296   ,'2009-11-06'  ,'+'  ,'Weber'        ,'Melanie'          ,'Gränichen'                           ,NULL                                               ,'Zell ZH'                   ,0  ,0  ,0);
-  cmp_person_firma($sth, 451407   ,'2009-12-03'  ,'+'  ,'Ginnow'       ,'Richard'          ,'Volketswil'                          ,NULL                                               ,'Mettmenstetten'            ,0  ,0  ,0);
-  cmp_person_firma($sth, 451407   ,'2009-12-03'  ,'+'  ,'Norgate'      ,'Thomas Aylwin'    ,'britischer Staatsangehöriger'        ,NULL                                               ,'Freienbach'                ,0  ,0  ,0);
-  cmp_person_firma($sth, 251792   ,'2010-07-07'  ,'-'  ,'Riedmüller'   ,'Josef'            ,'deutscher Staatsangehöriger'         ,NULL                                               ,'Biberach an der Riss (D)'  ,0  ,0  ,0);
-  cmp_person_firma($sth, 251792   ,'2010-07-07'  ,'-'  ,'Wüst'         ,'Günter'           ,'Oberriet SG'                         ,NULL                                               ,'Lüchingen (Altstätten)'    ,0  ,0  ,0);
-  cmp_person_firma($sth, 823465   ,'2011-10-27'  ,'+'  ,'Hefti'        ,'Simon'            ,'Thun'                                ,NULL                                               ,'Zürich'                    ,0  ,0  ,0);
-  cmp_person_firma($sth, 823465   ,'2011-10-27'  ,'+'  ,'Hagger'       ,'Joachim Andreas'  ,'Basel'                               ,NULL                                               ,'Zürich'                    ,0  ,0  ,0);
-  cmp_person_firma($sth, 823465   ,'2011-10-27'  ,'+'  ,'Vckovski'     ,'Andrej'           ,'Zürich'                              ,NULL                                               ,'Zürich'                    ,0  ,0  ,0);
-  cmp_person_firma($sth, 823465   ,'2011-10-27'  ,'+'  ,'Gränicher'    ,'Hans Peter'       ,'Röthenbach bei Herzogenbuchsee'      ,NULL                                               ,'Zürich'                    ,0  ,0  ,0);
-  cmp_person_firma($sth, 823465   ,'2012-12-05'  ,'+'  ,'Brabec'       ,'Dr. Bernhard'     ,'österreichischer Staatsangehöriger'  ,NULL                                               ,'Zollikon'                  ,0  ,0  ,0);
-  cmp_person_firma($sth, 823465   ,'2012-12-05'  ,'+'  ,'Rutz'         ,'Candid'           ,'Emmen'                               ,NULL                                               ,'Zürich'                    ,0  ,0  ,0);
-  cmp_person_firma($sth, 823465   ,'2012-12-05'  ,'+'  ,'Hausmann'     ,'Alexander'        ,'Dietikon'                            ,NULL                                               ,'Dietikon'                  ,0  ,0  ,0);
-  cmp_person_firma($sth, 823465   ,'2012-12-05'  ,'+'  ,'Stefanakos'   ,'Stamatios'        ,'griechischer Staatsangehöriger'      ,NULL                                               ,'Zürich'                    ,0  ,0  ,0);
-  cmp_person_firma($sth, 823465   ,'2013-07-29'  ,'-'  ,'Brabec'       ,'Dr. Bernhard'     ,'österreichischer Staatsangehöriger'  ,NULL                                               ,'Zollikon'                  ,0  ,0  ,0);
-  cmp_person_firma($sth, 823465   ,'2013-07-29'  ,'-'  ,'Hausmann'     ,'Alexander'        ,'Dietikon'                            ,NULL                                               ,'Dietikon'                  ,0  ,0  ,0);
-  cmp_person_firma($sth, 823465   ,'2013-07-29'  ,'+'  ,NULL           ,NULL               ,NULL                                  ,'ORTAG AG'                                         ,'Zürich'                    ,0  ,1  ,0);
-  cmp_person_firma($sth, 823465   ,'2014-08-13'  ,'-'  ,'Hagger'       ,'Joachim Andreas'  ,'Basel'                               ,NULL                                               ,'Zürich'                    ,0  ,0  ,0);
-  cmp_person_firma($sth, 823465   ,'2014-08-13'  ,'+'  ,'Franz'        ,'Mike'             ,'Frick'                               ,NULL                                               ,'Gipf-Oberfrick'            ,0  ,0  ,0);
-  cmp_person_firma($sth, 451407   ,'2016-10-04'  ,'+'  ,'Ginnow'       ,'Richard'          ,'Volketswil'                          ,NULL                                               ,'Mettmenstetten'            ,0  ,0  ,0);
-  cmp_person_firma($sth, 451407   ,'2016-10-04'  ,'+'  ,'Norgate'      ,'Thomas Aylwin'    ,'britischer Staatsangehöriger'        ,NULL                                               ,'Freienbach'                ,0  ,0  ,0);
-  cmp_person_firma($sth, 934296   ,'2016-12-15'  ,'-'  ,'Kuhn'         ,'Roland'           ,'Illnau-Effretikon'                   ,NULL                                               ,'St. Gallen'                ,0  ,0  ,0);
-  cmp_person_firma($sth, 934296   ,'2016-12-15'  ,'-'  ,'Keller'       ,'Primin'           ,'Altendorf'                           ,NULL                                               ,'Waldkirch'                 ,0  ,0  ,0);
-  cmp_person_firma($sth, 934296   ,'2016-12-15'  ,'+'  ,'Norgate'      ,'Thomas Aylwin'    ,'britischer Staatsangehöriger'        ,NULL                                               ,'Freienbach'                ,0  ,0  ,0);
-  cmp_person_firma($sth, 451407   ,'2016-12-20'  ,'+'  ,'Ginnow'       ,'Richard'          ,'Volketswil'                          ,NULL                                               ,'Mettmenstetten'            ,0  ,0  ,0);
-  cmp_person_firma($sth, 451407   ,'2016-12-20'  ,'+'  ,'Norgate'      ,'Thomas Aylwin'    ,'britischer Staatsangehöriger'        ,NULL                                               ,'Freienbach'                ,0  ,0  ,0);
-  cmp_person_firma($sth, 451407   ,'2016-12-20'  ,'+'  ,'Büetiger'     ,'Jan'              ,'Schnottwil'                          ,NULL                                               ,'Gossau ZH'                 ,0  ,0  ,0);
-  cmp_person_firma($sth, 1290391  ,'2017-01-10'  ,'+'  ,'Oesch'        ,'Severin'          ,'Embrach'                             ,NULL                                               ,'Kloten'                    ,0  ,0  ,0);
-  cmp_person_firma($sth, 1290391  ,'2017-01-10'  ,'+'  ,'Grätzer'      ,'Adrian Willy'     ,'Einsiedeln'                          ,NULL                                               ,'Einsiedeln'                ,0  ,0  ,0);
+  cmp_person_firma($sth, 251792   ,'2001-07-30'  ,'-'  ,'Dettwiler'    ,'Werner'           ,'Reigoldswil'                         ,NULL                                               ,'Eichberg'                  ,0,0,0,0,0,0,1,1,0,0,0,0, 0  ,0  ,0);
+  cmp_person_firma($sth, 251792   ,'2001-07-30'  ,'+'  ,'Wüst'         ,'Günter'           ,'Oberriet SG'                         ,NULL                                               ,'Lüchingen (Altstätten)'    ,0,0,0,0,0,0,1,1,0,0,0,0, 0  ,0  ,0);
+  cmp_person_firma($sth, 451407   ,'2005-07-04'  ,'-'  ,NULL           ,NULL               ,NULL                                  ,'Künzler Communications GmbH'                      ,'Bassersdorf'               ,0,0,0,0,0,0,0,0,0,0,0,1, 1  ,0  ,0);
+  cmp_person_firma($sth, 451407   ,'2005-07-04'  ,'+'  ,'Nyffenegger'  ,'René'             ,'Eriswil'                             ,NULL                                               ,'Zürich'                    ,0,0,0,0,0,0,1,1,0,0,0,0, 0  ,0  ,0);
+  cmp_person_firma($sth, 823465   ,'2005-12-22'  ,'+'  ,'Rossbacher'   ,'Albert'           ,'Röthenbach bei Herzogenbuchsee'      ,NULL                                               ,'Herrliberg'                ,0,0,0,0,0,0,0,1,0,0,0,0, 0  ,0  ,0);
+  cmp_person_firma($sth, 823465   ,'2005-12-22'  ,'+'  ,NULL           ,NULL               ,NULL                                  ,'Ortag, Organisations-, Revisions- und Treuhand-AG','Zürich'                    ,0,0,0,0,0,0,0,0,0,0,0,0, 0  ,1  ,0);
+  cmp_person_firma($sth, 823465   ,'2006-05-16'  ,'-'  ,'Rossbacher'   ,'Albert'           ,'Röthenbach bei Herzogenbuchsee'      ,NULL                                               ,'Herrliberg'                ,0,0,0,0,0,0,0,1,0,0,0,0, 0  ,0  ,0);
+  cmp_person_firma($sth, 823465   ,'2006-05-16'  ,'+'  ,'Hagger'       ,'Joachim Andreas'  ,'Basel'                               ,NULL                                               ,'Zürich'                    ,0,1,0,0,0,0,0,0,0,1,0,0, 0  ,0  ,0);
+  cmp_person_firma($sth, 823465   ,'2006-05-16'  ,'+'  ,'Gränicher'    ,'Hans Peter'       ,'Röthenbach bei Herzogenbuchsee'      ,NULL                                               ,'Zürich'                    ,0,0,0,0,0,0,0,0,0,1,0,0, 0  ,0  ,0);
+  cmp_person_firma($sth, 823465   ,'2006-05-16'  ,'+'  ,'Hefti'        ,'Simon'            ,'Thun'                                ,NULL                                               ,'Zürich'                    ,0,0,0,0,0,0,0,0,0,1,0,0, 0  ,0  ,0);
+  cmp_person_firma($sth, 451407   ,'2007-05-07'  ,'+'  ,'Ginnow'       ,'Richard'          ,'Volketswil'                          ,NULL                                               ,'Rüschlikon'                ,0,0,0,0,0,0,1,0,0,1,0,0, 0  ,0  ,0);
+  cmp_person_firma($sth, 451407   ,'2007-05-07'  ,'+'  ,'Nyffenegger'  ,'René'             ,'Eriswil'                             ,NULL                                               ,'Zürich'                    ,0,0,0,0,0,0,1,0,0,1,0,0, 0  ,0  ,0);
+  cmp_person_firma($sth, 451407   ,'2008-09-08'  ,'-'  ,'Nyffenegger'  ,'René'             ,'Eriswil'                             ,NULL                                               ,'Zürich'                    ,0,0,0,0,0,0,1,0,0,1,0,0, 0  ,0  ,0);
+  cmp_person_firma($sth, 451407   ,'2008-09-08'  ,'+'  ,'Ginnow'       ,'Richard'          ,'Volketswil'                          ,NULL                                               ,'Rüschlikon'                ,0,0,0,0,0,0,1,1,0,0,0,0, 0  ,0  ,0);
+  cmp_person_firma($sth, 451407   ,'2008-09-08'  ,'+'  ,'Weber'        ,'Melanie'          ,'Gränichen'                           ,NULL                                               ,'Zell ZH'                   ,0,0,0,0,0,0,0,0,1,0,0,0, 0  ,0  ,0);
+  cmp_person_firma($sth, 934296   ,'2009-01-28'  ,'+'  ,'Ginnow'       ,'Richard'          ,'Volketswil'                          ,NULL                                               ,'Mettmenstetten'            ,1,0,0,0,0,0,0,1,0,0,0,0, 0  ,0  ,0);
+  cmp_person_firma($sth, 934296   ,'2009-01-28'  ,'+'  ,'Kuhn'         ,'Roland'           ,'Illnau-Effretikon'                   ,NULL                                               ,'St. Gallen'                ,0,0,0,1,0,0,0,1,0,0,0,0, 0  ,0  ,0);
+  cmp_person_firma($sth,  76284   ,'2009-10-26'  ,'-'  , null          , null              , null                                 ,'Fiduciaire Jean-Maurice Maitre S.A.'              ,'Porrentruy'                ,0,0,0,0,0,0,0,0,0,0,0,0, 0  ,1  ,0);
+  cmp_person_firma($sth,  76284   ,'2009-10-26'  ,'+'  , null          , null              , null                                 ,'RéviAjoie Sàrl'                                   ,'Porrentruy'                ,0,0,0,0,0,0,0,0,0,0,0,0, 0  ,1  ,0);
+  cmp_person_firma($sth, 934296   ,'2009-11-06'  ,'+'  ,'Ginnow'       ,'Richard'          ,'Volketswil'                          ,NULL                                               ,'Mettmenstetten'            ,1,0,0,0,0,0,0,0,0,1,0,0, 0  ,0  ,0);
+  cmp_person_firma($sth, 934296   ,'2009-11-06'  ,'+'  ,'Kuhn'         ,'Roland'           ,'Illnau-Effretikon'                   ,NULL                                               ,'St. Gallen'                ,0,0,0,1,0,0,0,0,0,1,0,0, 0  ,0  ,0);
+  cmp_person_firma($sth, 934296   ,'2009-11-06'  ,'+'  ,'Norgate'      ,'Thomas Aylwin'    ,'britischer Staatsangehöriger'        ,NULL                                               ,'Freienbach'                ,0,0,0,0,1,0,0,0,0,1,0,0, 0  ,0  ,0);
+  cmp_person_firma($sth, 934296   ,'2009-11-06'  ,'+'  ,'Keller'       ,'Primin'           ,'Altendorf'                           ,NULL                                               ,'Waldkirch'                 ,0,0,0,0,1,0,0,0,0,1,0,0, 0  ,0  ,0);
+  cmp_person_firma($sth, 934296   ,'2009-11-06'  ,'+'  ,'Weber'        ,'Melanie'          ,'Gränichen'                           ,NULL                                               ,'Zell ZH'                   ,0,0,0,0,0,0,0,0,1,0,0,0, 0  ,0  ,0);
+  cmp_person_firma($sth, 451407   ,'2009-12-03'  ,'+'  ,'Ginnow'       ,'Richard'          ,'Volketswil'                          ,NULL                                               ,'Mettmenstetten'            ,0,0,0,0,0,0,1,1,0,0,0,0, 0  ,0  ,0);
+  cmp_person_firma($sth, 451407   ,'2009-12-03'  ,'+'  ,'Norgate'      ,'Thomas Aylwin'    ,'britischer Staatsangehöriger'        ,NULL                                               ,'Freienbach'                ,0,0,0,0,0,0,0,0,0,1,0,0, 0  ,0  ,0);
+  cmp_person_firma($sth, 251792   ,'2010-07-07'  ,'-'  ,'Riedmüller'   ,'Josef'            ,'deutscher Staatsangehöriger'         ,NULL                                               ,'Biberach an der Riss (D)'  ,0,0,0,0,0,0,1,1,0,0,0,0, 0  ,0  ,0);
+  cmp_person_firma($sth, 251792   ,'2010-07-07'  ,'-'  ,'Wüst'         ,'Günter'           ,'Oberriet SG'                         ,NULL                                               ,'Lüchingen (Altstätten)'    ,0,0,0,0,0,0,1,1,0,0,0,0, 0  ,0  ,0);
+  cmp_person_firma($sth, 823465   ,'2011-10-27'  ,'+'  ,'Hefti'        ,'Simon'            ,'Thun'                                ,NULL                                               ,'Zürich'                    ,1,0,0,0,0,0,0,0,0,1,0,0, 0  ,0  ,0);
+  cmp_person_firma($sth, 823465   ,'2011-10-27'  ,'+'  ,'Hagger'       ,'Joachim Andreas'  ,'Basel'                               ,NULL                                               ,'Zürich'                    ,0,0,0,1,0,0,0,0,0,1,0,0, 0  ,0  ,0);
+  cmp_person_firma($sth, 823465   ,'2011-10-27'  ,'+'  ,'Vckovski'     ,'Andrej'           ,'Zürich'                              ,NULL                                               ,'Zürich'                    ,0,0,0,1,0,0,0,0,0,1,0,0, 0  ,0  ,0);
+  cmp_person_firma($sth, 823465   ,'2011-10-27'  ,'+'  ,'Gränicher'    ,'Hans Peter'       ,'Röthenbach bei Herzogenbuchsee'      ,NULL                                               ,'Zürich'                    ,0,0,0,0,0,0,1,0,0,1,0,0, 0  ,0  ,0);
+  cmp_person_firma($sth, 823465   ,'2012-12-05'  ,'+'  ,'Brabec'       ,'Dr. Bernhard'     ,'österreichischer Staatsangehöriger'  ,NULL                                               ,'Zollikon'                  ,0,0,0,0,0,0,0,0,0,0,1,0, 0  ,0  ,0);
+  cmp_person_firma($sth, 823465   ,'2012-12-05'  ,'+'  ,'Rutz'         ,'Candid'           ,'Emmen'                               ,NULL                                               ,'Zürich'                    ,0,0,0,0,0,0,0,0,0,0,1,0, 0  ,0  ,0);
+  cmp_person_firma($sth, 823465   ,'2012-12-05'  ,'+'  ,'Hausmann'     ,'Alexander'        ,'Dietikon'                            ,NULL                                               ,'Dietikon'                  ,0,0,0,0,0,0,0,0,0,0,1,0, 0  ,0  ,0);
+  cmp_person_firma($sth, 823465   ,'2012-12-05'  ,'+'  ,'Stefanakos'   ,'Stamatios'        ,'griechischer Staatsangehöriger'      ,NULL                                               ,'Zürich'                    ,0,0,0,0,0,0,0,0,0,0,1,0, 0  ,0  ,0);
+  cmp_person_firma($sth, 823465   ,'2013-07-29'  ,'-'  ,'Brabec'       ,'Dr. Bernhard'     ,'österreichischer Staatsangehöriger'  ,NULL                                               ,'Zollikon'                  ,0,0,0,0,0,0,0,0,0,0,1,0, 0  ,0  ,0);
+  cmp_person_firma($sth, 823465   ,'2013-07-29'  ,'-'  ,'Hausmann'     ,'Alexander'        ,'Dietikon'                            ,NULL                                               ,'Dietikon'                  ,0,0,0,0,0,0,0,0,0,0,1,0, 0  ,0  ,0);
+  cmp_person_firma($sth, 823465   ,'2013-07-29'  ,'+'  ,NULL           ,NULL               ,NULL                                  ,'ORTAG AG'                                         ,'Zürich'                    ,0,0,0,0,0,0,0,0,0,0,0,0, 0  ,1  ,0);
+  cmp_person_firma($sth, 823465   ,'2014-08-13'  ,'-'  ,'Hagger'       ,'Joachim Andreas'  ,'Basel'                               ,NULL                                               ,'Zürich'                    ,0,0,0,1,0,0,0,0,0,1,0,0, 0  ,0  ,0);
+  cmp_person_firma($sth, 823465   ,'2014-08-13'  ,'+'  ,'Franz'        ,'Mike'             ,'Frick'                               ,NULL                                               ,'Gipf-Oberfrick'            ,0,0,0,1,0,0,0,0,0,1,0,0, 0  ,0  ,0);
+  cmp_person_firma($sth, 451407   ,'2016-10-04'  ,'+'  ,'Ginnow'       ,'Richard'          ,'Volketswil'                          ,NULL                                               ,'Mettmenstetten'            ,0,0,0,0,0,1,0,1,0,0,0,0, 0  ,0  ,0);
+  cmp_person_firma($sth, 451407   ,'2016-10-04'  ,'+'  ,'Norgate'      ,'Thomas Aylwin'    ,'britischer Staatsangehöriger'        ,NULL                                               ,'Freienbach'                ,0,0,0,0,0,0,1,1,0,0,0,0, 0  ,0  ,0);
+  cmp_person_firma($sth, 934296   ,'2016-12-15'  ,'-'  ,'Kuhn'         ,'Roland'           ,'Illnau-Effretikon'                   ,NULL                                               ,'St. Gallen'                ,0,0,0,1,0,0,0,0,0,1,0,0, 0  ,0  ,0);
+  cmp_person_firma($sth, 934296   ,'2016-12-15'  ,'-'  ,'Keller'       ,'Primin'           ,'Altendorf'                           ,NULL                                               ,'Waldkirch'                 ,0,0,0,0,1,0,0,0,0,1,0,0, 0  ,0  ,0);
+  cmp_person_firma($sth, 934296   ,'2016-12-15'  ,'+'  ,'Norgate'      ,'Thomas Aylwin'    ,'britischer Staatsangehöriger'        ,NULL                                               ,'Freienbach'                ,0,0,0,1,0,0,0,0,0,1,0,0, 0  ,0  ,0);
+  cmp_person_firma($sth, 451407   ,'2016-12-20'  ,'+'  ,'Ginnow'       ,'Richard'          ,'Volketswil'                          ,NULL                                               ,'Mettmenstetten'            ,1,0,0,0,0,0,0,1,0,0,0,0, 0  ,0  ,0);
+  cmp_person_firma($sth, 451407   ,'2016-12-20'  ,'+'  ,'Norgate'      ,'Thomas Aylwin'    ,'britischer Staatsangehöriger'        ,NULL                                               ,'Freienbach'                ,0,0,0,1,0,0,0,1,0,0,0,0, 0  ,0  ,0);
+  cmp_person_firma($sth, 451407   ,'2016-12-20'  ,'+'  ,'Büetiger'     ,'Jan'              ,'Schnottwil'                          ,NULL                                               ,'Gossau ZH'                 ,0,0,1,0,0,0,0,0,0,1,0,0, 0  ,0  ,0);
+  cmp_person_firma($sth, 1290391  ,'2017-01-10'  ,'+'  ,'Oesch'        ,'Severin'          ,'Embrach'                             ,NULL                                               ,'Kloten'                    ,0,0,0,0,0,0,1,0,0,1,0,0, 0  ,0  ,0);
+  cmp_person_firma($sth, 1290391  ,'2017-01-10'  ,'+'  ,'Grätzer'      ,'Adrian Willy'     ,'Einsiedeln'                          ,NULL                                               ,'Einsiedeln'                ,0,0,0,0,0,1,0,0,0,1,0,0, 0  ,0  ,0);
 
   echo "person_firma ok\n";
 
 } #_}
 
-function cmp_person_firma($sth, $id_firma, $dt_journal, $add_rm, $nachname, $vorname, $von, $bezeichnung, $in_, $gesellschafterin, $revisionsstelle, $liquidatorin) {
+function cmp_person_firma($sth, $id_firma, $dt_journal, $add_rm, $nachname, $vorname, $von, $bezeichnung, $in_, 
+
+  $vr_praes  ,
+  $praes     ,
+  $dir       ,
+  $vr_mg     ,
+  $gl_mg     ,
+  $gf_vors   ,
+  $gf        ,
+
+  $eu        ,
+  $ep        ,
+  $ku2       ,
+  $kp2       ,
+  $oz        ,
+  
+  $gesellschafterin, $revisionsstelle, $liquidatorin) {
 
   $row = $sth -> fetch();
 
@@ -271,9 +287,24 @@ function cmp_person_firma($sth, $id_firma, $dt_journal, $add_rm, $nachname, $vor
   if (! eq($row[ 5], $von             )) {throw new Exception('cmp_person_firma 5'); }
   if (! eq($row[ 6], $bezeichnung     )) {throw new Exception('cmp_person_firma bezeichnung: ' . $row[6] . ' != '  . $bezeichnung); }
   if (! eq($row[ 7], $in_             )) {throw new Exception("cmp_person_firma 7 journal=$dt_journal, id_firma=$id_firma, in=$in_, row[7]=$row[7]"); }
-  if (! eq($row[ 8], $gesellschafterin)) {throw new Exception("cmp_person_firma 8 journal=$dt_journal, id_firma=$id_firma, revisionsstelle=$revisionsstelle, row[8]=$row[8]"); }
-  if (! eq($row[ 9], $revisionsstelle )) {throw new Exception("cmp_person_firma 9 journal=$dt_journal, id_firma=$id_firma, revisionsstelle=$revisionsstelle, row[9]=$row[9]"); }
-  if (! eq($row[10], $liquidatorin    )) {throw new Exception("cmp_person_firma 10 dt_journal=$dt_journal, id_firma=$id_firma, liquidatorin=$liquidatorin"); }
+
+  if (! eq($row[ 8], $vr_praes        )) {throw new Exception("cmp_person_firma  8 journal=$dt_journal, id_firma=$id_firma, in=$in_, row[ 8]=$row[8]"); }
+  if (! eq($row[ 9], $praes           )) {throw new Exception("cmp_person_firma  9 journal=$dt_journal, id_firma=$id_firma, in=$in_, row[ 9]=$row[9]"); }
+  if (! eq($row[10], $dir             )) {throw new Exception("cmp_person_firma 10 journal=$dt_journal, id_firma=$id_firma, in=$in_, row[10]=$row[10]"); }
+  if (! eq($row[11], $vr_mg           )) {throw new Exception("cmp_person_firma 11 journal=$dt_journal, id_firma=$id_firma, in=$in_, row[11]=$row[11]"); }
+  if (! eq($row[12], $gl_mg           )) {throw new Exception("cmp_person_firma 12 journal=$dt_journal, id_firma=$id_firma, in=$in_, row[12]=$row[12]"); }
+  if (! eq($row[13], $gf_vors         )) {throw new Exception("cmp_person_firma 13 journal=$dt_journal, id_firma=$id_firma, in=$in_, row[13]=$row[13]"); }
+  if (! eq($row[14], $gf              )) {throw new Exception("cmp_person_firma 14 journal=$dt_journal, id_firma=$id_firma, in=$in_, row[14]=$row[14]"); }
+
+  if (! eq($row[15], $eu              )) {throw new Exception("cmp_person_firma 15 journal=$dt_journal, id_firma=$id_firma, in=$in_, row[15]=$row[15]"); }
+  if (! eq($row[16], $ep              )) {throw new Exception("cmp_person_firma 16 journal=$dt_journal, id_firma=$id_firma, in=$in_, row[16]=$row[16]"); }
+  if (! eq($row[17], $ku2             )) {throw new Exception("cmp_person_firma 17 journal=$dt_journal, id_firma=$id_firma, in=$in_, row[17]=$row[17]"); }
+  if (! eq($row[18], $kp2             )) {throw new Exception("cmp_person_firma 18 journal=$dt_journal, id_firma=$id_firma, in=$in_, row[18]=$row[18]"); }
+  if (! eq($row[19], $oz              )) {throw new Exception("cmp_person_firma 19 journal=$dt_journal, id_firma=$id_firma, in=$in_, row[19]=$row[19]"); }
+
+  if (! eq($row[20], $gesellschafterin)) {throw new Exception("cmp_person_firma 20 journal=$dt_journal, id_firma=$id_firma, revisionsstelle=$revisionsstelle, row[20]=$row[20]"); }
+  if (! eq($row[21], $revisionsstelle )) {throw new Exception("cmp_person_firma 21 journal=$dt_journal, id_firma=$id_firma, revisionsstelle=$revisionsstelle, row[21]=$row[21]"); }
+  if (! eq($row[22], $liquidatorin    )) {throw new Exception("cmp_person_firma 22 dt_journal=$dt_journal, id_firma=$id_firma, liquidatorin=$liquidatorin"); }
 
 }
 

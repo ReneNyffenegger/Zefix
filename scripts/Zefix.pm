@@ -419,10 +419,10 @@ sub find_persons_from_daily_summary_rec { #_{
         }
 
         if ($person_det =~ s/mit Kollektivprokura zu zweien//) {
-          $person_rec->{koll_prok_2} = 1;
+          $person_rec->{kp2} = 1;
         }
         else {
-          $person_rec->{koll_prok_2} = 0;
+          $person_rec->{kp2} = 0;
         }
 
 # #       $person_rec->{funktion} = s_back($6);

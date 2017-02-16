@@ -63,10 +63,10 @@ while (my $rec = Zefix::parse_next_daily_summary_line($zefix_file)) {
     if ($personen_rec->{gf_vors       }) { $funktion_text  .= 'Vorsitzender der Geschäftsführung<br>'; }
     if ($personen_rec->{gf            }) { $funktion_text  .= 'Geschäftsführer<br>'; }
 
-    if ($personen_rec->{koll_prok_2   }) { $zeichnung_text .= 'Kollektive Prokura zu zweien<br> '; }
     if ($personen_rec->{eu            }) { $zeichnung_text .= 'Einzelunterschrift<br>'; }
     if ($personen_rec->{ep            }) { $zeichnung_text .= 'Einzelprokura<br>'; }
     if ($personen_rec->{ku2           }) { $zeichnung_text .= 'Kollektivunterschrift zu zweien<br>'; }
+    if ($personen_rec->{kp2           }) { $zeichnung_text .= 'Kollektive Prokura zu zweien<br> '; }
     if ($personen_rec->{oz            }) { $zeichnung_text .= 'Ohne Zeichnungsberechtigung<br>'; }
 
     $personen_trs .= sprintf("<tr class='%s'>
