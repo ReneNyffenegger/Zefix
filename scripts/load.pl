@@ -392,7 +392,7 @@ sub load_stichwoerter { #_{
 
   for my $stichwort (sort keys %stichwoerter) {
     for my $qr (@{$stichwoerter{$stichwort}{qrs}}) {
-      printf "%-30s %-30s %6d\n", $stichwort, $qr, $stichwoerter{$stichwort}{qrs_cnt}{$qr} // 0;
+#     printf "%-30s %-30s %6d\n", $stichwort, $qr, $stichwoerter{$stichwort}{qrs_cnt}{$qr} // 0;
 
     }
   }
@@ -527,7 +527,7 @@ sub init_stichwoerter { #_{
   #
 
 
-  %stichwoerter =  (
+  %stichwoerter =  ( #_{
 
    'Abdichten'                  => {qrs => [ qr/\babdicht/               ] },
    'Abwasser'                   => {qrs => [ qr/abwasser/                ] },
@@ -897,7 +897,7 @@ sub init_stichwoerter { #_{
    'Zubehör'                    => {qrs => [ qr/zubehor/                 ] }, #
 
 
-  );
+  ); #_}
 
 } #_}
 
