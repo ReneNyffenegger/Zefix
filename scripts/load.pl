@@ -32,7 +32,7 @@ GetOptions (
 $env = 'prod' if $prod;
 print "env = $env\n";
 
-Zefix::init($env);
+Zefix::init($env eq 'prod' ? 'dev' : 'test');
 
 if ($env eq 'test') {
   $zefix_root = "$ENV{github_root}Zefix/test/";
@@ -59,7 +59,7 @@ $dbh->{AutoCommit} = 0;
 load_daily_summaries();
 
 $dbh -> commit;
-#exit;
+exit;
 
 my %word_cnt;
 load_stichwoerter();
@@ -92,6 +92,7 @@ sub load_daily_summaries { #_{
   my $sth_ins_person_firma = $dbh->prepare('insert into person_firma values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
 
   for my $file (Zefix::daily_summary_files()) {
+    print "$file\n";
 
     my $zefix_file = Zefix::open_daily_summary_file($file);
     while (my $rec = Zefix::parse_next_daily_summary_line($zefix_file)) {
@@ -102,6 +103,7 @@ sub load_daily_summaries { #_{
                  $rec         ->{id_firma},
                  $rec         ->{dt_journal},
                  $personen_rec->{add_rm},
+
                  $personen_rec->{nachname},
                  $personen_rec->{vorname},
                  $personen_rec->{von},

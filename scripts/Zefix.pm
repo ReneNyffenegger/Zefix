@@ -454,7 +454,7 @@ sub True_False_to_1_0 { #_{
   return 1 if $tf eq 'True';
   return 0 if $tf eq 'False';
 
-  die "$tf";
+  print "True False: $tf\n";
 } #_}
 
 sub are_persons_expected { #_{
