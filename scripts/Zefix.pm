@@ -261,7 +261,7 @@ sub find_persons_from_daily_summary_rec { #_{
 
   my @ret = ();
 
-  while ($text =~ s/(Ausgeschiedene Personen und erloschene Unterschriften|Eingetragene Personen(?: neu oder mutierend)?|Personne et signature radiée|Inscription ou modification de personne|Persone dimissionarie e firme cancellate):? *(.*?)\.//) { # ||Inscription ou modification de personne\(s\)|Nuove persone iscritte o modifiche|Procuration collective à deux, limitée aux affaires de la succursale, a été conférée à|Inscription ou modification de personnes)//) {
+  while ($text =~ s/(Ausgeschiedene Personen und erloschene Unterschriften|Eingetragene Personen(?: neu oder mutierend)?|Personne et signature radiée|Inscription ou modification de personne(?:\(s\))?|Persone dimissionarie e firme cancellate):? *(.*?)\.//) { # ||Inscription ou modification de personne\(s\)|Nuove persone iscritte o modifiche|Procuration collective à deux, limitée aux affaires de la succursale, a été conférée à|Inscription ou modification de personnes)//) {
 
 
     my ($intro_text, $personen_text) = ($1, $2);
@@ -326,7 +326,7 @@ sub find_persons_from_daily_summary_rec { #_{
         my $more = $3;
         $person_rec->{in} = s_back($2);
         
-        if ($name =~ / *(.*), (?:von) (.*)/) { #_{
+        if ($name =~ / *(.*), (?:von|de) (.*)/) { #_{
 
           my $naturliche_person = $1;
           $person_rec->{von} = $2;
@@ -376,7 +376,9 @@ sub find_persons_from_daily_summary_rec { #_{
                /[pP]räsident/     or
                /Geschäftsführer/  or
                /Geschäftsleitung/ or
-               /Mitglied/            ) {
+               /Mitglied/         or
+               /\bmembre\b/       or
+               /président/) {
 
               if (exists $person_rec->{function}) {
                 $person_rec->{funktion} .= ', '. $_;
@@ -398,7 +400,8 @@ sub find_persons_from_daily_summary_rec { #_{
 
            if (/[Uu]nterschrift/ or
                /[Pp]rokura/      or
-               /[Zz]eichnungsberechtigung/
+               /[Zz]eichnungsberechtigung/ or
+               /signature/
               ) {
 
               print "Already exists $rec->{id_firma}: $person_rec->{zeichnung}, _ = $_\n" if exists $person_rec->{zeichnung} and $_ ne $person_rec->{zeichnung};
@@ -483,6 +486,11 @@ sub bisher_nicht_etc { #_{
 
   if ($_[0] =~ s/ *\[$_[1]:([^]]*)\]//) {
     return $1;
+  }
+  if ($_[1] eq 'bisher') {
+    if ($_[0] =~ s/ *\[précédemment:([^]]*)\]//) {
+      return $1;
+    }
   }
   return '';
 } #_}

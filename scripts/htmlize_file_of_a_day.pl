@@ -109,8 +109,9 @@ while (my $rec = Zefix::parse_next_daily_summary_line($zefix_file)) {
 
   print $out <<HTML;
 
-  id_firma: $rec->{id_firma}
+  id_firma: $rec->{id_firma}  (Registeramt: $rec->{registeramt})
   <br>
+
   $stati
 
 
