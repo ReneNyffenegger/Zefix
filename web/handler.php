@@ -88,7 +88,7 @@ function print_firma($db, $id_firma) { #_{
   if ($firma['postfach'])       { printf("  %s<br>\n"   , tq84_enc($firma['postfach'      ])); }
   printf("  %s %s<br>\n", $firma['plz'], tq84_enc($firma['ort']));
 
-  if ($firma['kapital']) {
+  if ($firma['kapital']) { #_{
     $kapital = $firma['kapital'];
 
     if ($kapital >= 1000000) {
@@ -99,9 +99,9 @@ function print_firma($db, $id_firma) { #_{
     }
 
     printf("<p>Kapital: %s %s<br>\n" , $kapital, $firma['currency']);
-  }
+  } #_}
 
-  if ($firma['zweck']) {
+  if ($firma['zweck']) { #_{
     print "<p>\n";
     $zweck = $firma['zweck'];
 
@@ -115,8 +115,34 @@ function print_firma($db, $id_firma) { #_{
     }
 
     print ($zweck);
+  } #_}
+
+  print "\n<hr>";
+
+  print "<table border=1><tr><td>Datum J</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>";
+
+  $res = db_prep_exec_fetchall($db, 
+    'select
+      pf.*
+    from
+      person_firma pf
+    where
+      pf.id_firma = ?
+    order by
+      pf.dt_journal
+    ', array($id_firma));
+
+  foreach ($res as $row) {
+    printf ("<tr class='%s'><td>%s</td></td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>\n",
+      $row['add_rm'] == '+' ? 'add' : 'rm', 
+      $row['dt_journal'],
+      $row['nachname'], $row['vorname'],
+      $row['bezeichnung'],
+      $row['funktion'], $row['zeichnung'], $row['stammeinlage']
+    );
   }
 
+  print "</table>";
 
 
   print "\n<hr>";
@@ -288,6 +314,10 @@ print "<!DOCTYPE html>
 <head>
 <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
 <title>$title</title>
+<style>
+
+  tr.rm {text-decoration: line-through; color: #777;}
+</style>
 </head>
 <body>
   <h1>$title</h1>
