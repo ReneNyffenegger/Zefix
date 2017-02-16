@@ -14,10 +14,11 @@ echo "Ok\n";
 
 function check_firma($dbh) { #_{
 
-  check_count($dbh, 'firma', 11);
+  check_count($dbh, 'firma', 12);
 
   $sth = db_prep_exec($dbh, 'select * from firma order by id', array());
   #                    id,                                                           code13 ,    hpts,  gem, k apital,   cur, st,  del         ,   shab#,                                     ,                    ,       ,zus.,   pf, plz ,   ort           
+  cmp_firma($sth,   74461, 'Guamo SA'                                      , 'CH52430026861',    null,  5250,  200000, 'CHF',  2, null         , 3258589, null                                ,'Via Bossi'         ,  50   ,null, null,  6830 ,'Chiasso'       , 3);
   cmp_firma($sth,   76284, 'Frédéric Hänni S.A., installations électriques', 'CH67730001455',    null,  6800,  210000, 'CHF',  2, null         , 5320100, null                                ,'rue du Temple'     ,   3   ,null, null,  2900 ,'Porrentruy'    , 3);
   cmp_firma($sth,  186673, 'Storella AG'                                   , 'CH50930004966',    null,	5097,	  50000, 'CHF',  0,'2001-05-09'  ,    null, null                                ,''                  , null  ,null, null,  null , null           , 3);
   cmp_firma($sth,  251792, 'Storella GmbH'                                 , 'CH32090204910',  468163,	3251,	   null,  null,  2, null         , 5723906,	null                                ,'Tiefenackerstrasse', '49'  ,null, null, '9450', 'Altstätten'   , 9);
@@ -97,10 +98,11 @@ function cmp_firma($sth, $id, $bezeichnung, $code13, $id_hauptsitz, $id_gemeinde
 
 function check_firma_bez($dbh) { #_{
 
-  check_count($dbh, 'firma_bez', 18);
+  check_count($dbh, 'firma_bez', 19);
 
 
   $sth = db_prep_exec($dbh, 'select * from firma_bez order by id_firma, dt_ab', array());
+  cmp_firma_bez($sth,   74461, '940', 1, 'IT',  3, 'Guamo SA'                                                                  , '1996-01-01', '9999-12-31');
   cmp_firma_bez($sth,   76284, '940', 1, 'FR',  3, 'Frédéric Hänni S.A., installations électriques'                            , '1996-01-01', '9999-12-31');
   cmp_firma_bez($sth,  186673, '940', 1, 'IT',  3, 'Storella AG'                                                               , '1996-01-01', '9999-12-31');
   cmp_firma_bez($sth,  251792, '940', 1, 'DE',  3, 'Storella GmbH'                                                             , '1996-01-01', '9999-12-31');
@@ -166,9 +168,10 @@ function cmp_firma_bez($sth, $id_firma, $seq, $typ, $sprachcode, $status, $bezei
 
 function check_zweck($dbh) { #_{
 
-  check_count($dbh, 'zweck', 11);
+  check_count($dbh, 'zweck', 12);
 
   $sth = db_prep_exec($dbh, 'select * from zweck order by id_firma', array());
+  cmp_zweck($sth,   74461, 'la compra-vendita, la costruzione e l\'amministrazione di immobili, nonché la partecipazione a società similari, sia nazionali che estere. La società può inoltre effettuare ogni operazione ed assumere ogni funzione suscettibile di contribuire direttamente o indirettamente a raggiungere lo scopo.');
   cmp_zweck($sth,   76284, 'L\'exploitation d\'une entreprise d\'électricité ainsi que l\'exploitation d\'une concession téléphonique. Elle pourra également s\'occuper de l\'achat et de la vente d\'appareils électriques.');
   cmp_zweck($sth,  186673, '');
   cmp_zweck($sth,  251792, '');
@@ -200,7 +203,7 @@ function cmp_zweck($sth, $id_firma, $zweck) { #_{
 
 function check_person_firma($dbh) { #_{
 
-  check_count($dbh, 'person_firma', 51);
+  check_count($dbh, 'person_firma', 52);
   $sth = db_prep_exec($dbh, 'select * from person_firma order by dt_journal, id_firma');
 
   cmp_person_firma($sth, 251792   ,'2001-07-30'  ,'-'  ,'Dettwiler'    ,'Werner'           ,'Reigoldswil'                         ,NULL                                               ,'Eichberg'                  ,'Gesellschafter und Geschäftsführer'         , 'mit Einzelunterschrift'                              ,  NULL                                                  , 0  ,0  ,0);
@@ -252,6 +255,7 @@ function check_person_firma($dbh) { #_{
   cmp_person_firma($sth, 451407   ,'2016-12-20'  ,'+'  ,'Ginnow'       ,'Richard'          ,'Volketswil'                          ,NULL                                               ,'Mettmenstetten'            ,'Präsident des Verwaltungsrates'             , 'mit Einzelunterschrift'                              ,  null                                                  , 0  ,0  ,0);
   cmp_person_firma($sth, 451407   ,'2016-12-20'  ,'+'  ,'Norgate'      ,'Thomas Aylwin'    ,'britischer Staatsangehöriger'        ,NULL                                               ,'Freienbach'                ,'Mitglied des Verwaltungsrates'              , 'mit Einzelunterschrift'                              ,  null                                                  , 0  ,0  ,0);
   cmp_person_firma($sth, 451407   ,'2016-12-20'  ,'+'  ,'Büetiger'     ,'Jan'              ,'Schnottwil'                          ,NULL                                               ,'Gossau ZH'                 , null                                        , 'mit Kollektivunterschrift zu zweien'                 ,  null                                                  , 0  ,0  ,0);
+  cmp_person_firma($sth, 74461    ,'2016-12-28'  ,'-'  , null          , null              , null                                 ,'Fidea SA'                                         ,'Chiasso'                   , null                                        ,  null                                                 ,  null                                                  , 0  ,1  ,0);
   cmp_person_firma($sth, 1290391  ,'2017-01-10'  ,'+'  ,'Oesch'        ,'Severin'          ,'Embrach'                             ,NULL                                               ,'Kloten'                    ,'Gesellschafter und Geschäftsführer'         , 'mit Kollektivunterschrift zu zweien'                 , 'mit 10 Stammanteilen zu je CHF 1\'000.00'             , 0  ,0  ,0);
   cmp_person_firma($sth, 1290391  ,'2017-01-10'  ,'+'  ,'Grätzer'      ,'Adrian Willy'     ,'Einsiedeln'                          ,NULL                                               ,'Einsiedeln'                , null                                        , 'mit Kollektivunterschrift zu zweien'                 , 'mit 10 Stammanteilen zu je CHF 1\'000.00'             , 0  ,0  ,0);
 
@@ -290,7 +294,7 @@ function cmp_person_firma($sth, $id_firma, $dt_journal, $add_rm, $nachname, $vor
 
 function check_gemeinde($dbh) { #_{
 
-  check_count($dbh, 'gemeinde', 8);
+  check_count($dbh, 'gemeinde', 9);
 
   $sth = db_prep_exec($dbh, 'select * from gemeinde order by id', array());
   cmp_gemeinde($sth,   56, 'Embrach'      );
@@ -300,6 +304,7 @@ function check_gemeinde($dbh) { #_{
   cmp_gemeinde($sth, 3251, 'Altstätten'   );
   cmp_gemeinde($sth, 4021, 'Baden'        );
   cmp_gemeinde($sth, 5097, 'Brissago'     );
+  cmp_gemeinde($sth, 5250, 'Chiasso'      );
   cmp_gemeinde($sth, 6800, 'Porrentruy'   );
 
   echo "gemeinde ok\n";

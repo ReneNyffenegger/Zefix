@@ -260,8 +260,7 @@ sub find_persons_from_daily_summary_rec { #_{
 
   my @ret = ();
 
-# while ($text =~ s/Ausgeschiedene Personen und erloschene Unterschriften:? *(.*?)(?<!(Dr)\.(?!,)//) { # |Eingetragene Personen neu oder mutierend|Inscription ou modification de personne\(s\)|Nuove persone iscritte o modifiche|Procuration collective à deux, limitée aux affaires de la succursale, a été conférée à|Inscription ou modification de personnes)//) {
-  while ($text =~ s/(Ausgeschiedene Personen und erloschene Unterschriften|Eingetragene Personen(?: neu oder mutierend)?|Personne et signature radiée|Inscription ou modification de personne):? *(.*?)\.//) { # ||Inscription ou modification de personne\(s\)|Nuove persone iscritte o modifiche|Procuration collective à deux, limitée aux affaires de la succursale, a été conférée à|Inscription ou modification de personnes)//) {
+  while ($text =~ s/(Ausgeschiedene Personen und erloschene Unterschriften|Eingetragene Personen(?: neu oder mutierend)?|Personne et signature radiée|Inscription ou modification de personne|Persone dimissionarie e firme cancellate):? *(.*?)\.//) { # ||Inscription ou modification de personne\(s\)|Nuove persone iscritte o modifiche|Procuration collective à deux, limitée aux affaires de la succursale, a été conférée à|Inscription ou modification de personnes)//) {
 
     my ($intro_text, $personen_text) = ($1, $2);
 
@@ -279,7 +278,7 @@ sub find_persons_from_daily_summary_rec { #_{
       if ($person_text =~ s! *\(?<R>([^<]+)<E>\)?!!g)  {
         $person_rec->{firma} = s_back($1);
       }
-      if ($person_text =~ / *(.+), (Zweigniederlassung )?(?:in|à) ([^,]+), (Revisionsstelle|organe de révision|Gesellschafterin|Liquidatorin)(.*)/) { #_{
+      if ($person_text =~ / *(.+), (Zweigniederlassung )?(?:in|à) ([^,]+), (Revisionsstelle|organe de révision|Gesellschafterin|Liquidatorin|ufficio di revisione)(.*)/) { #_{
 
         $person_rec->{bezeichnung} = s_back($1);
         $person_rec->{in}          = s_back($3);
@@ -288,7 +287,7 @@ sub find_persons_from_daily_summary_rec { #_{
         if ($4 eq 'Gesellschafterin') {
           $person_rec->{gesellschafterin} = 1;
         }
-        elsif ($4 eq 'Revisionsstelle' or $4 eq 'organe de révision') {
+        elsif ($4 eq 'Revisionsstelle' or $4 eq 'organe de révision' or $4 eq 'ufficio di revisione') {
           $person_rec->{revisionsstelle} = 1;
         }
         elsif ($4 eq 'Liquidatorin') {
