@@ -40,10 +40,6 @@ while (my $rec = Zefix::parse_next_daily_summary_line($zefix_file)) {
 
     <td>Stammeinlage</td>
 
-    <td>G</td>
-    <td>R</td>
-    <td>L</td>
-
     <td>Rest</td>
 
   </tr>';
@@ -52,27 +48,6 @@ while (my $rec = Zefix::parse_next_daily_summary_line($zefix_file)) {
 
   for my $personen_rec (@personen) { #_{
 
-#   my $funktion_text = '';
-#   my $zeichnung_text = '';
-
-#   if ($personen_rec->{vr_praes      }) { $funktion_text  .= 'Präsident des Verwaltungsrates<br>'; } #_{
-#   if ($personen_rec->{vr_vp         }) { $funktion_text  .= 'Vizepräsident des Verwaltungsrates<br>'; }
-#   if ($personen_rec->{praes         }) { $funktion_text  .= 'Präsident<br>'; }
-#   if ($personen_rec->{dir           }) { $funktion_text  .= 'Direktor des Verwaltungsrates<br>'; }
-#   if ($personen_rec->{vr_mg         }) { $funktion_text  .= 'Mitglied des Verwaltungsrates<br>'; }
-#   if ($personen_rec->{gl_mg         }) { $funktion_text  .= 'Mitglied der Geschäftsleitung<br>'; }
-#   if ($personen_rec->{mg            }) { $funktion_text  .= 'Mitglied<br>'; }
-#   if ($personen_rec->{gf_vors       }) { $funktion_text  .= 'Vorsitzender der Geschäftsführung<br>'; }
-#   if ($personen_rec->{gf            }) { $funktion_text  .= 'Geschäftsführer<br>'; }
-#   if ($personen_rec->{vr_sekr       }) { $funktion_text  .= 'Sekretärin des Verwaltungsrates<br>'; }
-
-#   if ($personen_rec->{eu            }) { $zeichnung_text .= 'Einzelunterschrift<br>'; }
-#   if ($personen_rec->{ep            }) { $zeichnung_text .= 'Einzelprokura<br>'; }
-#   if ($personen_rec->{ku2           }) { $zeichnung_text .= 'Kollektivunterschrift zu zweien<br>'; }
-#   if ($personen_rec->{kp2           }) { $zeichnung_text .= 'Kollektive Prokura zu zweien<br> '; }
-#   if ($personen_rec->{oz            }) { $zeichnung_text .= 'Ohne Zeichnungsberechtigung<br>'; } #_}
-
-#   $parts = join "<br>", @$personen_rec->{parts} if @$personen_rec->{parts};
 
     $personen_trs .= sprintf( #_{
       "<tr class='%s'>
@@ -87,10 +62,6 @@ while (my $rec = Zefix::parse_next_daily_summary_line($zefix_file)) {
         <td>%s</td>
 
         <td>%s</td>
-      <!-- ---------- -->
-        <td>%d</td>
-        <td>%d</td>
-        <td>%d</td>
       <!-- ---------- -->
         <td class='%s'>%s</td>
         </tr>",
@@ -108,10 +79,6 @@ while (my $rec = Zefix::parse_next_daily_summary_line($zefix_file)) {
 
       $personen_rec->{stammeinlage} // '',
 
-      $personen_rec->{gesellschafterin} // 0,
-      $personen_rec->{revisionsstelle } // 0,
-      $personen_rec->{liquidatorin    } // 0,
-#     --
       $personen_rec->{rest} ? 'rest': '',
       $personen_rec->{rest} // '?'
    ); #_}
