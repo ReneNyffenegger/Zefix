@@ -260,8 +260,6 @@ sub find_persons_from_daily_summary_rec { #_{
 
   my @ret = ();
 
-  print "\n\n$text\n\n";
-
 # while ($text =~ s/Ausgeschiedene Personen und erloschene Unterschriften:? *(.*?)(?<!(Dr)\.(?!,)//) { # |Eingetragene Personen neu oder mutierend|Inscription ou modification de personne\(s\)|Nuove persone iscritte o modifiche|Procuration collective à deux, limitée aux affaires de la succursale, a été conférée à|Inscription ou modification de personnes)//) {
   while ($text =~ s/(Ausgeschiedene Personen und erloschene Unterschriften|Eingetragene Personen(?: neu oder mutierend)?|Personne et signature radiée|Inscription ou modification de personne):? *(.*?)\.//) { # ||Inscription ou modification de personne\(s\)|Nuove persone iscritte o modifiche|Procuration collective à deux, limitée aux affaires de la succursale, a été conférée à|Inscription ou modification de personnes)//) {
 
@@ -271,22 +269,21 @@ sub find_persons_from_daily_summary_rec { #_{
 
       my $person_rec = {};
 
-      if ($intro_text =~ /^Eingetragene Personen/ or $intro_text =~ /^Inscription/) {
+      if ($intro_text =~ /^Eingetragene Personen/ or $intro_text =~ /^Inscription/) { #_{
          $person_rec = {'add_rm' => '+'};
       }
       else {
          $person_rec = {'add_rm' => '-'};
-      }
+      } #_}
 
       if ($person_text =~ s! *\(?<R>([^<]+)<E>\)?!!g)  {
         $person_rec->{firma} = s_back($1);
       }
-      if ($person_text =~ / *(.+), (Zweigniederlassung )?(?:in|à) ([^,]+), (Revisionsstelle|organe de révision|Gesellschafterin|Liquidatorin)(.*)/) {
+      if ($person_text =~ / *(.+), (Zweigniederlassung )?(?:in|à) ([^,]+), (Revisionsstelle|organe de révision|Gesellschafterin|Liquidatorin)(.*)/) { #_{
 
         $person_rec->{bezeichnung} = s_back($1);
         $person_rec->{in}          = s_back($3);
 
-#       print "$4\n";
 
         if ($4 eq 'Gesellschafterin') {
           $person_rec->{gesellschafterin} = 1;
@@ -300,8 +297,6 @@ sub find_persons_from_daily_summary_rec { #_{
 
         my $det = s_back($5);
 
-        print "det: $det\n";
-
         if ($det =~ s/ohne Zeichnungsberechtigung//) {
            $person_rec -> {oz} = 1;
         }
@@ -313,7 +308,7 @@ sub find_persons_from_daily_summary_rec { #_{
 
         $person_rec->{rest} = $det;
 
-      }
+      } #_}
       elsif ($person_text =~ / *([^,]+), *([^,]+), (von )?([^,]+), (?:in|à) ([^,]+), *(.*)/) {
 
         
@@ -323,107 +318,188 @@ sub find_persons_from_daily_summary_rec { #_{
         $person_rec->{in      } = s_back($5);
 
         my $person_det = s_back($6);
+
            $person_det =~ s/ *\[bisher:([^]]*)\]//;
-
         my $person_det_bisher = $1;
-        print "bisher: $person_det_bisher\n";
 
-        print "person_det $person_det\n\n";
+           $person_det =~ s/ *\[nicht([^]]*)\]//;
+        my $person_det_nicht = $1;
 
-        if ($person_det =~ s/Präsident des Verwaltungsrates//) {
-          $person_rec->{vr_praes} = 1;
-        }
-        else {
-          $person_rec->{vr_praes} = 0;
-        }
+        my @parts = split ', *', $person_det;
 
-        if ($person_det =~ s/Präsident//) {
-          $person_rec->{praes} = 1;
-        }
-        else {
-          $person_rec->{praes} = 0;
-        }
+        @parts = grep { /\w/ } @parts;
 
-        if ($person_det =~ s/Gesellschafter//) {
-          $person_rec->{gesellschafter} = 1;
-        }
-        else {
-          $person_rec->{gesellschafter} = 0;
-        }
+        
+        @parts = grep { #_{ Funktion
 
-        if ($person_det =~ s/Direktor//) {
-          $person_rec->{dir} = 1;
-        }
-        else {
-          $person_rec->{dir} = 0;
-        }
+           if (/Verwaltungsrates/ or
+               /[pP]räsident/     or
+               /Geschäftsführer/  or
+               /Geschäftsleitung/ or
+               /Mitglied/            ) {
 
-        if ($person_det =~ s/Vorsitzender der Geschäftsführung//) {
-          $person_rec->{gf_vors} = 1;
-        }
-        else {
-          $person_rec->{gf_vors} = 0;
-        }
+              if (exists $person_rec->{function}) {
+                $person_rec->{funktion} .= ', '. $_;
+              }
+              else {
+                $person_rec->{funktion} .= $_;
+              }
+#             print "Already exists $rec->{id_firma}, $person_rec->{nachname}: $person_rec->{funktion}, _ = $_\n" if exists $person_rec->{funktion};
+              0;
 
-        if ($person_det =~ s/Geschäftsführer//) {
-          $person_rec->{gf} = 1;
-        }
-        else {
-          $person_rec->{gf} = 0;
-        }
+            }
+            else {
+              1;
+            }
 
-        if ($person_det =~ s/Mitglied der Geschäftsleitung//) {
-          $person_rec->{gl_mg} = 1;
-        }
-        else {
-          $person_rec->{gl_mg} = 0;
-        }
+        } @parts; #_}
 
+        @parts = grep { #_{ Zeichnung
 
-        if ($person_det =~ s/Mitglied des Verwaltungsrates//) {
-          $person_rec->{vr_mg} = 1;
-        }
-        else {
-          $person_rec->{vr_mg} = 0;
-        }
+           if (/[Uu]nterschrift/ or
+               /[Pp]rokura/      or
+               /[Zz]eichnungsberechtigung/
+              ) {
 
-        if ($person_det =~ s/Mitglied//) {
-          $person_rec->{mg} = 1;
-        }
-        else {
-          $person_rec->{mg} = 0;
-        }
+              print "Already exists $rec->{id_firma}: $person_rec->{zeichnung}, _ = $_\n" if exists $person_rec->{zeichnung} and $_ ne $person_rec->{zeichnung};
+              $person_rec->{zeichnung} = $_;
+              0;
 
-        if ($person_det =~ s/mit Einzelunterschrift//) {
-          $person_rec->{eu} = 1;
-        }
-        else {
-          $person_rec->{eu} = 0;
-        }
+            }
+            else {
+              1;
+            }
 
-        if ($person_det =~ s/mit Einzelprokura//) {
-          $person_rec->{ep} = 1;
-        }
-        else {
-          $person_rec->{ep} = 0;
-        }
+        } @parts; #_}
 
-        $person_rec->{stammeinlage} = stammeinlage($person_det);
+        @parts = grep { #_{ Stammeinlage
+
+           if (/Stammanteil/     or
+               /Stammeinlage/
+            ) {
+
+              print "Already exists: $person_rec->{stammeinlage}, _ = $_\n" if exists $person_rec->{stammeinlage};
+              $person_rec->{stammeinlage} = $_;
+              0;
+
+            }
+            else {
+              1;
+            }
+
+        } @parts; #_}
+
+#       @{$person_rec->{parts}} = split ',', $person_det;
 
 
-        if ($person_det =~ s/mit Kollektivunterschrift zu zweien//) {
-          $person_rec->{ku2} = 1;
-        }
-        else {
-          $person_rec->{ku2} = 0;
-        }
+#       if ($person_det =~ s/Präsident des Verwaltungsrates//) {
+#         $person_rec->{vr_praes} = 1;
+#       }
+#       else {
+#         $person_rec->{vr_praes} = 0;
+#       }
 
-        if ($person_det =~ s/mit Kollektivprokura zu zweien//) {
-          $person_rec->{kp2} = 1;
-        }
-        else {
-          $person_rec->{kp2} = 0;
-        }
+#       if ($person_det =~ s/Vizepräsident des Verwaltungsrates//) {
+#         $person_rec->{vr_vp} = 1;
+#       }
+#       else {
+#         $person_rec->{vr_vp} = 0;
+#       }
+
+#       if ($person_det =~ s/Sekretärin des Verwaltungsrates//) {
+#         $person_rec->{vr_sekr} = 1;
+#       }
+#       else {
+#         $person_rec->{vr_vp} = 0;
+#       }
+
+#       if ($person_det =~ s/Präsident//) {
+#         $person_rec->{praes} = 1;
+#       }
+#       else {
+#         $person_rec->{praes} = 0;
+#       }
+
+#       if ($person_det =~ s/Gesellschafter//) {
+#         $person_rec->{gesellschafter} = 1;
+#       }
+#       else {
+#         $person_rec->{gesellschafter} = 0;
+#       }
+
+#       if ($person_det =~ s/Direktor//) {
+#         $person_rec->{dir} = 1;
+#       }
+#       else {
+#         $person_rec->{dir} = 0;
+#       }
+
+#       if ($person_det =~ s/Vorsitzender der Geschäftsführung//) {
+#         $person_rec->{gf_vors} = 1;
+#       }
+#       else {
+#         $person_rec->{gf_vors} = 0;
+#       }
+
+#       if ($person_det =~ s/Geschäftsführer//) {
+#         $person_rec->{gf} = 1;
+#       }
+#       else {
+#         $person_rec->{gf} = 0;
+#       }
+
+#       if ($person_det =~ s/Mitglied der Geschäftsleitung//) {
+#         $person_rec->{gl_mg} = 1;
+#       }
+#       else {
+#         $person_rec->{gl_mg} = 0;
+#       }
+
+
+#       if ($person_det =~ s/Mitglied des Verwaltungsrates//) {
+#         $person_rec->{vr_mg} = 1;
+#       }
+#       else {
+#         $person_rec->{vr_mg} = 0;
+#       }
+
+#       if ($person_det =~ s/Mitglied//) {
+#         $person_rec->{mg} = 1;
+#       }
+#       else {
+#         $person_rec->{mg} = 0;
+#       }
+
+#       if ($person_det =~ s/mit Einzelunterschrift//) {
+#         $person_rec->{eu} = 1;
+#       }
+#       else {
+#         $person_rec->{eu} = 0;
+#       }
+
+#       if ($person_det =~ s/mit Einzelprokura//) {
+#         $person_rec->{ep} = 1;
+#       }
+#       else {
+#         $person_rec->{ep} = 0;
+#       }
+
+#       $person_rec->{stammeinlage} = stammeinlage($person_det);
+
+
+#       if ($person_det =~ s/mit Kollektivunterschrift zu zweien//) {
+#         $person_rec->{ku2} = 1;
+#       }
+#       else {
+#         $person_rec->{ku2} = 0;
+#       }
+
+#       if ($person_det =~ s/mit Kollektivprokura zu zweien//) {
+#         $person_rec->{kp2} = 1;
+#       }
+#       else {
+#         $person_rec->{kp2} = 0;
+#       }
 
 # #       $person_rec->{funktion} = s_back($6);
 # 
@@ -452,11 +528,12 @@ sub find_persons_from_daily_summary_rec { #_{
 # #       $person_rec->{bisher_stammanteile           } = 'B-sa?';
 
 
-        $person_det =~ s/ *,//g;
-        $person_det =~ s/ *und//;
-        $person_det =~ s/ *$//;
-        $person_rec->{rest} = $person_det;
+#       $person_det =~ s/ *,//g;
+#       $person_det =~ s/ *und//;
+#       $person_det =~ s/ *$//;
+#       $person_rec->{rest} = $person_det;
 
+        $person_rec->{rest} = join @parts;
       }
 #     elsif ($person_text =~ / *([^,]+), in ([^,]+), Stammeinlage: \w+ ([\d']+)/) {
 
@@ -471,7 +548,7 @@ sub find_persons_from_daily_summary_rec { #_{
 #       $person_rec->{in         } = s_back($2);
 #     }
       else {
-        print "$rec->{id_firma} $person_text\n";
+        print "**** $rec->{id_firma} $person_text\n";
       }
 
 
@@ -558,7 +635,29 @@ sub True_False_to_1_0 { #_{
   die "$tf";
 } #_}
 
-sub stammeinlage {
+sub are_persons_expected {
+
+  my $rec = shift;
+
+  unless ($rec->{mut_firma} or $rec->{mut_rechtsform} or $rec->{mut_kapital} or $rec->{mut_domizil} or $rec->{mut_zweck} or $rec->{mut_organ}) {
+   
+    goto skip if $rec->{mut_status} == 20;
+    goto skip if $rec->{text} =~ /La procédure de faillite, suspendue faute d'actif, a été clôturée/;
+
+    return 1;
+
+#   my @personen = Zefix::find_persons_from_daily_summary_rec($rec);
+#   die "Keine Personen: " .  $file_ ."\n" . $rec->{id_firma} unless @personen;
+
+    skip:
+
+  }
+
+  return 0;
+
+}
+
+sub stammeinlage { #_{
 
   if ($_[0] =~ s/mit eine. Stamm(?:einlage|anteil) von (.*)//) {
     return $1;
@@ -568,7 +667,9 @@ sub stammeinlage {
     return $1;
   }
 
-}
+  return undef;
+
+} #_}
 
 sub to_dt { #_{
   my $str = shift;

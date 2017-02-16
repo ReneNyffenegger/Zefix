@@ -89,7 +89,7 @@ sub load_daily_summaries { #_{
 
   trunc_table_person_firma();
 
-  my $sth_ins_person_firma = $dbh->prepare('insert into person_firma values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+  my $sth_ins_person_firma = $dbh->prepare('insert into person_firma values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
 
   for my $file (Zefix::daily_summary_files()) {
 
@@ -107,20 +107,25 @@ sub load_daily_summaries { #_{
                  $personen_rec->{von},
                  $personen_rec->{bezeichnung},
                  $personen_rec->{in},
+
+                 $personen_rec->{funktion},
+                 $personen_rec->{zeichnung},
+                 $personen_rec->{stammeinlage},
                 
-                 $personen_rec->{vr_praes } // 0,
-                 $personen_rec->{praes    } // 0,
-                 $personen_rec->{dir      } // 0,
-                 $personen_rec->{vr_mg    } // 0,
-                 $personen_rec->{gl_mg    } // 0,
-                 $personen_rec->{gf_vors  } // 0,
-                 $personen_rec->{gf       } // 0,
-  
-                 $personen_rec->{eu       } // 0,
-                 $personen_rec->{ep       } // 0,
-                 $personen_rec->{ku2      } // 0,
-                 $personen_rec->{kp2      } // 0,
-                 $personen_rec->{oz       } // 0,
+#                $personen_rec->{vr_praes } // 0,
+#                $personen_rec->{vr_vp    } // 0,
+#                $personen_rec->{praes    } // 0,
+#                $personen_rec->{dir      } // 0,
+#                $personen_rec->{vr_mg    } // 0,
+#                $personen_rec->{gl_mg    } // 0,
+#                $personen_rec->{gf_vors  } // 0,
+#                $personen_rec->{gf       } // 0,
+# 
+#                $personen_rec->{eu       } // 0,
+#                $personen_rec->{ep       } // 0,
+#                $personen_rec->{ku2      } // 0,
+#                $personen_rec->{kp2      } // 0,
+#                $personen_rec->{oz       } // 0,
 
 
                  $personen_rec->{gesellschafterin} // 0,
@@ -1029,19 +1034,9 @@ create table person_firma (
   bezeichnung       text,
   in_               text,
   --
-  vr_praes          int(1) not null,
-  praes             int(1) not null,
-  dir               int(1) not null,
-  vr_mg             int(1) not null,
-  gl_mg             int(1) not null,
-  gf_vors           int(1) not null,
-  gf                int(1) not null,
-  --
-  eu                int(1) not null,
-  ep                int(1) not null,
-  ku2               int(1) not null,
-  kp2               int(1) not null,
-  oz                int(1) not null,
+  funktion          text check (funktion != ''),
+  zeichnung         text check (zeichnung != ''),
+  stammeinlage      text check (stammeinlage != ''),
   --
   gesellschafterin  int(1) not null check(gesellschafterin in (0, 1)),
   revisionsstelle   int(1) not null check(revisionsstelle  in (0, 1)),

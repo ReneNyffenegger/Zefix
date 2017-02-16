@@ -18,6 +18,7 @@ print $out '<!DOCTYPE HTML>
   <style>
     tr.del {color:grey}
     td.rest {background-color:#f99}
+    .no-pers {color: red; font-weight: bold}
   </style>
 
 </head><body>';
@@ -37,6 +38,8 @@ while (my $rec = Zefix::parse_next_daily_summary_line($zefix_file)) {
     <td>Funktion</td>
     <td>Zeichnung</td>
 
+    <td>Stammeinlage</td>
+
     <td>G</td>
     <td>R</td>
     <td>L</td>
@@ -47,29 +50,32 @@ while (my $rec = Zefix::parse_next_daily_summary_line($zefix_file)) {
 
   my @personen = Zefix::find_persons_from_daily_summary_rec($rec);
 
+  for my $personen_rec (@personen) { #_{
 
+#   my $funktion_text = '';
+#   my $zeichnung_text = '';
 
-  for my $personen_rec (@personen) {
+#   if ($personen_rec->{vr_praes      }) { $funktion_text  .= 'Präsident des Verwaltungsrates<br>'; } #_{
+#   if ($personen_rec->{vr_vp         }) { $funktion_text  .= 'Vizepräsident des Verwaltungsrates<br>'; }
+#   if ($personen_rec->{praes         }) { $funktion_text  .= 'Präsident<br>'; }
+#   if ($personen_rec->{dir           }) { $funktion_text  .= 'Direktor des Verwaltungsrates<br>'; }
+#   if ($personen_rec->{vr_mg         }) { $funktion_text  .= 'Mitglied des Verwaltungsrates<br>'; }
+#   if ($personen_rec->{gl_mg         }) { $funktion_text  .= 'Mitglied der Geschäftsleitung<br>'; }
+#   if ($personen_rec->{mg            }) { $funktion_text  .= 'Mitglied<br>'; }
+#   if ($personen_rec->{gf_vors       }) { $funktion_text  .= 'Vorsitzender der Geschäftsführung<br>'; }
+#   if ($personen_rec->{gf            }) { $funktion_text  .= 'Geschäftsführer<br>'; }
+#   if ($personen_rec->{vr_sekr       }) { $funktion_text  .= 'Sekretärin des Verwaltungsrates<br>'; }
 
-    my $funktion_text = '';
-    my $zeichnung_text = '';
+#   if ($personen_rec->{eu            }) { $zeichnung_text .= 'Einzelunterschrift<br>'; }
+#   if ($personen_rec->{ep            }) { $zeichnung_text .= 'Einzelprokura<br>'; }
+#   if ($personen_rec->{ku2           }) { $zeichnung_text .= 'Kollektivunterschrift zu zweien<br>'; }
+#   if ($personen_rec->{kp2           }) { $zeichnung_text .= 'Kollektive Prokura zu zweien<br> '; }
+#   if ($personen_rec->{oz            }) { $zeichnung_text .= 'Ohne Zeichnungsberechtigung<br>'; } #_}
 
-    if ($personen_rec->{vr_praes      }) { $funktion_text  .= 'Präsident des Verwaltungsrates<br>'; }
-    if ($personen_rec->{praes         }) { $funktion_text  .= 'Präsident<br>'; }
-    if ($personen_rec->{dir           }) { $funktion_text  .= 'Direktor des Verwaltungsrates<br>'; }
-    if ($personen_rec->{vr_mg         }) { $funktion_text  .= 'Mitglied des Verwaltungsrates<br>'; }
-    if ($personen_rec->{gl_mg         }) { $funktion_text  .= 'Mitglied der Geschäftsleitung<br>'; }
-    if ($personen_rec->{mg            }) { $funktion_text  .= 'Mitglied<br>'; }
-    if ($personen_rec->{gf_vors       }) { $funktion_text  .= 'Vorsitzender der Geschäftsführung<br>'; }
-    if ($personen_rec->{gf            }) { $funktion_text  .= 'Geschäftsführer<br>'; }
+#   $parts = join "<br>", @$personen_rec->{parts} if @$personen_rec->{parts};
 
-    if ($personen_rec->{eu            }) { $zeichnung_text .= 'Einzelunterschrift<br>'; }
-    if ($personen_rec->{ep            }) { $zeichnung_text .= 'Einzelprokura<br>'; }
-    if ($personen_rec->{ku2           }) { $zeichnung_text .= 'Kollektivunterschrift zu zweien<br>'; }
-    if ($personen_rec->{kp2           }) { $zeichnung_text .= 'Kollektive Prokura zu zweien<br> '; }
-    if ($personen_rec->{oz            }) { $zeichnung_text .= 'Ohne Zeichnungsberechtigung<br>'; }
-
-    $personen_trs .= sprintf("<tr class='%s'>
+    $personen_trs .= sprintf( #_{
+      "<tr class='%s'>
         <td>%s</td>
         <td>%s</td>
         <td>%s</td>
@@ -78,6 +84,8 @@ while (my $rec = Zefix::parse_next_daily_summary_line($zefix_file)) {
       <!-- ---------- -->
         <td>%s</td>
         <td>%s</td>
+        <td>%s</td>
+
         <td>%s</td>
       <!-- ---------- -->
         <td>%d</td>
@@ -95,8 +103,10 @@ while (my $rec = Zefix::parse_next_daily_summary_line($zefix_file)) {
       $personen_rec->{in} //'',
 
       $personen_rec->{gesellschafter} ? 'Gesellschafter' : '',
-      $funktion_text,
-      $zeichnung_text,
+      $personen_rec->{funktion} // '', # $funktion_text,
+      $personen_rec->{zeichnung} // '', # $zeichnung_text,
+
+      $personen_rec->{stammeinlage} // '',
 
       $personen_rec->{gesellschafterin} // 0,
       $personen_rec->{revisionsstelle } // 0,
@@ -104,8 +114,9 @@ while (my $rec = Zefix::parse_next_daily_summary_line($zefix_file)) {
 #     --
       $personen_rec->{rest} ? 'rest': '',
       $personen_rec->{rest} // '?'
-   );
-  }
+   ); #_}
+
+  } #_}
 
 # my $personen_br = join "<br>", @personen;
 
@@ -124,6 +135,10 @@ while (my $rec = Zefix::parse_next_daily_summary_line($zefix_file)) {
   $text =~ s/</&lt;/g;
   $text =~ s/>/&gt;/g;
 
+  my $keine_personen ='';
+  if (Zefix::are_persons_expected($rec)) {
+    $keine_personen = "<div class='no-pers'>Keine Personen, obwohl welche erwartet</div>" unless @personen;
+  }
 
   print $out <<HTML;
 
@@ -134,6 +149,8 @@ while (my $rec = Zefix::parse_next_daily_summary_line($zefix_file)) {
 
   <p><b>Personen</b><table border=1>$personen_trs</table>
 
+
+  $keine_personen
 
   <p><p>
 

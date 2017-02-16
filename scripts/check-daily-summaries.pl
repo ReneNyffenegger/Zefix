@@ -95,18 +95,15 @@ for my $file (Zefix::daily_summary_files()) {
 
 
 
-   unless ($rec->{mut_firma} or $rec->{mut_rechtsform} or $rec->{mut_kapital} or $rec->{mut_domizil} or $rec->{mut_zweck} or $rec->{mut_organ}) {
+#  unless ($rec->{mut_firma} or $rec->{mut_rechtsform} or $rec->{mut_kapital} or $rec->{mut_domizil} or $rec->{mut_zweck} or $rec->{mut_organ}) {
 
-    
-     goto skip if $rec->{mut_status} == 20;
-     goto skip if $rec->{text} =~ /La procédure de faillite, suspendue faute d'actif, a été clôturée/;
+#   
+#    goto skip if $rec->{mut_status} == 20;
+#    goto skip if $rec->{text} =~ /La procédure de faillite, suspendue faute d'actif, a été clôturée/;
 
+   if (Zefix::are_persons_expected($rec)) {
      my @personen = Zefix::find_persons_from_daily_summary_rec($rec);
      die "Keine Personen: " .  $file_ ."\n" . $rec->{id_firma} unless @personen;
-
-
-     skip:
-
    }
 
     
