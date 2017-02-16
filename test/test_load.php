@@ -200,7 +200,7 @@ function cmp_zweck($sth, $id_firma, $zweck) { #_{
 
 function check_person_firma($dbh) { #_{
 
-  check_count($dbh, 'person_firma', 50);
+  check_count($dbh, 'person_firma', 51);
   $sth = db_prep_exec($dbh, 'select * from person_firma order by dt_journal, id_firma');
 
   cmp_person_firma($sth, 251792   ,'2001-07-30'  ,'-'  ,'Dettwiler'    ,'Werner'           ,'Reigoldswil'                         ,NULL                                               ,'Eichberg'                  ,0  ,0  ,0);
@@ -214,6 +214,7 @@ function check_person_firma($dbh) { #_{
   cmp_person_firma($sth, 823465   ,'2006-05-16'  ,'+'  ,'Gränicher'    ,'Hans Peter'       ,'Röthenbach bei Herzogenbuchsee'      ,NULL                                               ,'Zürich'                    ,0  ,0  ,0);
   cmp_person_firma($sth, 823465   ,'2006-05-16'  ,'+'  ,'Hefti'        ,'Simon'            ,'Thun'                                ,NULL                                               ,'Zürich'                    ,0  ,0  ,0);
   cmp_person_firma($sth, 451407   ,'2007-05-07'  ,'+'  ,'Ginnow'       ,'Richard'          ,'Volketswil'                          ,NULL                                               ,'Rüschlikon'                ,0  ,0  ,0);
+  cmp_person_firma($sth, 451407   ,'2007-05-07'  ,'+'  ,'Nyffenegger'  ,'René'             ,'Eriswil'                             ,NULL                                               ,'Zürich'                    ,0  ,0  ,0);
   cmp_person_firma($sth, 451407   ,'2008-09-08'  ,'-'  ,'Nyffenegger'  ,'René'             ,'Eriswil'                             ,NULL                                               ,'Zürich'                    ,0  ,0  ,0);
   cmp_person_firma($sth, 451407   ,'2008-09-08'  ,'+'  ,'Ginnow'       ,'Richard'          ,'Volketswil'                          ,NULL                                               ,'Rüschlikon'                ,0  ,0  ,0);
   cmp_person_firma($sth, 451407   ,'2008-09-08'  ,'+'  ,'Weber'        ,'Melanie'          ,'Gränichen'                           ,NULL                                               ,'Zell ZH'                   ,0  ,0  ,0);
@@ -263,7 +264,7 @@ function cmp_person_firma($sth, $id_firma, $dt_journal, $add_rm, $nachname, $vor
   $row = $sth -> fetch();
 
   if (! eq($row[ 0], $id_firma        )) {throw new Exception("cmp_person_firma 0 row[0] = $row[0], id_firma=$id_firma, dtJournal=$dt_journal"); }
-  if (! eq($row[ 1], $dt_journal      )) {throw new Exception('cmp_person_firma 1'); }
+  if (! eq($row[ 1], $dt_journal      )) {throw new Exception("cmp_person_firma 1, row[1] = $row[1], id_firma=$id_firma, dt_journal=$dt_journal"); }
   if (! eq($row[ 2], $add_rm          )) {throw new Exception('cmp_person_firma 2'); }
   if (! eq($row[ 3], $nachname        )) {throw new Exception('cmp_person_firma 3'); }
   if (! eq($row[ 4], $vorname         )) {throw new Exception('cmp_person_firma 4'); }

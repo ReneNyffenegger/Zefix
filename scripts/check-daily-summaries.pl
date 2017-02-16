@@ -4,7 +4,7 @@ use strict;
 
 use Zefix;
 
-Zefix::init('dev');
+Zefix::init('test');
 
 # my $downloaded_dir = "$ENV{digitales_backup}Zefix/downloaded/";
 
@@ -31,13 +31,13 @@ for my $file (Zefix::daily_summary_files()) {
     if (! grep { $_ eq $rec->{registeramt} } qw ( 400 509 280 350 500 660 514 550 670 270 320 440 524 645 290 300 310 528 503 73 170 53 35 150 100 626 251 621 506 600 229 217 20 130 120 92 212 224 200 160 249 255 260 232 206 247 261 140 254 240 244 530 241 501 36) ) {
       failed('registeramt');
     }
-    if ($rec->{dt_journal} !~ /^\d\d\d\d-\d\d-\d\d 00:00:00$/) {
+    if ($rec->{dt_journal} !~ /^\d\d\d\d-\d\d-\d\d$/) {
        failed('dt_journal');
     }
     if ($rec->{no_journal} !~ /^\d+$/) {
        failed('no_journal');
     }
-    if ($rec->{dt_publikation} !~ /^\d\d\d\d-\d\d-\d\d 00:00:00$/) {
+    if ($rec->{dt_publikation} !~ /^\d\d\d\d-\d\d-\d\d$/) {
        failed('dt_publikation');
     }
     if ($rec->{no_ausgabe} !~ /^\d+$/  and $rec->{no_ausgabe} > 250) {
@@ -95,19 +95,19 @@ for my $file (Zefix::daily_summary_files()) {
 
 
 
-#  unless ($rec->{mut_firma} or $rec->{mut_rechtsform} or $rec->{mut_kapital} or $rec->{mut_domizil} or $rec->{mut_zweck} or $rec->{mut_organ}) {
+   unless ($rec->{mut_firma} or $rec->{mut_rechtsform} or $rec->{mut_kapital} or $rec->{mut_domizil} or $rec->{mut_zweck} or $rec->{mut_organ}) {
 
-#   
-#    goto skip if $rec->{mut_status} == 20;
-#    goto skip if $rec->{text} =~ /La procédure de faillite, suspendue faute d'actif, a été clôturée/;
+    
+     goto skip if $rec->{mut_status} == 20;
+     goto skip if $rec->{text} =~ /La procédure de faillite, suspendue faute d'actif, a été clôturée/;
 
-#    my @personen = Zefix::find_persons_from_daily_summary_text($rec->{text});
-#    die "Keine Personen: " .  $file_ ."\n" . $rec->{id_firma} unless @personen;
+     my @personen = Zefix::find_persons_from_daily_summary_rec($rec);
+     die "Keine Personen: " .  $file_ ."\n" . $rec->{id_firma} unless @personen;
 
 
-#    skip:
+     skip:
 
-#  }
+   }
 
     
 
