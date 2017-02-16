@@ -27,51 +27,20 @@ while (my $rec = Zefix::parse_next_daily_summary_line($zefix_file)) {
 
 
   my $personen_trs = '<tr>
-<!--      <td>+/-</td> -->
     <td>Nachname</td>
     <td>Vorname</td>
     <td>von</td>
     <td>Bezeichung</td>
     <td>in</td>
 
-    <td>Details</td>
-
-    <td>Vors GF</td>
-    <td>Präs</td>
-    <td>Dir</td>
-    <td>Mitgl</td>
-    <td>Mitgl VR</td>
-  <!--  ----- -->
-    <td>EU</td>
-    <td>EP</td>
-    <td>KU2</td>
-    <td>KP2</td>
-  <!--  ----- -->
-    <td>St Einl</td>
-    <td>St Ant</td>
-
-
+    <td>Gesellschafter</td>
+    <td>Funktion</td>
+    <td>Zeichnung</td>
 
     <td>G</td>
     <td>R</td>
     <td>L</td>
 
-
-    <td>B: Vors GF</td>
-    <td>B: Präs</td>
-    <td>B: Dir</td>
-    <td>B: Mitgl</td>
-    <td>B: Mitgl VR</td>
-  <!--  ----- -->
-    <td>B: EU</td>
-    <td>B: EP</td>
-    <td>B: KU2</td>
-    <td>B: KP2</td>
-  <!--  ----- -->
-    <td>B: St Einl</td>
-    <td>B: St Ant</td>
-
-  <!-- ---- -->
     <td>Rest</td>
 
   </tr>';
@@ -82,37 +51,31 @@ while (my $rec = Zefix::parse_next_daily_summary_line($zefix_file)) {
 
   for my $personen_rec (@personen) {
 
-    my $funkt_text = '';
+    my $funktion_text = '';
+    my $zeichnung_text = '';
 
-    if ($personen_rec->{koll_prok_2}) { $funkt_text .= 'Koll. Prok. zu 2 <br> '; }
-    if ($personen_rec->{gesellschafter}) { $funkt_text .= 'Gesellschafter <br> '; }
-    if ($personen_rec->{vr_praes} ) { $funkt_text .= 'Präsident des Verwaltungsrates<br>'; }
-    if ($personen_rec->{praes} ) { $funkt_text .= 'Präsident<br>'; }
-    if ($personen_rec->{dir}  ) { $funkt_text .= 'Direktor des Verwaltungsrates<br>'; }
-    if ($personen_rec->{vr_mg}  ) { $funkt_text .= 'Mitglied des Verwaltungsrates<br>'; }
-    if ($personen_rec->{gl_mg}  ) { $funkt_text .= 'Mitglied der Geschäftsleitung<br>'; }
-    if ($personen_rec->{mg}    ) { $funkt_text .= 'Mitglied<br>'; }
-    if ($personen_rec->{gf_vors} ) { $funkt_text .= 'Vorsitzender der Geschäftsführung<br>'; }
-    if ($personen_rec->{gf} ) { $funkt_text .= 'Geschäftsführer<br>'; }
-    if ($personen_rec->{eu} ) { $funkt_text .= 'Einzelunterschrift<br>'; }
-    if ($personen_rec->{ep} ) { $funkt_text .= 'Einzelprokura<br>'; }
-    if ($personen_rec->{ku2}) { $funkt_text .= 'Kollektivunterschrift zu zweien<br>'; }
-    if ($personen_rec->{oz}    ) { $funkt_text .= 'Ohne Zeichnungsberechtigung<br>'; }
+    if ($personen_rec->{vr_praes      }) { $funktion_text  .= 'Präsident des Verwaltungsrates<br>'; }
+    if ($personen_rec->{praes         }) { $funktion_text  .= 'Präsident<br>'; }
+    if ($personen_rec->{dir           }) { $funktion_text  .= 'Direktor des Verwaltungsrates<br>'; }
+    if ($personen_rec->{vr_mg         }) { $funktion_text  .= 'Mitglied des Verwaltungsrates<br>'; }
+    if ($personen_rec->{gl_mg         }) { $funktion_text  .= 'Mitglied der Geschäftsleitung<br>'; }
+    if ($personen_rec->{mg            }) { $funktion_text  .= 'Mitglied<br>'; }
+    if ($personen_rec->{gf_vors       }) { $funktion_text  .= 'Vorsitzender der Geschäftsführung<br>'; }
+    if ($personen_rec->{gf            }) { $funktion_text  .= 'Geschäftsführer<br>'; }
+
+    if ($personen_rec->{koll_prok_2   }) { $zeichnung_text .= 'Kollektive Prokura zu zweien<br> '; }
+    if ($personen_rec->{eu            }) { $zeichnung_text .= 'Einzelunterschrift<br>'; }
+    if ($personen_rec->{ep            }) { $zeichnung_text .= 'Einzelprokura<br>'; }
+    if ($personen_rec->{ku2           }) { $zeichnung_text .= 'Kollektivunterschrift zu zweien<br>'; }
+    if ($personen_rec->{oz            }) { $zeichnung_text .= 'Ohne Zeichnungsberechtigung<br>'; }
 
     $personen_trs .= sprintf("<tr class='%s'>
-<!--    <td>s</td>  +- -->
         <td>%s</td>
         <td>%s</td>
         <td>%s</td>
         <td>%s</td>
         <td>%s</td>
       <!-- ---------- -->
-        <td>%s</td>
-      <!-- ---------- -->
-        <td>%s</td>
-        <td>%s</td>
-        <td>%s</td>
-        <td>%s</td>
         <td>%s</td>
         <td>%s</td>
         <td>%s</td>
@@ -120,14 +83,6 @@ while (my $rec = Zefix::parse_next_daily_summary_line($zefix_file)) {
         <td>%d</td>
         <td>%d</td>
         <td>%d</td>
-      <!-- ---------- -->
-        <td>%s</td>
-        <td>%s</td>
-        <td>%s</td>
-        <td>%s</td>
-        <td>%s</td>
-        <td>%s</td>
-        <td>%s</td>
       <!-- ---------- -->
         <td class='%s'>%s</td>
         </tr>",
@@ -138,31 +93,14 @@ while (my $rec = Zefix::parse_next_daily_summary_line($zefix_file)) {
       $personen_rec->{von} //'',
       $personen_rec->{bezeichnung} // '',
       $personen_rec->{in} //'',
-      $funkt_text,
 
-      $personen_rec->{vorsitzender_gf        } // '?',
-      $personen_rec->{praesident             } // '?',
-      $personen_rec->{direktor               } // '?',
-#     $personen_rec->{gesellschafter         } // '?',
-      $personen_rec->{mitglied_vr            } // '?',
-      $personen_rec->{einzelprokura          } // '?',
-#     $personen_rec->{kollektivprokura_2     } // '?',
-      $personen_rec->{stammeinlage           } // '?',
-      $personen_rec->{stammanteile           } // '?',
+      $personen_rec->{gesellschafter} ? 'Gesellschafter' : '',
+      $funktion_text,
+      $zeichnung_text,
 
       $personen_rec->{gesellschafterin} // 0,
       $personen_rec->{revisionsstelle } // 0,
       $personen_rec->{liquidatorin    } // 0,
-
-      $personen_rec->{bisher_vorsitzender_gf        } // '?',
-      $personen_rec->{bisher_praesident             } // '?',
-      $personen_rec->{bisher_direktor               } // '?',
-#     $personen_rec->{bisher_gesellschafter         } // '?',
-      $personen_rec->{bisher_mitglied_vr            } // '?',
-      $personen_rec->{bisher_einzelprokura          } // '?',
-#     $personen_rec->{bisher_kollektivprokura_2     } // '?',
-      $personen_rec->{bisher_stammeinlage           } // '?',
-      $personen_rec->{bisher_stammanteile           } // '?',
 #     --
       $personen_rec->{rest} ? 'rest': '',
       $personen_rec->{rest} // '?'

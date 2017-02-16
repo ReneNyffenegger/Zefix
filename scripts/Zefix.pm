@@ -425,31 +425,31 @@ sub find_persons_from_daily_summary_rec { #_{
           $person_rec->{koll_prok_2} = 0;
         }
 
-#       $person_rec->{funktion} = s_back($6);
-
-        $person_rec->{vorsitzender_gf        } = 'vg?';
-        $person_rec->{geschaeftsfuehrer      } = 'gf?';
-        $person_rec->{praesident             } = 'pr?';
-        $person_rec->{direktor               } = 'dk?';
-#       $person_rec->{gesellschafter         } = 'gs?';
-        $person_rec->{mitglied_vr            } = 'vr?';
-        $person_rec->{einzelunterschrift     } = 'eu?';
-        $person_rec->{einzelprokura          } = 'eu?';
-#       $person_rec->{kollektivprokura_2     } = 'k2?';
-#       $person_rec->{stammanteile           } = 'sa?';
-
-        $person_rec->{bisher_vorsitzender_gf        } = 'B-vg?';
-        $person_rec->{bisher_geschaeftsfuehrer      } = 'B-gf?';
-        $person_rec->{bisher_praesident             } = 'B-pr?';
-        $person_rec->{bisher_direktor               } = 'B-dk?';
-#       $person_rec->{bisher_gesellschafter         } = 'B-gs?';
-        $person_rec->{bisher_mitglied_vr            } = 'B-vr?';
-        $person_rec->{bisher_einzelunterschrift     } = 'B-eu?';
-        $person_rec->{bisher_einzelprokura          } = 'B-ep?';
-        $person_rec->{bisher_kollektivunterschrit_2 } = 'B-k2?';
-#       $person_rec->{bisher_kollektivprokura_2     } = 'B-k2?';
-#       $person_rec->{bisher_stammeinlage           } = 'B-st?';
-#       $person_rec->{bisher_stammanteile           } = 'B-sa?';
+# #       $person_rec->{funktion} = s_back($6);
+# 
+#         $person_rec->{vorsitzender_gf        } = 'vg?';
+#         $person_rec->{geschaeftsfuehrer      } = 'gf?';
+#         $person_rec->{praesident             } = 'pr?';
+#         $person_rec->{direktor               } = 'dk?';
+# #       $person_rec->{gesellschafter         } = 'gs?';
+#         $person_rec->{mitglied_vr            } = 'vr?';
+#         $person_rec->{einzelunterschrift     } = 'eu?';
+#         $person_rec->{einzelprokura          } = 'eu?';
+# #       $person_rec->{kollektivprokura_2     } = 'k2?';
+# #       $person_rec->{stammanteile           } = 'sa?';
+# 
+#         $person_rec->{bisher_vorsitzender_gf        } = 'B-vg?';
+#         $person_rec->{bisher_geschaeftsfuehrer      } = 'B-gf?';
+#         $person_rec->{bisher_praesident             } = 'B-pr?';
+#         $person_rec->{bisher_direktor               } = 'B-dk?';
+# #       $person_rec->{bisher_gesellschafter         } = 'B-gs?';
+#         $person_rec->{bisher_mitglied_vr            } = 'B-vr?';
+#         $person_rec->{bisher_einzelunterschrift     } = 'B-eu?';
+#         $person_rec->{bisher_einzelprokura          } = 'B-ep?';
+#         $person_rec->{bisher_kollektivunterschrit_2 } = 'B-k2?';
+# #       $person_rec->{bisher_kollektivprokura_2     } = 'B-k2?';
+# #       $person_rec->{bisher_stammeinlage           } = 'B-st?';
+# #       $person_rec->{bisher_stammanteile           } = 'B-sa?';
 
 
         $person_det =~ s/ *,//g;
