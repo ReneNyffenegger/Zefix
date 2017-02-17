@@ -352,6 +352,8 @@ sub find_persons_from_daily_summary_rec { #_{
                /président/               or
                /\btitulaire\b/           or
                /\bsoci[oa]\b/            or
+               /\badministrateur\b/      or
+               /\bsecrétaire\b/          or
                /\bgerente\b/  ) {
 
               if (exists $person_rec->{function}) {
