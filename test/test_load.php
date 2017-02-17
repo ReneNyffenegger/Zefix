@@ -213,7 +213,6 @@ function cmp_zweck($sth, $id_firma, $zweck) { #_{
 
 function check_person_firma($dbh) { #_{
 
-
   $gs='Gesellschafter';
   $vors='Vorsitzender';
   $gf='Geschäftsführung';
@@ -229,7 +228,7 @@ function check_person_firma($dbh) { #_{
   $varian='Varian Medical Systems International AG';
   $ortag='Ortag, Organisations-, Revisions- und Treuhand-AG';
 
-  check_count($dbh, 'person_firma', 84);
+  check_count($dbh, 'person_firma', 88);
   $sth = db_prep_exec($dbh, 'select * from person_firma order by dt_journal, id_firma');
 
   $cnt=1;
@@ -273,11 +272,15 @@ function check_person_firma($dbh) { #_{
   cmp_person_firma($sth, $cnt++, 712087   ,'2008-11-04'  ,'-'  ,'Vogt'          ,'Heinz'            ,'Lauwil'                              , null                                       ,'Baldingen'                 ,'Geschäftsführer'                            , 'mit Einzelunterschrift'                              ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 712087   ,'2008-11-04'  ,'+'  ,'Oderbolz'      ,'Fritz'            ,'Tübach'                              , null                                       ,'Hünenberg'                 ,"$gs und $vors der $gf"                      ,$ku2                                                   ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 712087   ,'2008-11-04'  ,'+'  ,'Amstutz'       ,'Martin'           ,'Engelberg'                           , null                                       ,'Döttingen'                 , $gfr                                        ,$ku2                                                   ,  null                                                  );
-
   cmp_person_firma($sth, $cnt++, 712087   ,'2008-11-12'  ,'+'  ,'Oderbolz'      ,'Fritz'            ,'Tübach'                              , null                                       ,'Hünenberg'                 ,"$vors der $gf"                              ,$ku2                                                   ,  null                                                  );
-
   cmp_person_firma($sth, $cnt++, 934296   ,'2009-01-28'  ,'+'  ,'Ginnow'        ,'Richard'          ,'Volketswil'                          ,NULL                                        ,'Mettmenstetten'            ,'Präsident des Verwaltungsrates'             , 'mit Einzelunterschrift'                              ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 934296   ,'2009-01-28'  ,'+'  ,'Kuhn'          ,'Roland'           ,'Illnau-Effretikon'                   ,NULL                                        ,'St. Gallen'                ,$vr_mg                                       , 'mit Einzelunterschrift'                              ,  null                                                  );
+
+  cmp_person_firma($sth, $cnt++, 150042   ,'2009-07-17'  ,'-'   ,'Bürgin'       ,'Werner'           ,'Basel'                               , null                                       ,'Basel'                     ,'Mitglied'                                   ,'ohne Zeichnungsberechtigung'                          , null                                                   );
+  cmp_person_firma($sth, $cnt++, 150042   ,'2009-07-17'  ,'+'   ,'Abry'         ,'Pierre'           ,'Weggis'                              , null                                       ,'Weggis'                    ,'Mitglied'                                   ,'ohne Zeichnungsberechtigung'                          , null                                                   );
+  cmp_person_firma($sth, $cnt++, 150042   ,'2009-07-17'  ,'+'   ,'Huber'        ,'Marcel'           ,'Eschenbach LU'                       , null                                       ,'Eschenbach LU'             ,'Kassier'                                    ,$ku2                                                   , null                                                   );
+  cmp_person_firma($sth, $cnt++, 150042   ,'2009-07-17'  ,'+'   ,'Metzger'      ,'Caroline'         ,'Möhlin'                              , null                                       ,'Uster'                     ,'Aktuarin'                                   ,'ohne Zeichnungsberechtigung'                          , null                                                   );
+
   cmp_person_firma($sth, $cnt++,  76284   ,'2009-10-26'  ,'-'  , null           , null              , null                                 ,'Fiduciaire Jean-Maurice Maitre S.A.'       ,'Porrentruy'                , null                                        ,  null                                                 ,  null                                                  );
   cmp_person_firma($sth, $cnt++,  76284   ,'2009-10-26'  ,'+'  , null           , null              , null                                 ,'RéviAjoie Sàrl'                            ,'Porrentruy'                , null                                        ,  null                                                 ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 934296   ,'2009-11-06'  ,'+'  ,'Ginnow'        ,'Richard'          ,'Volketswil'                          ,NULL                                        ,'Mettmenstetten'            ,'Präsident des Verwaltungsrates'             ,$ku2                                                   ,  null                                                  );
