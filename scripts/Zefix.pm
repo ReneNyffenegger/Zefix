@@ -344,6 +344,8 @@ sub find_persons_from_daily_summary_rec { #_{
                /Inhaber(in)?\b/          or
                /Geschäftsführung\b/      or
                /Vorsitzender?\b/         or
+               /\bassocié\b/             or
+               /\bgérant\b/              or
                /[Kk]assier/              or
                /\bmembre\b/              or
                /organe de révision/      or
@@ -389,9 +391,10 @@ sub find_persons_from_daily_summary_rec { #_{
 
         @parts = grep { #_{ Stammeinlage
 
-           if (/Stammanteil/     or
-               /Stammeinlage/    or
-               /con (una|1) quota/
+           if (/Stammanteil/                 or
+               /Stammeinlage/                or
+               /con (una|1) quota/           or
+               /pour \d+ parts sociales de /
             ) {
 
               print "Already exists: $person_rec->{stammeinlage}, _ = $_\n" if exists $person_rec->{stammeinlage};
