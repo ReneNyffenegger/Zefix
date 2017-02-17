@@ -230,7 +230,7 @@ function check_person_firma($dbh) { #_{
   $tro_typo='TRO Teuhand & Revisions AG (<M>CHE107.909.432<E>)';
   $ortag='Ortag, Organisations-, Revisions- und Treuhand-AG';
 
-  check_count($dbh, 'person_firma', 98);
+  check_count($dbh, 'person_firma', 101);
   $sth = db_prep_exec($dbh, 'select * from person_firma order by dt_journal, id_firma');
 
   $cnt=1;
@@ -313,6 +313,11 @@ function check_person_firma($dbh) { #_{
   cmp_person_firma($sth, $cnt++, 823465   ,'2013-07-29'  ,'-'  ,'Hausmann'      ,'Alexander'        ,'Dietikon'                            ,NULL                                        ,'Dietikon'                  , null                                        , 'mit Kollektivprokura zu zweien'                      ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 823465   ,'2013-07-29'  ,'+'  ,NULL            ,NULL               ,NULL                                  ,'ORTAG AG'                                  ,'Zürich'                    ,'Revisionsstelle'                            ,  null                                                 ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 150042   ,'2013-08-28'  ,'+'  , null           , null              , null                                 ,$tro_typo                                   ,'Olten'                     ,'Revisionsstelle'                            ,  null                                                 ,  null                                                  );
+
+  cmp_person_firma($sth, $cnt++, 712087   ,'2014-02-24'  ,'-'  ,'Balmer'        ,'Ralph'            ,'Wilderswil'                          , null                                       ,'Bern'                      , null                                        ,$kp2                                                   ,  null                                                  );
+  cmp_person_firma($sth, $cnt++, 712087   ,'2014-02-24'  ,'+'  ,'Cavallari'     ,'Mario'            ,'Alpnach'                             , null                                       ,'Alpnach'                   , null                                        ,$kp2                                                   ,  null                                                  );
+  cmp_person_firma($sth, $cnt++, 712087   ,'2014-02-24'  ,'+'  ,'Hauri'         ,'Reto'             ,'Niederlenz'                          , null                                       ,'Gränichen'                 , null                                        ,$kp2                                                   ,  null                                                  );
+
   cmp_person_firma($sth, $cnt++, 823465   ,'2014-08-13'  ,'-'  ,'Hagger'        ,'Joachim Andreas'  ,'Basel'                               ,NULL                                        ,'Zürich'                    ,$vr_mg                                       ,$ku2                                                   ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 823465   ,'2014-08-13'  ,'+'  ,'Franz'         ,'Mike'             ,'Frick'                               ,NULL                                        ,'Gipf-Oberfrick'            ,$vr_mg                                       ,$ku2                                                   ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 451407   ,'2016-10-04'  ,'+'  ,'Ginnow'        ,'Richard'          ,'Volketswil'                          ,NULL                                        ,'Mettmenstetten'            ,"$gs und Vorsitzender der $gf"               , 'mit Einzelunterschrift'                              , 'mit 188 Stammanteilen zu je CHF 100.00'               );

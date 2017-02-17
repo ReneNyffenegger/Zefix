@@ -270,7 +270,7 @@ sub find_persons_from_daily_summary_rec { #_{
 
     my ($intro_text, $personen_text) = ($1, $2);
 
-    for my $person_text (split ';', $personen_text) {
+    for my $person_text (split ';', $personen_text) { #_{
 
 
       my $person_rec = {};
@@ -413,7 +413,7 @@ sub find_persons_from_daily_summary_rec { #_{
 
 
       push @ret, $person_rec;
-    }
+    } #_}
   }
   return @ret;
 
