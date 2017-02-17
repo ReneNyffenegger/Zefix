@@ -12,7 +12,7 @@ GetOptions (
 
 
 my $downloaded_dir = "$ENV{digitales_backup}Zefix/downloaded/";
-my $dest_dir       = "extracted/";
+my $dest_dir       = "q/";
 
 die unless -d $downloaded_dir;
 die unless -d $dest_dir;

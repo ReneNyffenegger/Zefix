@@ -302,7 +302,7 @@ sub find_persons_from_daily_summary_rec { #_{
           $person_rec->{vorname } = $2;
 
         } #_}
-        elsif ($name =~ / *(.*), *([^,]*(?:Staatsangehöriger|cittadino)[^]]*)/) { #_{
+        elsif ($name =~ / *(.*), *([^,]*(?:Staatsangehöriger?|cittadino)[^]]*)/) { #_{
 
           my $naturliche_person = $1;
           $person_rec->{von} = $2;
