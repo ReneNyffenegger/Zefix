@@ -369,6 +369,7 @@ sub find_persons_from_daily_summary_rec { #_{
 
         my @parts = split ' *, *', $more;
 
+
         
         @parts = grep { #_{ Funktion
 
@@ -432,8 +433,8 @@ sub find_persons_from_daily_summary_rec { #_{
 
         } @parts; #_}
 
+        $person_rec->{rest} = join " @ ",  @parts;
 
-        $person_rec->{rest} = join @parts;
       } #_}
       else {
 #q        print "**** $rec->{id_firma} $person_text\n";

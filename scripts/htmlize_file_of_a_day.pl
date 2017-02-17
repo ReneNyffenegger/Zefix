@@ -34,7 +34,6 @@ while (my $rec = Zefix::parse_next_daily_summary_line($zefix_file)) {
     <td>Bezeichung</td>
     <td>in</td>
 
-    <td>Gesellschafter</td>
     <td>Funktion</td>
     <td>Zeichnung</td>
 
@@ -42,12 +41,14 @@ while (my $rec = Zefix::parse_next_daily_summary_line($zefix_file)) {
 
     <td>Rest</td>
 
-  </tr>';
+  </tr>
+';
 
   my @personen = Zefix::find_persons_from_daily_summary_rec($rec);
 
   for my $personen_rec (@personen) { #_{
 
+    print $personen_rec->{rest},"\n";
 
     $personen_trs .= sprintf( #_{
       "<tr class='%s'>
@@ -60,11 +61,9 @@ while (my $rec = Zefix::parse_next_daily_summary_line($zefix_file)) {
         <td>%s</td>
         <td>%s</td>
         <td>%s</td>
-
-        <td>%s</td>
       <!-- ---------- -->
         <td class='%s'>%s</td>
-        </tr>",
+        </tr>\n",
 #     $personen_rec->{add_rm},
       $personen_rec->{add_rm} eq '-' ? 'del' : 'add',
       $personen_rec->{nachname} //'',
@@ -73,10 +72,8 @@ while (my $rec = Zefix::parse_next_daily_summary_line($zefix_file)) {
       $personen_rec->{bezeichnung} // '',
       $personen_rec->{in} //'',
 
-      $personen_rec->{gesellschafter} ? 'Gesellschafter' : '',
-      $personen_rec->{funktion} // '', # $funktion_text,
-      $personen_rec->{zeichnung} // '', # $zeichnung_text,
-
+      $personen_rec->{funktion} // '',
+      $personen_rec->{zeichnung} // '',
       $personen_rec->{stammeinlage} // '',
 
       $personen_rec->{rest} ? 'rest': '',
@@ -109,7 +106,7 @@ while (my $rec = Zefix::parse_next_daily_summary_line($zefix_file)) {
 
   print $out <<HTML;
 
-  id_firma: $rec->{id_firma}  (Registeramt: $rec->{registeramt})
+  id_firma: $rec->{id_firma}  (Registeramt: $rec->{registeramt}, Dt Journal: $rec->{dt_journal}
   <br>
 
   $stati
