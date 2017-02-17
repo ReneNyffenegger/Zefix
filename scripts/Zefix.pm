@@ -534,21 +534,18 @@ sub bisher_nicht_etc { #_{
   # $_[1]  ... nicht, bisher ...
   
 
-  if ($_[0] =~ s/ *\[$_[1]:([^]]*)\]//) {
+  if ($_[0] =~ s/ *[[(]$_[1]:([^]]*)[\])]//) {
     return $1;
   }
   if ($_[1] eq 'bisher') { #_{
-    if ($_[0] =~ s/ *\[précédemment:([^]]*)\]//) {
-      return $1;
-    }
-    if ($_[0] =~ s/ *\[finora:([^]]*)\]//) {
-      return $1;
+    my $ret = bisher_nicht_etc($_[0], 'précédemment'); 
+    unless ($ret) {
+      return bisher_nicht_etc($_[0], 'finora');
     }
   } #_}
   if ($_[1] eq 'nicht') { #_{
-    if ($_[0] =~ s/ *\[non:([^]]*)\]//) {
-      return $1;
-    }
+    my $ret = bisher_nicht_etc($_[0], 'non'); 
+    return $ret;
   } #_}
   return '';
 } #_}
