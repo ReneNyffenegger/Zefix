@@ -291,6 +291,7 @@ function check_person_firma($dbh) { #_{
   $ku2='mit Kollektivunterschrift zu zweien';
   $kp2='mit Kollektivprokura zu zweien';
   $sig_inv='avec signature individuelle';
+  $sig_c2='avec signature collective à deux';
   
   $varian='Varian Medical Systems International AG';
   $tro_typo='TRO Teuhand & Revisions AG (<M>CHE107.909.432<E>)';
@@ -303,7 +304,7 @@ function check_person_firma($dbh) { #_{
   $stang = 'Staatsangehörige';
   $stangr = 'Staatsangehöriger';
 
-  check_count($dbh, 'person_firma', 118);
+  check_count($dbh, 'person_firma', 122);
   $sth = db_prep_exec($dbh, 'select * from person_firma order by dt_journal, id_firma');
 
   $cnt=1;
@@ -408,9 +409,13 @@ function check_person_firma($dbh) { #_{
   cmp_person_firma($sth, $cnt++,1271529   ,'2016-07-15'  ,'+'  ,'Rey'              ,'Jean Vincent'     ,'Montana'                             , null                                       ,'Montana'                   ,'administrateur et secrétaire'               ,$sig_inv                                               ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 451407   ,'2016-10-04'  ,'+'  ,'Ginnow'           ,'Richard'          ,'Volketswil'                          ,NULL                                        ,'Mettmenstetten'            ,"$gs und Vorsitzender der $gf"               , 'mit Einzelunterschrift'                              , 'mit 188 Stammanteilen zu je CHF 100.00'               );
   cmp_person_firma($sth, $cnt++, 451407   ,'2016-10-04'  ,'+'  ,'Norgate'          ,'Thomas Aylwin'    ,'britischer Staatsangehöriger'        ,NULL                                        ,'Freienbach'                ,$gs_gf                                       , 'mit Einzelunterschrift'                              , 'mit 12 Stammanteilen zu je CHF 100.00'                );
-
   cmp_person_firma($sth, $cnt++, 1279490  ,'2016-10-06'  ,'+'  ,'Schwarz'          ,'Andreas Christian','Weinfelden'                          , null                                       ,'Fällanden'                 ,"$praes des $vrs"                            ,$eu                                                    ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 1279490  ,'2016-10-06'  ,'+'  ,'Kazadi'           ,'Joe'              ,"amerikanischer $stangr"              , null                                       ,'Poolesville (MD/US)'       ,"$del des $vrs und $gfr"                     ,$eu                                                    ,  null                                                  );
+
+  cmp_person_firma($sth, $cnt++, 1280835  ,'2016-10-19'  ,'+'  ,'Cordonier'        ,'Georges Elie'     ,'Montana'                             , null                                       ,'Martigny'                  ,'président'                                  ,$sig_c2                                                ,  null                                                  );
+  cmp_person_firma($sth, $cnt++, 1280835  ,'2016-10-19'  ,'+'  ,'Cordonier'        ,'Patrick Christian','Montana'                             , null                                       ,'Montana'                   ,'administrateur'                             ,$sig_c2                                                ,  null                                                  );
+  cmp_person_firma($sth, $cnt++, 1280835  ,'2016-10-19'  ,'+'  ,'Cordonier'        ,'Denis Dominique'  ,'Montana'                             , null                                       ,'Montana'                   ,'administrateur'                             ,$sig_c2                                                ,  null                                                  );
+  cmp_person_firma($sth, $cnt++, 1280835  ,'2016-10-19'  ,'+'  ,'Cordonier'        ,'Gratien Benoît'   ,'Montana'                             , null                                       ,'Montana'                   ,'administrateur'                             ,$sig_c2                                                ,  null                                                  );
 
   cmp_person_firma($sth, $cnt++, 934296   ,'2016-12-15'  ,'-'  ,'Kuhn'             ,'Roland'           ,'Illnau-Effretikon'                   ,NULL                                        ,'St. Gallen'                ,$vr_mg                                       ,$ku2                                                   ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 934296   ,'2016-12-15'  ,'-'  ,'Keller'           ,'Primin'           ,'Altendorf'                           ,NULL                                        ,'Waldkirch'                 ,$gl_mg                                       ,$ku2                                                   ,  null                                                  );
