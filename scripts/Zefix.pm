@@ -278,49 +278,10 @@ sub find_persons_from_daily_summary_rec { #_{
          $person_rec = {'add_rm' => '-'};
       } #_}
 
-      if ($person_text =~ s! *\(?<R>([^<]+)<E>\)?!!g)  {
+      if ($person_text =~ s! *\(?<R>([^<]+)<E>\)?!!g)  { #_{
         $person_rec->{firma} = s_back($1);
-      }
-#q      if ($person_text =~ / *(.+), (Zweigniederlassung )?(?:in|à) ([^,]+), (Revisionsstelle|organe de révision|Gesellschafterin|Liquidatorin|ufficio di revisione)(.*)/) { #_{
-#q
-#q        $person_rec->{bezeichnung} = s_back($1);
-#q        $person_rec->{in}          = s_back($3);
-#q
-#q        my $grl = s_back($4);
-#q        print "grl: $grl\n";
-#q        my $grl_bisher = bisher_nicht_etc($grl, 'bisher');
-#q        print "grl: $grl\ngrl bisher: $grl_bisher\n\n";
-#q
-#q     
-#q        if ($grl eq 'Gesellschafterin') {
-#q          $person_rec->{gesellschafterin} = 1;
-#q        }
-#q        elsif ($grl eq 'Revisionsstelle' or $4 eq 'organe de révision' or $4 eq 'ufficio di revisione') {
-#q          $person_rec->{revisionsstelle} = 1;
-#q        }
-#q        elsif ($grl eq 'Liquidatorin') {
-#q          $person_rec->{liquidatorin} = 1;
-#q        }
-#q
-#q        my $det = s_back($5);
-#q        my $det_bisher  = bisher_nicht_etc($det, 'bisher');
-#q
-#q        if ($det =~ s/ohne Zeichnungsberechtigung//) {
-#q           $person_rec -> {oz} = 1;
-#q        }
-#q        else {
-#q           $person_rec -> {oz} = 0;
-#q        }
-#q
-#q        $person_rec->{stammeinlage} = stammeinlage($det);
-#q
-#q        $det =~ s/,//g;
-#q        $det =~ s/^ *//g;
-#q        $person_rec->{rest} = $det;
-#q
-#q      } #_}
-#       if ($person_text =~ / *([^,]+), *([^,]+), (von )?([^,]+), (?:in|à) ([^,]+), *(.*)/) { #_{
-      if ($person_text =~ / *(.*), (?:in|à) ([^,]+), *(.*)/) {
+      } #_}
+      if ($person_text =~ / *(.*), (?:in|à) ([^,]+), *(.*)/) { #_{
 
         my $name = s_back($1);
         my $more = $3;
@@ -355,9 +316,6 @@ sub find_persons_from_daily_summary_rec { #_{
         } #_}
 
 
-
-
-
 #       my $person_det = s_back($6);
 
         my $person_det_bisher = bisher_nicht_etc($more, 'bisher');
@@ -369,18 +327,20 @@ sub find_persons_from_daily_summary_rec { #_{
 
         my @parts = split ' *, *', $more;
 
-
-        
         @parts = grep { #_{ Funktion
 
-           if (/Verwaltungsrates/ or
-               /[pP]räsident/     or
-               /Geschäftsführer/  or
-               /Geschäftsleitung/ or
-               /Mitglied/         or
-               /[Kk]assier/       or
-               /\bmembre\b/       or
-               /président/        or
+           if (/Verwaltungsrates/        or
+               /[pP]räsident/            or
+               /Geschäftsführer/         or
+               /Revisionsstelle\b/       or
+               /Geschäftsleitung/        or
+               /Gesellschafter(in)?\b/   or
+               /Mitglied/                or
+               /Geschäftsführung\b/      or
+               /Vorsitzender?\b/         or
+               /[Kk]assier/              or
+               /\bmembre\b/              or
+               /président/               or
                /socio e gerente/) {
 
               if (exists $person_rec->{function}) {
@@ -440,9 +400,9 @@ sub find_persons_from_daily_summary_rec { #_{
         $person_rec->{rest} = join " @ ",  @parts;
 
       } #_}
-      else {
+      else { #_{
 #q        print "**** $rec->{id_firma} $person_text\n";
-      }
+      } #_}
 
 
       push @ret, $person_rec;
