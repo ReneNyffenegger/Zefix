@@ -234,7 +234,7 @@ sub find_persons_from_daily_summary_rec { #_{
   $text =~ s/(\d)\.(\d)/##$1d$2##/g;
   $text =~ s/(.)\.(.)\./##$1_$2_##/g; # a.A. / S.A.
 
-  $text =~ s/(##._._##) (Präsident|Gesellschafter|Inhaber|Aktuar|Mitglied|Vizepräsident)/$1, $2/g;
+  $text =~ s/(##._._##) (Präsident|Gesellschafter|Inhaber|Aktuar|Mitglied|Vizepräsident|Direktor)/$1, $2/g;
 
 
   $text =~ s/ (.)\./## $1##/g;
@@ -340,6 +340,7 @@ sub find_persons_from_daily_summary_rec { #_{
                /[Kk]assier/              or
                /\bmembre\b/              or
                /organe de révision/      or
+               /Direktor(in)?\b/         or
                /président/               or
                /\btitulaire\b/           or
                /\bassociée?\b/             or
