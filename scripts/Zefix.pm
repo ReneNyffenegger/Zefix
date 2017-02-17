@@ -326,7 +326,7 @@ sub find_persons_from_daily_summary_rec { #_{
         my $more = $3;
         $person_rec->{in} = s_back($2);
         
-        if ($name =~ / *(.*), (?:von|de) (.*)/) { #_{
+        if ($name =~ / *(.*), (?:von|de|da) (.*)/) { #_{
 
           my $naturliche_person = $1;
           $person_rec->{von} = $2;
@@ -378,8 +378,10 @@ sub find_persons_from_daily_summary_rec { #_{
                /Geschäftsführer/  or
                /Geschäftsleitung/ or
                /Mitglied/         or
+               /[Kk]assier/       or
                /\bmembre\b/       or
-               /président/) {
+               /président/        or
+               /socio e gerente/) {
 
               if (exists $person_rec->{function}) {
                 $person_rec->{funktion} .= ', '. $_;
@@ -399,10 +401,11 @@ sub find_persons_from_daily_summary_rec { #_{
 
         @parts = grep { #_{ Zeichnung
 
-           if (/[Uu]nterschrift/ or
-               /[Pp]rokura/      or
+           if (/[Uu]nterschrift/           or
+               /[Pp]rokura/                or
                /[Zz]eichnungsberechtigung/ or
-               /signature/
+               /signature/                 or
+               /con firma /
               ) {
 
               print "Already exists $rec->{id_firma}: $person_rec->{zeichnung}, _ = $_\n" if exists $person_rec->{zeichnung} and $_ ne $person_rec->{zeichnung};
@@ -419,7 +422,8 @@ sub find_persons_from_daily_summary_rec { #_{
         @parts = grep { #_{ Stammeinlage
 
            if (/Stammanteil/     or
-               /Stammeinlage/
+               /Stammeinlage/    or
+               /con una quota/
             ) {
 
               print "Already exists: $person_rec->{stammeinlage}, _ = $_\n" if exists $person_rec->{stammeinlage};
