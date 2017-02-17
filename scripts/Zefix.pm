@@ -238,8 +238,13 @@ sub find_persons_from_daily_summary_rec { #_{
   my $rec  = shift;
   my $text = $rec ->{text};
 
+
   $text =~ s/(\d)\.(\d)/##$1d$2##/g;
   $text =~ s/(.)\.(.)\./##$1_$2_##/g; # a.A. / S.A.
+
+  $text =~ s/(##._._##) (Präsident|Gesellschafter|Inhaber|Aktuar|Mitglied|Vizepräsident)/$1, $2/g;
+
+
   $text =~ s/ (.)\./## $1##/g;
   $text =~ s/\.--/##--##/g;
 
@@ -267,7 +272,6 @@ sub find_persons_from_daily_summary_rec { #_{
     my ($intro_text, $personen_text) = ($1, $2);
 
     for my $person_text (split ';', $personen_text) {
-
 
       my $person_rec = {};
 
@@ -336,6 +340,7 @@ sub find_persons_from_daily_summary_rec { #_{
                /Geschäftsleitung/        or
                /Gesellschafter(in)?\b/   or
                /Mitglied/                or
+               /Aktuar(in)?\b/           or
                /Inhaber(in)?\b/          or
                /Geschäftsführung\b/      or
                /Vorsitzender?\b/         or
