@@ -224,11 +224,12 @@ function check_person_firma($dbh) { #_{
   $inh='Inhaber';
 
   $ku2='mit Kollektivunterschrift zu zweien';
+  $kp2='mit Kollektivprokura zu zweien';
   
   $varian='Varian Medical Systems International AG';
   $ortag='Ortag, Organisations-, Revisions- und Treuhand-AG';
 
-  check_count($dbh, 'person_firma', 92);
+  check_count($dbh, 'person_firma', 97);
   $sth = db_prep_exec($dbh, 'select * from person_firma order by dt_journal, id_firma');
 
   $cnt=1;
@@ -302,6 +303,13 @@ function check_person_firma($dbh) { #_{
   cmp_person_firma($sth, $cnt++, 823465   ,'2012-12-05'  ,'+'  ,'Rutz'          ,'Candid'           ,'Emmen'                               ,NULL                                        ,'Zürich'                    , null                                        , 'mit Kollektivprokura zu zweien'                      ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 823465   ,'2012-12-05'  ,'+'  ,'Hausmann'      ,'Alexander'        ,'Dietikon'                            ,NULL                                        ,'Dietikon'                  , null                                        , 'mit Kollektivprokura zu zweien'                      ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 823465   ,'2012-12-05'  ,'+'  ,'Stefanakos'    ,'Stamatios'        ,'griechischer Staatsangehöriger'      ,NULL                                        ,'Zürich'                    , null                                        , 'mit Kollektivprokura zu zweien'                      ,  null                                                  );
+
+  cmp_person_firma($sth, $cnt++, 712087   ,'2013-01-21'  ,'-'  ,'Amstutz'       ,'Martin'           ,'Engelberg'                           , null                                       ,'Döttingen'                 , $gfr                                        ,$ku2                                                   ,  null                                                  );
+  cmp_person_firma($sth, $cnt++, 712087   ,'2013-01-21'  ,'-'  ,'Oderbolz'      ,'Fritz'            ,'Tübach'                              , null                                       ,'Hünenberg'                 ,"$vors der $gf"                              ,$ku2                                                   ,  null                                                  );
+  cmp_person_firma($sth, $cnt++, 712087   ,'2013-01-21'  ,'+'  ,'Fässler'       ,'Jörg'             ,'Arth'                                , null                                       ,'Baar'                      ,"$vors der $gf"                              ,$ku2                                                   ,  null                                                  );
+  cmp_person_firma($sth, $cnt++, 712087   ,'2013-01-21'  ,'+'  ,'Kunz'          ,'Patrik'           ,'Reinach BL'                          , null                                       ,'Baden'                     , $gfr                                        ,$ku2                                                   ,  null                                                  );
+  cmp_person_firma($sth, $cnt++, 712087   ,'2013-01-21'  ,'+'  ,'Balmer'        ,'Ralph'            ,'Wilderswil'                          , null                                       ,'Bern'                      , null                                        ,$kp2                                                   ,  null                                                  );
+
   cmp_person_firma($sth, $cnt++, 823465   ,'2013-07-29'  ,'-'  ,'Brabec'        ,'Dr. Bernhard'     ,'österreichischer Staatsangehöriger'  ,NULL                                        ,'Zollikon'                  , null                                        , 'mit Kollektivprokura zu zweien'                      ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 823465   ,'2013-07-29'  ,'-'  ,'Hausmann'      ,'Alexander'        ,'Dietikon'                            ,NULL                                        ,'Dietikon'                  , null                                        , 'mit Kollektivprokura zu zweien'                      ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 823465   ,'2013-07-29'  ,'+'  ,NULL            ,NULL               ,NULL                                  ,'ORTAG AG'                                  ,'Zürich'                    ,'Revisionsstelle'                            ,  null                                                 ,  null                                                  );
