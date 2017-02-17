@@ -59,7 +59,7 @@ $dbh->{AutoCommit} = 0;
 load_daily_summaries();
 
 $dbh -> commit;
-# exit;
+exit;
 
 my %word_cnt;
 load_stichwoerter();
@@ -568,7 +568,7 @@ sub init_stichwoerter { #_{
    'Datenbank'                  => {qrs => [ qr/datenbank/               ] },
    'Datenverarbeitung'          => {qrs => [ qr/datenverarbeitung/       ] },
    'Dekoration'                 => {qrs => [ qr/dekoration/              ] },
-   'Detektei'                   => {qrs => [ qr/detekt/                  ] },
+   'Detektei'                   => {qrs => [ qr/detekt/                  ] },  # Ermittlungen
    'Deutschland'                => {qrs => [ qr/\bdeutsch\b/             ] },
    'Digitaldruck'               => {qrs => [ qr/digitaldruck/            ] },
    'Dorfzeitung'                => {qrs => [ qr/dorfzeitung/             ] },
@@ -641,7 +641,7 @@ sub init_stichwoerter { #_{
    'Heizöl'                     => {qrs => [ qr/heizol/                  ] },
    'Heizung'                    => {qrs => [ qr/heizung/, qr/chauffage/  ] },
    'Helium'                     => {qrs => [ qr/helium/                  ] },
-   'Herstellung'                => {qrs => [ qr/herstellung/, qr/fabrikation/, qr/fertigung/ ]},
+   'Herstellung'                => {qrs => [ qr/herstellung/, qr/fabrikation/, qr/fertigung/ ]},  # Produktion, produziert...
    'Hochbau'                    => {qrs => [ qr/\bhoch-?.*baus\b/        ] },
    'Hochtemperatur'             => {qrs => [ qr/hochtemperatur/          ] },
    'Holz'                       => {qrs => [ qr/\bholz/                  ] },
@@ -649,6 +649,7 @@ sub init_stichwoerter { #_{
    'Hund'                       => {qrs => [ qr/\bhund/                  ] },
    'Hundetraining'              => {qrs => [ qr/hundetraining/           ] },
    'Human Ressource'            => {qrs => [ qr/human ressource/         ] },
+   'Hütte'                      => {qrs => [ qr/hutten?\b/, qr/\bhutte/  ] },
    'Immobilien'                 => {qrs => [ qr/immobilien/              ] },
    'Immobilienverwaltung'       => {qrs => [ qr/immobilien-?verwaltung/  ] },
    'Import'                     => {qrs => [ qr/import/                  ] },
@@ -684,6 +685,7 @@ sub init_stichwoerter { #_{
    'Korrosion'                  => {qrs => [ qr/korrosion/               ] },
    'Kosmetik'                   => {qrs => [ qr/\b(c|k)osmeti/           ] },
    'Kücheneinrichtung'          => {qrs => [ qr/kucheneinrichtung/       ] }, #  Küchen vs Kuchen!
+   'Kräftwerk'                  => {qrs => [ qr/\bkraftwerk/             ] },
    'Kräuter'                    => {qrs => [ qr/kraut/                   ] },
    'Kredit'                     => {qrs => [ qr/kredit/                  ] },
    'Kunst'                      => {qrs => [ qr/\bkunst(ler)?\b/, qr/artist/         ] },
@@ -775,6 +777,7 @@ sub init_stichwoerter { #_{
    'Rohrreinigungen'            => {qrs => [ qr/rohr-?reinigung/         ] },
    'Rohstoff'                   => {qrs => [ qr/rohstoff/                ] },
    'Rückbau'                    => {qrs => [ qr/ruckbau/                 ] },
+   'SAC'                        => {qrs => [ qr/\bsac\b/                 ] }, # f1033730
    'Sachenrecht'                => {qrs => [ qr/sachen-?.*recht/         ] },
    'Sandstrahlen'               => {qrs => [ qr/sandstrahl/              ] },
    'Sanierung'                  => {qrs => [ qr/sanierung/               ] },
@@ -805,7 +808,7 @@ sub init_stichwoerter { #_{
    'Spengler'                   => {qrs => [ qr/spengler/                ] },
    'Spielwaren'                 => {qrs => [ qr/spiel(ware|zeug)/        ] },
    'Spritzarbeiten'             => {qrs => [ qr/spritzarbeiten/          ] },
-   'Sport'                      => {qrs => [ qr/\bsport/                 ] }, # Transport
+   'Sport'                      => {qrs => [ qr/\bsport/                 ] }, # Transport , Skisport
    'Sportartikel'               => {qrs => [ qr/\bsport-?.*artikel/      ] },
    'Sportbekleidung'            => {qrs => [ qr/\bsportbekleidung/       ] },
    'Stahl'                      => {qrs => [ qr/stahl/                   ] },
@@ -813,6 +816,7 @@ sub init_stichwoerter { #_{
    'Steuerberatung'             => {qrs => [ qr/steuerberatung/          ] }, 
    'Steuerrecht'                => {qrs => [ qr/steuerrecht/             ] }, 
    'Steuerung'                  => {qrs => [ qr/steuerung/               ] }, 
+   'Strom'                      => {qrs => [ qr/\bstrom/                 ] }, 
    'Take-Away'                  => {qrs => [ qr/take.?away/              ] }, # 
    'Tankstelle'                 => {qrs => [ qr/tankstelle/              ] }, # 
    'Tauchen'                    => {qrs => [ qr/tauchausrustung/, qr/tauchen/, qr/\btauch/ ] }, # 
