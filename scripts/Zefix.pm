@@ -433,7 +433,7 @@ sub are_persons_expected { #_{
 
   my $rec = shift;
 
-  unless ($rec->{mut_firma} or $rec->{mut_rechtsform} or $rec->{mut_kapital} or $rec->{mut_domizil} or $rec->{mut_zweck} or $rec->{mut_organ}) {
+  unless ($rec->{mut_firma} or $rec->{mut_rechtsform} or $rec->{mut_kapital} or $rec->{mut_domizil} or $rec->{mut_zweck} or $rec->{mut_organ} or $rec->{neueintrag} or $rec->{mut_status}) {
    
     goto skip if $rec->{mut_status} == 20;
     goto skip if $rec->{text} =~ /La procédure de faillite, suspendue faute d'actif, a été clôturée/;
