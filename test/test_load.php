@@ -227,7 +227,7 @@ function check_person_firma($dbh) { #_{
   $kp2='mit Kollektivprokura zu zweien';
   
   $varian='Varian Medical Systems International AG';
-  $tro_typo='TRO Teuhand & Revisions AG (<M>CHE107.909.432<E>)[]';
+  $tro_typo='TRO Teuhand & Revisions AG (<M>CHE107.909.432<E>)';
   $ortag='Ortag, Organisations-, Revisions- und Treuhand-AG';
 
   check_count($dbh, 'person_firma', 98);

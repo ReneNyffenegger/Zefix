@@ -282,10 +282,9 @@ sub find_persons_from_daily_summary_rec { #_{
          $person_rec = {'add_rm' => '-'};
       } #_}
 
-      if ($person_text =~ s! *\(?<R>([^<]+)<E>\)?!!g)  { #_{
+      if ($person_text =~ s! *[([]?<R>([^<]+)<E>[)\]]?!!g)  { #_{
         $person_rec->{firma} = s_back($1);
       } #_}
-      print "pt: $person_text\n\n";
       if ($person_text =~ / *(.*), (?:in|à) ([^,]+), *(.*)/) { #_{
 
         my $name = s_back($1);
@@ -458,7 +457,6 @@ sub bisher_nicht_etc { #_{
   
 
   if ($_[0] =~ s/ *\[$_[1]:([^]]*)\]//) {
-    print "Returning: $1\n";
     return $1;
   }
   if ($_[1] eq 'bisher') {
