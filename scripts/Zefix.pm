@@ -453,9 +453,10 @@ sub find_persons_from_daily_summary_rec { #_{
         my $name = $1;
 
         my $person_rec = {
-           add_rm  =>'+',
-           in      => $2,
-           von     => $3
+           add_rm    =>'+',
+           in        => $2,
+           von       => $3,
+           zeichnung =>'avec signature collective à deux'
         };
 
         if ($4) {
