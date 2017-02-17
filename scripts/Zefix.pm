@@ -5,6 +5,7 @@ use Encode qw(decode encode);
 
 use warnings;
 use strict;
+use utf8;
 
 use DBI;
 
@@ -56,7 +57,7 @@ sub open_daily_summary_file { #_{
   my $filename = shift;
 
   my $zefix_file = {};
-  open ($zefix_file->{fh}, '<', $filename) or die "Could not open $filename";
+  open ($zefix_file->{fh}, '<:encoding(iso-8859-1)', $filename) or die "Could not open $filename";
 
 
    my ($yr, $no) = $filename =~ m/(\d+)-(\d+)$/;
@@ -77,23 +78,6 @@ sub open_daily_summary_file { #_{
 
 } #_}
 
-# sub read_summary_line { #_{
-#   my $fh       = shift;
-#   my $filename = shift;
-# 
-#   my $in = <$fh>;
-# 
-#   return unless $in;
-# 
-#   chomp $in;
-# 
-#   $in = encode('utf-8', decode('iso-8859-1', $in));
-# 
-#   my @row = split("\t", $in);
-# 
-#   return parse_daily_summary_row($filename, @row);
-# 
-# } #_}
 
 sub parse_daily_summary_row { #_{
   my $zefix_file = shift;
@@ -210,7 +194,15 @@ sub parse_next_daily_summary_line { #_{
   }
   chomp $in;
   $in =~ s/\x{a0}/ /g;
-  $in = encode('utf-8', decode('iso-8859-1', $in));
+
+# print "is_utf8? " . Encode::is_utf8($in), "<\n";
+
+
+# $in = encode('utf-8', decode('iso-8859-1', $in));
+
+# $in =  Encode::decode_utf8($in);
+# print "is_utf8? " . Encode::is_utf8($in), "<\n";
+
   my @row = split("\t", $in);
 
   return parse_daily_summary_row($zefix_file, @row);
@@ -264,6 +256,7 @@ sub find_persons_from_daily_summary_rec { #_{
   $text =~ s/(<(R|M)>CH.*?<E>)/ my $x = $1; $x =~ s![.-]!!g; $x /eg;
 
   my @ret = ();
+
 
   while ($text =~ s/(Ausgeschiedene Personen und erloschene Unterschriften|Eingetragene Personen(?: neu oder mutierend)?|Personne et signature radiée|Inscription ou modification de personne(?:\(s\))?|Persone dimissionarie e firme cancellate|Persone iscritte|Nuove persone iscritte o modifiche|Personne\(s\) inscrite\(s\)):? *(.*?)\.//) { # ||Inscription ou modification de personne\(s\)|Procuration collective à deux, limitée aux affaires de la succursale, a été conférée à|Inscription ou modification de personnes)//) {
 
@@ -320,18 +313,16 @@ sub find_persons_from_daily_summary_rec { #_{
         } #_}
 
 
-#       my $person_det = s_back($6);
-
         my $person_det_bisher = bisher_nicht_etc($more, 'bisher');
 
         my $person_det_nicht = bisher_nicht_etc($more, 'nicht');
 
 
-#       @parts = grep { /\w/ } @parts;
 
         my @parts = split ' *, *', $more;
 
         @parts = grep { #_{ Funktion
+
 
            if (/Verwaltungsrates/        or
                /[pP]räsident/            or
@@ -351,6 +342,7 @@ sub find_persons_from_daily_summary_rec { #_{
                /organe de révision/      or
                /président/               or
                /\btitulaire\b/           or
+               /\bassociée?\b/             or
                /\bsoci[oa]\b/            or
                /\badministrateur\b/      or
                /\bsecrétaire\b/          or

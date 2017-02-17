@@ -3,6 +3,7 @@ use warnings;
 use strict;
 
 use Zefix;
+use utf8;
 
 Zefix::init('dev');
 
@@ -11,7 +12,7 @@ my $filename = shift or die;
 
 my $zefix_file = Zefix::open_daily_summary_file($filename);
 
-open (my $out, '>', 'abc.html') or die;
+open (my $out, '>:encoding(utf-8)', 'abc.html') or die;
 print $out '<!DOCTYPE HTML>
 <html><head> <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
@@ -49,6 +50,8 @@ while (my $rec = Zefix::parse_next_daily_summary_line($zefix_file)) {
   for my $personen_rec (@personen) { #_{
 
     print "Rest: $personen_rec->{rest}","\n" if $personen_rec->{rest};
+
+    print %$personen_rec;
 
     $personen_trs .= sprintf( #_{
       "<tr class='%s'>

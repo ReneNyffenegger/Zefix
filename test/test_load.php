@@ -306,7 +306,7 @@ function check_person_firma($dbh) { #_{
   $stang = 'Staatsangehörige';
   $stangr = 'Staatsangehöriger';
 
-  check_count($dbh, 'person_firma', 128);
+  check_count($dbh, 'person_firma', 130);
   $sth = db_prep_exec($dbh, 'select * from person_firma order by dt_journal, id_firma');
 
   $cnt=1;
@@ -421,9 +421,11 @@ function check_person_firma($dbh) { #_{
   cmp_person_firma($sth, $cnt++, 1282712  ,'2016-11-07'  ,'+'  ,'Allemann'         ,'Kim'              ,'Berne'                               , null                                       ,'Wiedlisbach'               ,'gérant'                                     ,$sig_c2                                                ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 1282712  ,'2016-11-07'  ,'+'  ,'Burkhalter'       ,'Karin'            ,'Vuisternens-dev-Romont'              , null                                       ,'Walperswil'                ,'présidente et gérante'                      ,$sig_c2                                                ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 1282712  ,'2016-11-07'  ,'+'  ,'Gösele'           ,'Roger'            ,'Zandvoort (Pays-Bas)'                , null                                       ,'Sursee'                    ,'gérant'                                     ,$sig_c2                                                ,  null                                                  );
-
   cmp_person_firma($sth, $cnt++, 1285696  ,'2016-12-01'  ,'+'  ,'Polat'            ,'Mustafa'          ,'citoyen turc'                        , null                                       ,'Monthey'                   ,'associé et gérant'                          ,$sig_inv                                               , 'pour 100 parts sociales de CHF 100.00'                );
   cmp_person_firma($sth, $cnt++, 1285696  ,'2016-12-01'  ,'+'  ,'Polat'            ,'Cennet'           ,'citoyenne turque'                    , null                                       ,'Monthey'                   ,'associée'                                   ,$sans_sig                                              , 'pour 100 parts sociales de CHF 100.00'                );
+
+  cmp_person_firma($sth, $cnt++, 1286613  ,'2016-12-08'  ,'+'  ,'Carcò'            ,'Sebastiano Fabio' ,'Le Locle'                            , null                                       ,'Biel/Bienne'               ,'associé'                                    ,$sig_c2                                                ,  null                                                  );
+  cmp_person_firma($sth, $cnt++, 1286613  ,'2016-12-08'  ,'+'  ,'Costantino'       ,'Francesco'        ,'ressortissant italien'               , null                                       ,'Biel/Bienne'               ,'associé'                                    ,$sig_c2                                                ,  null                                                  );
 
   cmp_person_firma($sth, $cnt++, 934296   ,'2016-12-15'  ,'-'  ,'Kuhn'             ,'Roland'           ,'Illnau-Effretikon'                   ,NULL                                        ,'St. Gallen'                ,$vr_mg                                       ,$ku2                                                   ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 934296   ,'2016-12-15'  ,'-'  ,'Keller'           ,'Primin'           ,'Altendorf'                           ,NULL                                        ,'Waldkirch'                 ,$gl_mg                                       ,$ku2                                                   ,  null                                                  );
