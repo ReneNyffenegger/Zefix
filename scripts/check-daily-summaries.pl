@@ -4,7 +4,7 @@ use strict;
 
 use Zefix;
 
-Zefix::init('test');
+Zefix::init('dev');
 
 # my $downloaded_dir = "$ENV{digitales_backup}Zefix/downloaded/";
 

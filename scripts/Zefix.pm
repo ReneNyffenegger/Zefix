@@ -56,7 +56,7 @@ sub open_daily_summary_file { #_{
   my $filename = shift;
 
   my $zefix_file = {};
-  open ($zefix_file->{fh}, '<', $filename) or die;
+  open ($zefix_file->{fh}, '<', $filename) or die "Could not open $filename";
 
 
    my ($yr, $no) = $filename =~ m/(\d+)-(\d+)$/;
