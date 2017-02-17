@@ -435,13 +435,14 @@ sub find_persons_from_daily_summary_rec { #_{
 
     } #_}
 
-    if ($text =~ s/Signature collective à deux est conférée à ([^.]+)\.//) {
+    if ($text =~ s/ *([^.]+) est conférée à ([^.]+)\.//) {
 
-      my $signature_halter = $1;
+      my $zeichnung        = $1;
+      my $signature_halter = $2;
 
       my @persons;
 
-      while ($signature_halter =~ s/([^,]+), de ([^,]+), à ([^,]+)(?:, (présidente[^,]*))?, *//) { #_{
+      while ($signature_halter =~ s/([^,]+), (?:de |d')([^,]+), à ([^,]+)(?:, (présidente[^,]*))? *//) { #_{
 
         my $name = $1;
 
@@ -449,7 +450,7 @@ sub find_persons_from_daily_summary_rec { #_{
            add_rm    =>'+',
            in        => $2,
            von       => $3,
-           zeichnung =>'avec signature collective à deux'
+           zeichnung => $zeichnung
         };
 
         if ($4) {
@@ -465,6 +466,7 @@ sub find_persons_from_daily_summary_rec { #_{
         push @persons, $person_rec;
      
       } #_}
+
 
       if ($signature_halter =~ /les (\w+) gérants/) { #_{
 
