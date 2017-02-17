@@ -292,6 +292,7 @@ function check_person_firma($dbh) { #_{
   $kp2='mit Kollektivprokura zu zweien';
   $sig_inv='avec signature individuelle';
   $sig_c2='avec signature collective à deux';
+  $sans_sig='sans droit de signature';
   
   $varian='Varian Medical Systems International AG';
   $tro_typo='TRO Teuhand & Revisions AG (<M>CHE107.909.432<E>)';
@@ -305,7 +306,7 @@ function check_person_firma($dbh) { #_{
   $stang = 'Staatsangehörige';
   $stangr = 'Staatsangehöriger';
 
-  check_count($dbh, 'person_firma', 126);
+  check_count($dbh, 'person_firma', 128);
   $sth = db_prep_exec($dbh, 'select * from person_firma order by dt_journal, id_firma');
 
   $cnt=1;
@@ -416,11 +417,13 @@ function check_person_firma($dbh) { #_{
   cmp_person_firma($sth, $cnt++, 1280835  ,'2016-10-19'  ,'+'  ,'Cordonier'        ,'Patrick Christian','Montana'                             , null                                       ,'Montana'                   ,'administrateur'                             ,$sig_c2                                                ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 1280835  ,'2016-10-19'  ,'+'  ,'Cordonier'        ,'Denis Dominique'  ,'Montana'                             , null                                       ,'Montana'                   ,'administrateur'                             ,$sig_c2                                                ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 1280835  ,'2016-10-19'  ,'+'  ,'Cordonier'        ,'Gratien Benoît'   ,'Montana'                             , null                                       ,'Montana'                   ,'administrateur'                             ,$sig_c2                                                ,  null                                                  );
-
   cmp_person_firma($sth, $cnt++, 1282712  ,'2016-11-07'  ,'+'  , null              , null              , null                                 ,$das_rechts                                 ,'Lucerne'                   ,'Associée'                                   , null                                                  , 'avec 20 parts de CHF 1\'000'                          );
   cmp_person_firma($sth, $cnt++, 1282712  ,'2016-11-07'  ,'+'  ,'Allemann'         ,'Kim'              ,'Berne'                               , null                                       ,'Wiedlisbach'               ,'gérant'                                     ,$sig_c2                                                ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 1282712  ,'2016-11-07'  ,'+'  ,'Burkhalter'       ,'Karin'            ,'Vuisternens-dev-Romont'              , null                                       ,'Walperswil'                ,'présidente et gérante'                      ,$sig_c2                                                ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 1282712  ,'2016-11-07'  ,'+'  ,'Gösele'           ,'Roger'            ,'Zandvoort (Pays-Bas)'                , null                                       ,'Sursee'                    ,'gérant'                                     ,$sig_c2                                                ,  null                                                  );
+
+  cmp_person_firma($sth, $cnt++, 1285696  ,'2016-12-01'  ,'+'  ,'Polat'            ,'Mustafa'          ,'citoyen turc'                        , null                                       ,'Monthey'                   ,'associé et gérant'                          ,$sig_inv                                               , 'pour 100 parts sociales de CHF 100.00'                );
+  cmp_person_firma($sth, $cnt++, 1285696  ,'2016-12-01'  ,'+'  ,'Polat'            ,'Cennet'           ,'citoyenne turque'                    , null                                       ,'Monthey'                   ,'associée'                                   ,$sans_sig                                              , 'pour 100 parts sociales de CHF 100.00'                );
 
   cmp_person_firma($sth, $cnt++, 934296   ,'2016-12-15'  ,'-'  ,'Kuhn'             ,'Roland'           ,'Illnau-Effretikon'                   ,NULL                                        ,'St. Gallen'                ,$vr_mg                                       ,$ku2                                                   ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 934296   ,'2016-12-15'  ,'-'  ,'Keller'           ,'Primin'           ,'Altendorf'                           ,NULL                                        ,'Waldkirch'                 ,$gl_mg                                       ,$ku2                                                   ,  null                                                  );
