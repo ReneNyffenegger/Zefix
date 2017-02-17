@@ -535,14 +535,19 @@ sub bisher_nicht_etc { #_{
   if ($_[0] =~ s/ *\[$_[1]:([^]]*)\]//) {
     return $1;
   }
-  if ($_[1] eq 'bisher') {
+  if ($_[1] eq 'bisher') { #_{
     if ($_[0] =~ s/ *\[précédemment:([^]]*)\]//) {
       return $1;
     }
     if ($_[0] =~ s/ *\[finora:([^]]*)\]//) {
       return $1;
     }
-  }
+  } #_}
+  if ($_[1] eq 'nicht') { #_{
+    if ($_[0] =~ s/ *\[non:([^]]*)\]//) {
+      return $1;
+    }
+  } #_}
   return '';
 } #_}
 
