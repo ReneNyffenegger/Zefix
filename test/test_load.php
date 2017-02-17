@@ -213,16 +213,21 @@ function cmp_zweck($sth, $id_firma, $zweck) { #_{
 
 function check_person_firma($dbh) { #_{
 
-  check_count($dbh, 'person_firma', 80);
+  check_count($dbh, 'person_firma', 83);
   $sth = db_prep_exec($dbh, 'select * from person_firma order by dt_journal, id_firma');
   $cnt=1;
 
   $gs='Gesellschafter';
+  $vors='Vorsitzender';
   $gf='Geschäftsführung';
+  $gfr='Geschäftsführer';
   $gs_gf="Gesellschafter und Geschäftsführer";
   $gl_mg="Mitglied der Geschäftsleitung";
   $vr_mg="Mitglied des Verwaltungsrates";
   $rev='Revisionsstelle';
+
+  $ku2='mit Kollektivunterschrift zu zweien';
+  
   $inh='Inhaber';
   $varian='Varian Medical Systems International AG';
   $ortag='Ortag, Organisations-, Revisions- und Treuhand-AG';
@@ -253,19 +258,21 @@ function check_person_firma($dbh) { #_{
   cmp_person_firma($sth, $cnt++, 823465   ,'2006-05-16'  ,'+'  ,'Hagger'        ,'Joachim Andreas'  ,'Basel'                               ,NULL                                        ,'Zürich'                    ,'Präsident'                                  , 'mit Kollektivunterschrift zu zweien'                 ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 823465   ,'2006-05-16'  ,'+'  ,'Gränicher'     ,'Hans Peter'       ,'Röthenbach bei Herzogenbuchsee'      ,NULL                                        ,'Zürich'                    ,'Mitglied'                                   , 'mit Kollektivunterschrift zu zweien'                 ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 823465   ,'2006-05-16'  ,'+'  ,'Hefti'         ,'Simon'            ,'Thun'                                ,NULL                                        ,'Zürich'                    ,'Mitglied'                                   , 'mit Kollektivunterschrift zu zweien'                 ,  null                                                  );
-
   cmp_person_firma($sth, $cnt++, 712087   ,'2007-02-13'  ,'+'  ,'Oderbolz'      ,'Fritz'            ,'Tübach'                              , null                                       ,'Hünenberg'                 ,'Gesellschafter'                             ,'mit Kollektivunterschrift zu zweien'                  ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 712087   ,'2007-02-13'  ,'+'  , null           , null              , null                                 ,$varian                                     ,'Zug'                       ,'Gesellschafterin'                           ,'ohne Zeichnungsberechtigung'                          , 'mit einer Stammeinlage von CHF 2\'000\'000.--'        );
   cmp_person_firma($sth, $cnt++, 712087   ,'2007-02-13'  ,'+'  ,'Amstutz'       ,'Martin'           ,'Engelberg'                           , null                                       ,'Döttingen'                 , null                                        ,'mit Kollektivunterschrift zu zweien'                  ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 712087   ,'2007-02-13'  ,'+'  ,'Hauri'         ,'Reto'             ,'Niederlenz'                          , null                                       ,'Gränichen'                 , null                                        ,'mit Kollektivunterschrift zu zweien'                  ,  null                                                  );
-
   cmp_person_firma($sth, $cnt++, 712087   ,'2007-02-20'  ,'+'  ,'Oderbolz'      ,'Fritz'            ,'Tübach'                              , null                                       ,'Hünenberg'                 , null                                        ,'mit Kollektivunterschrift zu zweien'                  ,  null                                                  );
-
   cmp_person_firma($sth, $cnt++, 451407   ,'2007-05-07'  ,'+'  ,'Ginnow'        ,'Richard'          ,'Volketswil'                          ,NULL                                        ,'Rüschlikon'                ,$gs_gf                                       , 'mit Kollektivunterschrift zu zweien'                 , 'mit einer Stammeinlage von CHF 10\'000.--'            );
   cmp_person_firma($sth, $cnt++, 451407   ,'2007-05-07'  ,'+'  ,'Nyffenegger'   ,'René'             ,'Eriswil'                             ,NULL                                        ,'Zürich'                    ,$gs_gf                                       , 'mit Kollektivunterschrift zu zweien'                 , 'mit einer Stammeinlage von CHF 10\'000.--'            );
   cmp_person_firma($sth, $cnt++, 451407   ,'2008-09-08'  ,'-'  ,'Nyffenegger'   ,'René'             ,'Eriswil'                             ,NULL                                        ,'Zürich'                    ,$gs_gf                                       , 'mit Kollektivunterschrift zu zweien'                 , 'mit einem Stammanteil von CHF 10\'000.00'             );
   cmp_person_firma($sth, $cnt++, 451407   ,'2008-09-08'  ,'+'  ,'Ginnow'        ,'Richard'          ,'Volketswil'                          ,NULL                                        ,'Rüschlikon'                ,$gs_gf                                       , 'mit Einzelunterschrift'                              , 'mit 200 Stammanteilen zu je CHF 100.00'               );
   cmp_person_firma($sth, $cnt++, 451407   ,'2008-09-08'  ,'+'  ,'Weber'         ,'Melanie'          ,'Gränichen'                           ,NULL                                        ,'Zell ZH'                   , null                                        , 'mit Einzelprokura'                                   ,  null                                                  );
+
+  cmp_person_firma($sth, $cnt++, 712087   ,'2008-11-04'  ,'-'  ,'Vogt'          ,'Heinz'            ,'Lauwil'                              , null                                       ,'Baldingen'                 ,'Geschäftsführer'                            , 'mit Einzelunterschrift'                              ,  null                                                  );
+  cmp_person_firma($sth, $cnt++, 712087   ,'2008-11-04'  ,'+'  ,'Oderbolz'      ,'Fritz'            ,'Tübach'                              , null                                       ,'Hünenberg'                 ,"$gs und $vors der $gf"                      ,$ku2                                                   ,  null                                                  );
+  cmp_person_firma($sth, $cnt++, 712087   ,'2008-11-04'  ,'+'  ,'Amstutz'       ,'Martin'           ,'Engelberg'                           , null                                       ,'Döttingen'                 , $gfr                                        ,$ku2                                                   ,  null                                                  );
+
   cmp_person_firma($sth, $cnt++, 934296   ,'2009-01-28'  ,'+'  ,'Ginnow'        ,'Richard'          ,'Volketswil'                          ,NULL                                        ,'Mettmenstetten'            ,'Präsident des Verwaltungsrates'             , 'mit Einzelunterschrift'                              ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 934296   ,'2009-01-28'  ,'+'  ,'Kuhn'          ,'Roland'           ,'Illnau-Effretikon'                   ,NULL                                        ,'St. Gallen'                ,$vr_mg                                       , 'mit Einzelunterschrift'                              ,  null                                                  );
   cmp_person_firma($sth, $cnt++,  76284   ,'2009-10-26'  ,'-'  , null           , null              , null                                 ,'Fiduciaire Jean-Maurice Maitre S.A.'       ,'Porrentruy'                , null                                        ,  null                                                 ,  null                                                  );
