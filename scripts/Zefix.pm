@@ -336,6 +336,7 @@ sub find_persons_from_daily_summary_rec { #_{
                /Geschäftsleitung/        or
                /Gesellschafter(in)?\b/   or
                /Mitglied/                or
+               /Inhaber(in)?\b/          or
                /Geschäftsführung\b/      or
                /Vorsitzender?\b/         or
                /[Kk]assier/              or

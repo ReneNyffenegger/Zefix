@@ -213,13 +213,14 @@ function cmp_zweck($sth, $id_firma, $zweck) { #_{
 
 function check_person_firma($dbh) { #_{
 
-  check_count($dbh, 'person_firma', 65);
+  check_count($dbh, 'person_firma', 66);
   $sth = db_prep_exec($dbh, 'select * from person_firma order by dt_journal, id_firma');
   $cnt=1;
 
   $gs='Gesellschafter';
   $gf='Geschäftsführung';
   $rev='Revisionsstelle';
+  $inh='Inhaber';
 
   cmp_person_firma($sth, $cnt++, 468163   ,'2001-01-23'  ,'-'  ,'Dettwiler'     ,'Werner'           ,'Reigoldswil'                         ,NULL                                               ,'Eichberg'                  ,'socio e gerente'                            , 'con firma individuale'                               , 'con una quota da CHF 1\'000.--'                       ); #_{
   cmp_person_firma($sth, $cnt++, 251792   ,'2001-07-30'  ,'-'  ,'Dettwiler'     ,'Werner'           ,'Reigoldswil'                         ,NULL                                               ,'Eichberg'                  ,'Gesellschafter und Geschäftsführer'         , 'mit Einzelunterschrift'                              ,  NULL                                                  );
@@ -229,6 +230,7 @@ function check_person_firma($dbh) { #_{
   cmp_person_firma($sth, $cnt++, 712087   ,'2003-06-30'  ,'+'  ,'Oderbolz'      ,'Fritz'            ,'Tübach'                              , null                                              ,'Hünenberg'                 ,'Gesellschafter'                             , 'ohne Zeichnungsberechtigung'                         , 'mit einer Stammeinlage von CHF 1\'000.--'             );
   cmp_person_firma($sth, $cnt++, 712087   ,'2003-06-30'  ,'+'  ,'Vogt'          ,'Heinz'            ,'Lauwil'                              , null                                              ,'Baldingen'                 ,'Geschäftsführer'                            , 'mit Einzelunterschrift'                              ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 712087   ,'2003-06-30'  ,'+'  , null           , null              , null                                 ,'PricewaterhouseCoopers AG'                        ,'Zürich'                    ,'Revisionsstelle'                            ,  null                                                 ,  null                                                  );
+  cmp_person_firma($sth, $cnt++, 728139   ,'2003-11-20'  ,'+'  ,'Lienert'       ,'Joachim Georg'    ,'Einsiedeln'                          , null                                              ,'Elsau'                     ,$inh                                         , 'mit Einzelunterschrift'                              ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 451407   ,'2005-07-04'  ,'-'  ,NULL            ,NULL               ,NULL                                  ,'Künzler Communications GmbH'                      ,'Bassersdorf'               ,'Gesellschafterin'                           , 'ohne Zeichnungsberechtigung'                         , 'mit einer Stammeinlage von CHF 1\'000.--'             );
   cmp_person_firma($sth, $cnt++, 451407   ,'2005-07-04'  ,'+'  ,'Nyffenegger'   ,'René'             ,'Eriswil'                             ,NULL                                               ,'Zürich'                    ,'Gesellschafter und Geschäftsführer'         , 'mit Einzelunterschrift'                              , 'mit einer Stammeinlage von CHF 20\'000.--'            );
   cmp_person_firma($sth, $cnt++, 823465   ,'2005-12-22'  ,'+'  ,'Rossbacher'    ,'Albert'           ,'Röthenbach bei Herzogenbuchsee'      ,NULL                                               ,'Herrliberg'                ,'Mitglied'                                   , 'mit Einzelunterschrift'                              ,  null                                                  );
