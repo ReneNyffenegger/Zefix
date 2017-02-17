@@ -265,7 +265,7 @@ sub find_persons_from_daily_summary_rec { #_{
 
   my @ret = ();
 
-  while ($text =~ s/(Ausgeschiedene Personen und erloschene Unterschriften|Eingetragene Personen(?: neu oder mutierend)?|Personne et signature radiée|Inscription ou modification de personne(?:\(s\))?|Persone dimissionarie e firme cancellate|Nuove persone iscritte o modifiche):? *(.*?)\.//) { # ||Inscription ou modification de personne\(s\)|Procuration collective à deux, limitée aux affaires de la succursale, a été conférée à|Inscription ou modification de personnes)//) {
+  while ($text =~ s/(Ausgeschiedene Personen und erloschene Unterschriften|Eingetragene Personen(?: neu oder mutierend)?|Personne et signature radiée|Inscription ou modification de personne(?:\(s\))?|Persone dimissionarie e firme cancellate|Nuove persone iscritte o modifiche|Personne\(s\) inscrite\(s\)):? *(.*?)\.//) { # ||Inscription ou modification de personne\(s\)|Procuration collective à deux, limitée aux affaires de la succursale, a été conférée à|Inscription ou modification de personnes)//) {
 
 
     my ($intro_text, $personen_text) = ($1, $2);
@@ -275,7 +275,7 @@ sub find_persons_from_daily_summary_rec { #_{
 
       my $person_rec = {};
 
-      if ($intro_text =~ /^Eingetragene Personen/ or $intro_text =~ /^Inscription/ or $intro_text =~ /^Nuove persone iscritte/) { #_{
+      if ($intro_text =~ /^Eingetragene Personen/ or $intro_text =~ /[iI]nscrip?t/ or $intro_text =~ /^Nuove persone iscritte/) { #_{
          $person_rec = {'add_rm' => '+'};
       }
       else {
@@ -302,7 +302,7 @@ sub find_persons_from_daily_summary_rec { #_{
           $person_rec->{vorname } = $2;
 
         } #_}
-        elsif ($name =~ / *(.*), *([^,]*(?:Staatsangehöriger?|cittadino)[^]]*)/) { #_{
+        elsif ($name =~ / *(.*), *([^,]*(?:Staatsangehöriger?|ressortissant|cittadino)[^]]*)/) { #_{
 
           my $naturliche_person = $1;
           $person_rec->{von} = $2;
@@ -348,6 +348,7 @@ sub find_persons_from_daily_summary_rec { #_{
                /\bmembre\b/              or
                /organe de révision/      or
                /président/               or
+               /\btitulaire\b/           or
                /socio e gerente/) {
 
               if (exists $person_rec->{function}) {

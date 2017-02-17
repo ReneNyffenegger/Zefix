@@ -295,7 +295,7 @@ function check_person_firma($dbh) { #_{
 
   $stang = 'Staatsangehörige';
 
-  check_count($dbh, 'person_firma', 107);
+  check_count($dbh, 'person_firma', 108);
   $sth = db_prep_exec($dbh, 'select * from person_firma order by dt_journal, id_firma');
 
   $cnt=1;
@@ -388,6 +388,7 @@ function check_person_firma($dbh) { #_{
   cmp_person_firma($sth, $cnt++, 823465   ,'2014-08-13'  ,'+'  ,'Franz'            ,'Mike'             ,'Frick'                               ,NULL                                        ,'Gipf-Oberfrick'            ,$vr_mg                                       ,$ku2                                                   ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 712087   ,'2014-09-26'  ,'+'  ,'Hübner'           ,'Ernst'            ,'deutscher Staatsangehöriger'         , null                                       ,'Ingenbohl'                 , null                                        ,$kp2                                                   ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 712087   ,'2015-05-29'  ,'-'  ,'Hauri'            ,'Reto'             ,'Niederlenz'                          , null                                       ,'Gränichen'                 , null                                        ,$kp2                                                   ,  null                                                  );
+  cmp_person_firma($sth, $cnt++,1263109   ,'2016-05-10'  ,'+'  ,'Maïka'            ,'Grégorio'         ,'ressortissant français'              , null                                       ,'Montana'                   ,'titulaire'                                  ,'avec signature individuelle'                          ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 468163   ,'2016-07-05'  ,'+'  ,'Riedmüller'       ,'Josef'            ,'cittadino germanico'                 ,NULL                                        ,'Brissago'                  ,'socio e gerente'                            ,'con firma individuale'                                , 'con 1 quota da CHF 49\'000.00'                        );
   cmp_person_firma($sth, $cnt++, 451407   ,'2016-10-04'  ,'+'  ,'Ginnow'           ,'Richard'          ,'Volketswil'                          ,NULL                                        ,'Mettmenstetten'            ,"$gs und Vorsitzender der $gf"               , 'mit Einzelunterschrift'                              , 'mit 188 Stammanteilen zu je CHF 100.00'               );
   cmp_person_firma($sth, $cnt++, 451407   ,'2016-10-04'  ,'+'  ,'Norgate'          ,'Thomas Aylwin'    ,'britischer Staatsangehöriger'        ,NULL                                        ,'Freienbach'                ,$gs_gf                                       , 'mit Einzelunterschrift'                              , 'mit 12 Stammanteilen zu je CHF 100.00'                );
