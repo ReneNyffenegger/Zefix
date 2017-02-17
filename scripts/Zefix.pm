@@ -262,7 +262,6 @@ sub find_persons_from_daily_summary_rec { #_{
   $text =~ s/Prof\./##Prof##/g;
 
   $text =~ s/(<(R|M)>CH.*?<E>)/ my $x = $1; $x =~ s![.-]!!g; $x /eg;
-# $text =~ s/\( *\)//g;
 
   my @ret = ();
 
@@ -272,6 +271,7 @@ sub find_persons_from_daily_summary_rec { #_{
     my ($intro_text, $personen_text) = ($1, $2);
 
     for my $person_text (split ';', $personen_text) {
+
 
       my $person_rec = {};
 
@@ -285,6 +285,7 @@ sub find_persons_from_daily_summary_rec { #_{
       if ($person_text =~ s! *\(?<R>([^<]+)<E>\)?!!g)  { #_{
         $person_rec->{firma} = s_back($1);
       } #_}
+      print "pt: $person_text\n\n";
       if ($person_text =~ / *(.*), (?:in|à) ([^,]+), *(.*)/) { #_{
 
         my $name = s_back($1);
@@ -346,6 +347,7 @@ sub find_persons_from_daily_summary_rec { #_{
                /Vorsitzender?\b/         or
                /[Kk]assier/              or
                /\bmembre\b/              or
+               /organe de révision/      or
                /président/               or
                /socio e gerente/) {
 
@@ -456,6 +458,7 @@ sub bisher_nicht_etc { #_{
   
 
   if ($_[0] =~ s/ *\[$_[1]:([^]]*)\]//) {
+    print "Returning: $1\n";
     return $1;
   }
   if ($_[1] eq 'bisher') {
