@@ -265,7 +265,7 @@ sub find_persons_from_daily_summary_rec { #_{
 
   my @ret = ();
 
-  while ($text =~ s/(Ausgeschiedene Personen und erloschene Unterschriften|Eingetragene Personen(?: neu oder mutierend)?|Personne et signature radiée|Inscription ou modification de personne(?:\(s\))?|Persone dimissionarie e firme cancellate|Nuove persone iscritte o modifiche|Personne\(s\) inscrite\(s\)):? *(.*?)\.//) { # ||Inscription ou modification de personne\(s\)|Procuration collective à deux, limitée aux affaires de la succursale, a été conférée à|Inscription ou modification de personnes)//) {
+  while ($text =~ s/(Ausgeschiedene Personen und erloschene Unterschriften|Eingetragene Personen(?: neu oder mutierend)?|Personne et signature radiée|Inscription ou modification de personne(?:\(s\))?|Persone dimissionarie e firme cancellate|Persone iscritte|Nuove persone iscritte o modifiche|Personne\(s\) inscrite\(s\)):? *(.*?)\.//) { # ||Inscription ou modification de personne\(s\)|Procuration collective à deux, limitée aux affaires de la succursale, a été conférée à|Inscription ou modification de personnes)//) {
 
 
     my ($intro_text, $personen_text) = ($1, $2);
@@ -275,7 +275,7 @@ sub find_persons_from_daily_summary_rec { #_{
 
       my $person_rec = {};
 
-      if ($intro_text =~ /^Eingetragene Personen/ or $intro_text =~ /[iI]nscrip?t/ or $intro_text =~ /^Nuove persone iscritte/) { #_{
+      if ($intro_text =~ /^Eingetragene Personen/ or $intro_text =~ /[iI]nscrip?t/ or $intro_text =~ /[Pp]ersone iscritte/) { #_{
          $person_rec = {'add_rm' => '+'};
       }
       else {
@@ -351,7 +351,8 @@ sub find_persons_from_daily_summary_rec { #_{
                /organe de révision/      or
                /président/               or
                /\btitulaire\b/           or
-               /socio e gerente/) {
+               /\bsoci[oa]\b/            or
+               /\bgerente\b/  ) {
 
               if (exists $person_rec->{function}) {
                 $person_rec->{funktion} .= ', '. $_;
@@ -375,7 +376,8 @@ sub find_persons_from_daily_summary_rec { #_{
                /[Pp]rokura/                or
                /[Zz]eichnungsberechtigung/ or
                /signature/                 or
-               /con firma /
+               /con firma /                or
+               /senza diritto di firma/
               ) {
 
               print "Already exists $rec->{id_firma}: $person_rec->{zeichnung}, _ = $_\n" if exists $person_rec->{zeichnung} and $_ ne $person_rec->{zeichnung};
@@ -393,7 +395,7 @@ sub find_persons_from_daily_summary_rec { #_{
 
            if (/Stammanteil/                 or
                /Stammeinlage/                or
-               /con (una|1) quota/           or
+               /con (una|\d+) quot[ea]\b/    or
                /pour \d+ parts sociales de /
             ) {
 
