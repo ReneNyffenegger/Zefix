@@ -229,13 +229,15 @@ function check_person_firma($dbh) { #_{
   $varian='Varian Medical Systems International AG';
   $tro_typo='TRO Teuhand & Revisions AG (<M>CHE107.909.432<E>)';
   $ortag='Ortag, Organisations-, Revisions- und Treuhand-AG';
+  $luech_com_alt='Lüchingen (comune Altstätten)';
 
-  check_count($dbh, 'person_firma', 104);
+  check_count($dbh, 'person_firma', 106);
   $sth = db_prep_exec($dbh, 'select * from person_firma order by dt_journal, id_firma');
 
   $cnt=1;
 
   cmp_person_firma($sth, $cnt++, 468163   ,'2001-01-23'  ,'-'  ,'Dettwiler'     ,'Werner'           ,'Reigoldswil'                         ,NULL                                        ,'Eichberg'                  ,'socio e gerente'                            , 'con firma individuale'                               , 'con una quota da CHF 1\'000.--'                       ); #_{
+  cmp_person_firma($sth, $cnt++, 468163   ,'2001-01-23'  ,'+'  ,'Wüst'          ,'Günter'           ,'Oberriet SG'                         , null                                       ,$luech_com_alt              ,'socio e gerente'                            , 'con firma individuale'                               , 'con una quota da CHF 1\'000.--'                       );
   cmp_person_firma($sth, $cnt++, 251792   ,'2001-07-30'  ,'-'  ,'Dettwiler'     ,'Werner'           ,'Reigoldswil'                         ,NULL                                        ,'Eichberg'                  ,$gs_gf                                       , 'mit Einzelunterschrift'                              ,  NULL                                                  );
   cmp_person_firma($sth, $cnt++, 251792   ,'2001-07-30'  ,'+'  ,'Wüst'          ,'Günter'           ,'Oberriet SG'                         ,NULL                                        ,'Lüchingen (Altstätten)'    ,$gs_gf                                       , 'mit Einzelunterschrift'                              ,  NULL                                                  );
   cmp_person_firma($sth, $cnt++, 150042   ,'2002-04-30'  ,'+'  ,'Huber'         ,'Marcel'           ,'Eschenbach LU'                       ,NULL                                        ,'Eschenbach LU'             ,'Kassier'                                    ,$ku2                                                   ,  null                                                  );
@@ -320,8 +322,9 @@ function check_person_firma($dbh) { #_{
   cmp_person_firma($sth, $cnt++, 823465   ,'2014-08-13'  ,'-'  ,'Hagger'        ,'Joachim Andreas'  ,'Basel'                               ,NULL                                        ,'Zürich'                    ,$vr_mg                                       ,$ku2                                                   ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 823465   ,'2014-08-13'  ,'+'  ,'Franz'         ,'Mike'             ,'Frick'                               ,NULL                                        ,'Gipf-Oberfrick'            ,$vr_mg                                       ,$ku2                                                   ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 712087   ,'2014-09-26'  ,'+'  ,'Hübner'        ,'Ernst'            ,'deutscher Staatsangehöriger'         , null                                       ,'Ingenbohl'                 , null                                        ,$kp2                                                   ,  null                                                  );
-
   cmp_person_firma($sth, $cnt++, 712087   ,'2015-05-29'  ,'-'  ,'Hauri'         ,'Reto'             ,'Niederlenz'                          , null                                       ,'Gränichen'                 , null                                        ,$kp2                                                   ,  null                                                  );
+
+  cmp_person_firma($sth, $cnt++, 468163   ,'2016-07-05'  ,'+'  ,'Riedmüller'    ,'Josef'            ,'cittadino germanico'                 ,NULL                                        ,'Brissago'                  ,'socio e gerente'                            ,'con firma individuale'                                , 'con 1 quota da CHF 49\'000.00'                        );
 
   cmp_person_firma($sth, $cnt++, 451407   ,'2016-10-04'  ,'+'  ,'Ginnow'        ,'Richard'          ,'Volketswil'                          ,NULL                                        ,'Mettmenstetten'            ,"$gs und Vorsitzender der $gf"               , 'mit Einzelunterschrift'                              , 'mit 188 Stammanteilen zu je CHF 100.00'               );
   cmp_person_firma($sth, $cnt++, 451407   ,'2016-10-04'  ,'+'  ,'Norgate'       ,'Thomas Aylwin'    ,'britischer Staatsangehöriger'        ,NULL                                        ,'Freienbach'                ,$gs_gf                                       , 'mit Einzelunterschrift'                              , 'mit 12 Stammanteilen zu je CHF 100.00'                );

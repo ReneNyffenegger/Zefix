@@ -265,7 +265,7 @@ sub find_persons_from_daily_summary_rec { #_{
 
   my @ret = ();
 
-  while ($text =~ s/(Ausgeschiedene Personen und erloschene Unterschriften|Eingetragene Personen(?: neu oder mutierend)?|Personne et signature radiée|Inscription ou modification de personne(?:\(s\))?|Persone dimissionarie e firme cancellate):? *(.*?)\.//) { # ||Inscription ou modification de personne\(s\)|Nuove persone iscritte o modifiche|Procuration collective à deux, limitée aux affaires de la succursale, a été conférée à|Inscription ou modification de personnes)//) {
+  while ($text =~ s/(Ausgeschiedene Personen und erloschene Unterschriften|Eingetragene Personen(?: neu oder mutierend)?|Personne et signature radiée|Inscription ou modification de personne(?:\(s\))?|Persone dimissionarie e firme cancellate|Nuove persone iscritte o modifiche):? *(.*?)\.//) { # ||Inscription ou modification de personne\(s\)|Procuration collective à deux, limitée aux affaires de la succursale, a été conférée à|Inscription ou modification de personnes)//) {
 
 
     my ($intro_text, $personen_text) = ($1, $2);
@@ -275,7 +275,7 @@ sub find_persons_from_daily_summary_rec { #_{
 
       my $person_rec = {};
 
-      if ($intro_text =~ /^Eingetragene Personen/ or $intro_text =~ /^Inscription/) { #_{
+      if ($intro_text =~ /^Eingetragene Personen/ or $intro_text =~ /^Inscription/ or $intro_text =~ /^Nuove persone iscritte/) { #_{
          $person_rec = {'add_rm' => '+'};
       }
       else {
@@ -290,7 +290,7 @@ sub find_persons_from_daily_summary_rec { #_{
         my $name = s_back($1);
         my $more = $3;
         $person_rec->{in} = s_back($2);
-        
+
         if ($name =~ / *(.*), (?:von|de|da) (.*)/) { #_{
 
           my $naturliche_person = $1;
@@ -302,7 +302,7 @@ sub find_persons_from_daily_summary_rec { #_{
           $person_rec->{vorname } = $2;
 
         } #_}
-        elsif ($name =~ / *(.*), *([^,]+Staatsangehöriger)/) { #_{
+        elsif ($name =~ / *(.*), *([^,]*(?:Staatsangehöriger|cittadino)[^]]*)/) { #_{
 
           my $naturliche_person = $1;
           $person_rec->{von} = $2;
@@ -390,7 +390,7 @@ sub find_persons_from_daily_summary_rec { #_{
 
            if (/Stammanteil/     or
                /Stammeinlage/    or
-               /con una quota/
+               /con (una|1) quota/
             ) {
 
               print "Already exists: $person_rec->{stammeinlage}, _ = $_\n" if exists $person_rec->{stammeinlage};
@@ -461,6 +461,9 @@ sub bisher_nicht_etc { #_{
   }
   if ($_[1] eq 'bisher') {
     if ($_[0] =~ s/ *\[précédemment:([^]]*)\]//) {
+      return $1;
+    }
+    if ($_[0] =~ s/ *\[finora:([^]]*)\]//) {
       return $1;
     }
   }
