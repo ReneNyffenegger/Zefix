@@ -48,7 +48,7 @@ while (my $rec = Zefix::parse_next_daily_summary_line($zefix_file)) {
 
   for my $personen_rec (@personen) { #_{
 
-    print $personen_rec->{rest},"\n";
+    print "Rest: $personen_rec->{rest}","\n" if $personen_rec->{rest};
 
     $personen_trs .= sprintf( #_{
       "<tr class='%s'>

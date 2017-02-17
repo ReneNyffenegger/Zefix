@@ -422,7 +422,81 @@ sub find_persons_from_daily_summary_rec { #_{
 
       push @ret, $person_rec;
     } #_}
-  }
+
+  } #-}
+
+
+  if (grep { $rec->{registeramt} eq $_ } qw(550)) { #_{
+
+    while ($text =~ s/Associée: ([^,.]+), à ([^,.]+), ([^,]+parts de [^,.]+)//) { #_{
+
+      my $person_rec = {
+        add_rm       =>'+',
+        bezeichnung  => s_back($1),
+        funktion     => 'Associée',
+        in           => s_back($2),
+        stammeinlage => s_back($3)
+      };
+
+      push @ret, $person_rec;
+
+    } #_}
+
+    if ($text =~ s/Signature collective à deux est conférée à ([^.]+)\.//) {
+
+      my $signature_halter = $1;
+
+      my @persons;
+
+      while ($signature_halter =~ s/([^,]+), de ([^,]+), à ([^,]+)(?:, (présidente[^,]*))?, *//) { #_{
+
+        my $name = $1;
+
+        my $person_rec = {
+           add_rm  =>'+',
+           in      => $2,
+           von     => $3
+        };
+
+        if ($4) {
+          $person_rec -> {funktion} = $4;
+        }
+
+        $name =~ s/^ *et *//;
+        $name =~ /([^ ]+) +(.*)/;
+        $person_rec -> {nachname} = $1;
+        $person_rec -> {vorname} = $2;
+
+
+        push @persons, $person_rec;
+     
+      } #_}
+
+      if ($signature_halter =~ /les (\w+) gérants/) { #_{
+
+        map {
+          if ($_->{funktion}) {
+
+            if (substr($_->{funktion}, -1) eq 'e') {
+              $_->{funktion} .= ' et gérante';
+            }
+            else {
+              $_->{funktion} .= ' et gérant';
+            }
+          }
+          else {
+            $_->{funktion} = 'gérant';
+          }
+        }  @persons;
+
+      } #_}
+
+      push @ret, @persons;
+
+    }
+
+  } #_}
+
   return @ret;
 
 
