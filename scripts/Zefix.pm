@@ -221,6 +221,7 @@ sub s_back { #_{
 # $text =~ s/##S_A_##/S.A./g;
 
   $text =~ s/##([^#]+)##/$1./g;
+  $text =~ s/##k_(.*?)##/, $1/g;
 
   return $text;
 
@@ -252,6 +253,8 @@ sub find_persons_from_daily_summary_rec { #_{
 # $text =~ s/S\.A\./##S_A_##/g;
 
   $text =~ s/Prof\./##Prof##/g;
+  $text =~ s/, GB\b/##k_GB##/g;
+  $text =~ s/, USA\b/##k_USA##/g;
 
   $text =~ s/(<(R|M)>CH.*?<E>)/ my $x = $1; $x =~ s![.-]!!g; $x /eg;
 
@@ -314,6 +317,10 @@ sub find_persons_from_daily_summary_rec { #_{
 
 
         my $person_det_bisher = bisher_nicht_etc($more, 'bisher');
+#       my $person_det_bisher = bisher_nicht_etc($more, 'come finora');
+
+        $more =~ s/\[come finora\]//;
+        $more =~ s/\[wie bisher\]//;
 
         my $person_det_nicht = bisher_nicht_etc($more, 'nicht');
 
@@ -324,30 +331,48 @@ sub find_persons_from_daily_summary_rec { #_{
         @parts = grep { #_{ Funktion
 
 
-           if (/Verwaltungsrates/        or
-               /[pP]räsident/            or
-               /Geschäftsführer/         or
-               /Revisionsstelle\b/       or
-               /Geschäftsleitung/        or
-               /Gesellschafter(in)?\b/   or
-               /Mitglied/                or
-               /Aktuar(in)?\b/           or
-               /Inhaber(in)?\b/          or
-               /Geschäftsführung\b/      or
-               /Vorsitzender?\b/         or
-               /\bassocié\b/             or
-               /\bgérant\b/              or
-               /[Kk]assier/              or
-               /\bmembre\b/              or
-               /organe de révision/      or
-               /Direktor(in)?\b/         or
-               /président/               or
-               /\btitulaire\b/           or
-               /\bassociée?\b/             or
-               /\bsoci[oa]\b/            or
-               /\badministrateur\b/      or
-               /\bsecrétaire\b/          or
-               /\bgerente\b/  ) {
+           if (/Verwaltungsrat/           or
+               /[pP]räsident/             or
+               /Geschäftsführer/          or
+               /Revisionsstelle\b/        or
+               /Geschäftsleitung/         or
+               /Gesellschafter(in)?\b/    or
+               /Mitglied/                 or
+               /Aktuar(in)?\b/            or
+               /Inhaber(in)?\b/           or
+               /Geschäftsführung\b/       or
+               /Vorsitzender?\b/          or
+               /\bassocié\b/              or
+               /\bgérant\b/               or
+               /[Kk]assier/               or
+               /\bmembre\b/               or
+               /organe de révision/       or
+               /Sekrertär(in)?\b/         or
+               /Direktor(in)?\b/          or
+               /Generaldirektor(in)?\b/   or
+               /\bprésident/              or
+               /\bpresidente\b/           or
+               /Delegierter?\b/           or
+               /ufficio di revisione/     or
+               /\btitulaire\b/            or
+               /\bassociée?\b/            or
+               /\bdirecteur\b/            or
+               /\bdirectrice\b/           or
+               /\bdirettore\b/            or
+               /\bamministratore\b/       or
+               /\b[lL]iquidatore?\b/      or
+               /\bliquidatrice\b/         or
+               /\bGeschäftsleiter(in)?\b/ or
+               /\bmembro\b/               or
+               /\bSekretär(in)?\b/        or
+               /\bsoci[oa]\b/             or
+               /\badministrateur\b/       or
+               /Leiter de/                or
+               /\bsecrétaire\b/           or
+               /\btitolare\b/             or
+               /\bdelegato\b/             or
+               /\bgerente\b/              or
+               /Kommanditär(in)?/       ) {
 
               if (exists $person_rec->{function}) {
                 $person_rec->{funktion} .= ', '. $_;
@@ -391,7 +416,7 @@ sub find_persons_from_daily_summary_rec { #_{
            if (/Stammanteil/                 or
                /Stammeinlage/                or
                /con (una|\d+) quot[ea]\b/    or
-               /pour \d+ parts sociales de /
+               /pour (une|\d+) parts? sociales? de /
             ) {
 
               print "Already exists: $person_rec->{stammeinlage}, _ = $_\n" if exists $person_rec->{stammeinlage};

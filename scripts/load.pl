@@ -59,7 +59,7 @@ $dbh->{AutoCommit} = 0;
 load_daily_summaries();
 
 $dbh -> commit;
-exit;
+# exit;
 
 my %word_cnt;
 load_stichwoerter();
@@ -67,7 +67,7 @@ $dbh -> commit;
 for my $word (sort { $word_cnt{$b} <=> $word_cnt{$a} } keys %word_cnt) {
   printf "%5d: $word\n", $word_cnt{$word};
 }
-#exit;
+# exit;
 
 print "TODO: Forcing gemeinden to be loaded\n";
 # $load_gemeinden = 1;
