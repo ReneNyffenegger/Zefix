@@ -91,15 +91,20 @@ sub load_daily_summaries { #_{
 
   my $sth_ins_person_firma = $dbh->prepare('insert into person_firma values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
 
+  my $file_cnt = 0;
   for my $file (Zefix::daily_summary_files()) {
-    print "$file\n";
+    $file_cnt ++;
+    print "$file [$file_cnt]\n";
+
+#   $dbh->commit unless $file_cnt % 333;
 
     my $zefix_file = Zefix::open_daily_summary_file($file);
-    while (my $rec = Zefix::parse_next_daily_summary_line($zefix_file)) {
+    while (my $rec = Zefix::parse_next_daily_summary_line($zefix_file)) { #_{
 
       my @personen = Zefix::find_persons_from_daily_summary_rec($rec);
-      for my $personen_rec (@personen) {
-        $sth_ins_person_firma->execute(
+      for my $personen_rec (@personen) { #_{
+
+        $sth_ins_person_firma->execute( #_{
                  $rec         ->{id_firma},
                  $rec         ->{dt_journal},
                  $personen_rec->{add_rm},
@@ -113,10 +118,13 @@ sub load_daily_summaries { #_{
                  $personen_rec->{funktion},
                  $personen_rec->{zeichnung},
                  $personen_rec->{stammeinlage},
-        );
+        ); #_}
 
-      }
-    }
+      } #_}
+
+    } #_}
+
+
   }
 } #_}
 
@@ -530,7 +538,7 @@ sub init_stichwoerter { #_{
    'Bäckerei'                   => {qrs => [ qr/backerei/                ] },
    'Backwaren'                  => {qrs => [ qr/backwaren/               ] },
    'Balkon'                     => {qrs => [ qr/balkon/                  ] },
-   'Bank'                       => {qrs => [ qr/\bbank/                  ] }, # Datenbank
+   'Bank'                       => {qrs => [ qr/\bbank/                  ] }, # Datenbank, Bankette
    'Batterien'                  => {qrs => [ qr/batteri/                 ] },
    'Baugewerbe'                 => {qrs => [ qr/baugewerbe/              ] },
    'Baumaterialien'             => {qrs => [ qr/baumaterial/             ] },

@@ -221,6 +221,7 @@ sub s_back { #_{
   $text =~ s/## (.)##/ $1./g;
   $text =~ s/##--##/.--/g;
   $text =~ s/##-(.)##/-$1./g;
+  $text =~ s/##p_(.*?)##/ ($1)/g;
   $text =~ s/##(.)_(.)_##/$1.$2./g;
 
 # $text =~ s/##S_A_##/S.A./g;
@@ -260,6 +261,7 @@ sub find_persons_from_daily_summary_rec { #_{
   $text =~ s/Prof\./##Prof##/g;
   $text =~ s/, GB\b/##k_GB##/g;
   $text =~ s/, USA\b/##k_USA##/g;
+  $text =~ s/ \((.{1,3})\)/##p_$1##/g;
 
   $text =~ s/(<(R|M)>CH.*?<E>)/ my $x = $1; $x =~ s![.-]!!g; $x /eg;
 
@@ -321,13 +323,20 @@ sub find_persons_from_daily_summary_rec { #_{
         } #_}
 
 
-        my $person_det_bisher = bisher_nicht_etc($more, 'bisher');
-#       my $person_det_bisher = bisher_nicht_etc($more, 'come finora');
+
+        $more =~ s/ *[[(](?:bisher|précédemment|finora): *([^\])]+)[\])]//;
+
+        my $person_det_bisher = $1;
+#       my $person_det_bisher = rm_bisher($more);
+#       my $person_det_bisher = bisher_nicht_etc($more, 'bisher');
 
         $more =~ s/\[come finora\]//;
         $more =~ s/\[wie bisher\]//;
 
-        my $person_det_nicht = bisher_nicht_etc($more, 'nicht');
+        $more =~ s/ *[[(](?:nicht|non): *([^\])]+)[\])]//;
+        my $person_det_nicht = $1;
+#       my $person_det_nicht = rm_nicht($more);
+#       my $person_det_nicht = bisher_nicht_etc($more, 'nicht');
 
 
 
@@ -539,10 +548,10 @@ sub find_persons_from_daily_summary_rec { #_{
 
 } #_}
 
-sub registeramt_with_special_wording {
+sub registeramt_with_special_wording { #_{
   my $rec = shift;
   return grep { $rec->{registeramt} eq $_ } qw(550 645 660) ;
-}
+} #_}
 
 sub True_False_to_1_0 { #_{
   my $tf = shift;
@@ -575,26 +584,45 @@ sub are_persons_expected { #_{
 
 } #_}
 
-sub bisher_nicht_etc { #_{
-  # $_[0]  ... text
-  # $_[1]  ... nicht, bisher ...
-  
+#QQsub rm_bisher { #_{
+#QQ  
+#QQ  return rm_between_paranthesis($_[0], 'bisher|précédemment|finora');
+#QQ
+#QQ} #_}
+#QQ
+#QQsub rm_nicht { #_{
+#QQ  
+#QQ  return rm_between_paranthesis($_[0], 'nicht|non');
+#QQ
+#QQ} #_}
+#QQ
+#QQsub rm_between_paranthesis {
+#QQ  if ($_[0] =~ s/ *[[(](?:$_[1]): *([^\])]+)[\])]//) {
+#QQ    return $1;
+#QQ  }
+#QQ  return;
+#QQ}
 
-  if ($_[0] =~ s/ *[[(]$_[1]:([^]]*)[\])]//) {
-    return $1;
-  }
-  if ($_[1] eq 'bisher') { #_{
-    my $ret = bisher_nicht_etc($_[0], 'précédemment'); 
-    unless ($ret) {
-      return bisher_nicht_etc($_[0], 'finora');
-    }
-  } #_}
-  if ($_[1] eq 'nicht') { #_{
-    my $ret = bisher_nicht_etc($_[0], 'non'); 
-    return $ret;
-  } #_}
-  return '';
-} #_}
+#Qsub bisher_nicht_etc { #_{
+#Q  # $_[0]  ... text
+#Q  # $_[1]  ... nicht, bisher ...
+#Q  
+#Q
+#Q  if ($_[0] =~ s/ *[[(]$_[1]:([^]]*)[\])]//) {
+#Q    return $1;
+#Q  }
+#Q  if ($_[1] eq 'bisher') { #_{
+#Q    my $ret = bisher_nicht_etc($_[0], 'précédemment'); 
+#Q    unless ($ret) {
+#Q      return bisher_nicht_etc($_[0], 'finora');
+#Q    }
+#Q  } #_}
+#Q  if ($_[1] eq 'nicht') { #_{
+#Q    my $ret = bisher_nicht_etc($_[0], 'non'); 
+#Q    return $ret;
+#Q  } #_}
+#Q  return '';
+#Q} #_}
 
 sub stammeinlage { #_{
 

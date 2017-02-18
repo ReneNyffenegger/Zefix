@@ -119,7 +119,7 @@ function print_firma($db, $id_firma) { #_{
 
   print "\n<hr>";
 
-  print "<table border=1><tr><td>Datum J</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>";
+  print "<table border=1><tr><td>J</td><td>N</td><td>V</td><td>v</td><td>B</td><td>i</td><td>F</td><td>Z</td><td></td></tr>";
 
   $res = db_prep_exec_fetchall($db, 
     'select
@@ -133,12 +133,14 @@ function print_firma($db, $id_firma) { #_{
     ', array($id_firma));
 
   foreach ($res as $row) {
-    printf ("<tr class='%s'><td>%s</td></td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>\n",
+    printf ("<tr class='%s'><td>%s</td></td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>\n",
       $row['add_rm'] == '+' ? 'add' : 'rm', 
       $row['dt_journal'],
-      $row['nachname'], $row['vorname'],
+      $row['nachname'], $row['vorname'], $row['von'],
       $row['bezeichnung'],
-      $row['funktion'], $row['zeichnung'], $row['stammeinlage']
+      $row['in_'],
+      $row['funktion'], $row['zeichnung'],
+      $row['stammeinlage']
     );
   }
 
