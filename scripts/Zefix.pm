@@ -59,31 +59,41 @@ sub open_daily_summary_file { #_{
   my $zefix_file = {};
   open ($zefix_file->{fh}, '<:encoding(iso-8859-1)', $filename) or die "Could not open $filename";
 
+  my ($yr, $no) = $filename =~ m/(\d+)-(\d+)$/;
+  if ($yr gt '01' or $no gt '164') {
+    $zefix_file->{gt_01_164} = 1;
+  }
+  else {
+    $zefix_file->{gt_01_164} = 0;
+  }
+  if ($yr gt '03' or $no gt '076') {
+    $zefix_file->{gt_03_076} = 1;
+  }
+  else {
+    $zefix_file->{gt_03_076} = 0;
+  }
 
-   my ($yr, $no) = $filename =~ m/(\d+)-(\d+)$/;
-   if ($yr gt '01' or $no gt '164') {
-     $zefix_file->{gt_01_164} = 1;
-   }
-   else {
-     $zefix_file->{gt_01_164} = 0;
-   }
-   if ($yr gt '03' or $no gt '076') {
-     $zefix_file->{gt_03_076} = 1;
-   }
-   else {
-     $zefix_file->{gt_03_076} = 0;
-   }
-
-   return $zefix_file;
+  return $zefix_file;
 
 } #_}
 
+sub read_next_daily_summary_line { #_{
+  my $zefix_file = shift;
+
+  my $in = readline($zefix_file->{fh});
+  unless ($in) {
+    close ($zefix_file->{fh});
+    return;
+  }
+  chomp $in;
+  $in =~ s/\x{a0}/ /g;
+  return $in;
+
+} #_}
 
 sub parse_daily_summary_row { #_{
   my $zefix_file = shift;
-# my $filename = shift;
   my @row      = @_;
-
 
 # my ($yr, $no) = $filename =~ m/(\d+)-(\d+)$/;
 
@@ -187,21 +197,16 @@ sub parse_daily_summary_row { #_{
 sub parse_next_daily_summary_line { #_{
   my $zefix_file = shift;
 
-  my $in = readline($zefix_file->{fh});
-  unless ($in) {
-    close ($zefix_file->{fh});
-    return;
-  }
-  chomp $in;
-  $in =~ s/\x{a0}/ /g;
+  my $in = read_next_daily_summary_line($zefix_file);
+  return unless $in;
 
-# print "is_utf8? " . Encode::is_utf8($in), "<\n";
-
-
-# $in = encode('utf-8', decode('iso-8859-1', $in));
-
-# $in =  Encode::decode_utf8($in);
-# print "is_utf8? " . Encode::is_utf8($in), "<\n";
+# my $in = readline($zefix_file->{fh});
+# unless ($in) {
+#   close ($zefix_file->{fh});
+#   return;
+# }
+# chomp $in;
+# $in =~ s/\x{a0}/ /g;
 
   my @row = split("\t", $in);
 
@@ -260,9 +265,9 @@ sub find_persons_from_daily_summary_rec { #_{
 
   my @ret = ();
 
+  if (not grep { $rec->{registeramt} eq $_ } qw(550 645 660/)) { #_{
 
-  while ($text =~ s/(Ausgeschiedene Personen und erloschene Unterschriften|Eingetragene Personen(?: neu oder mutierend)?|Personne et signature radiée|Inscription ou modification de personne(?:\(s\))?|Persone dimissionarie e firme cancellate|Persone iscritte|Nuove persone iscritte o modifiche|Personne\(s\) inscrite\(s\)):? *(.*?)\.//) { # ||Inscription ou modification de personne\(s\)|Procuration collective à deux, limitée aux affaires de la succursale, a été conférée à|Inscription ou modification de personnes)//) {
-
+  while ($text =~ s/(Ausgeschiedene Personen und erloschene Unterschriften|Eingetragene Personen(?: neu oder mutierend)?|Personne et signature radiée|Inscription ou modification de personne(?:\(s\))?|Persone dimissionarie e firme cancellate|Persone iscritte|Nuove persone iscritte o modifiche|Personne\(s\) inscrite\(s\)):? *(.*?)\.//) { # ||Inscription ou modification de personne\(s\)|Procuration collective à deux, limitée aux affaires de la succursale, a été conférée à|Inscription ou modification de personnes)//) { #_{
 
     my ($intro_text, $personen_text) = ($1, $2);
 
@@ -352,6 +357,7 @@ sub find_persons_from_daily_summary_rec { #_{
                /Generaldirektor(in)?\b/   or
                /\bprésident/              or
                /\bpresidente\b/           or
+               /Liquidator(in)\b/         or
                /Delegierter?\b/           or
                /ufficio di revisione/     or
                /\btitulaire\b/            or
@@ -359,14 +365,19 @@ sub find_persons_from_daily_summary_rec { #_{
                /\bdirecteur\b/            or
                /\bdirectrice\b/           or
                /\bdirettore\b/            or
+               /\bdirettrice\b/           or
                /\bamministratore\b/       or
+               /\bamministratrice\b/      or
                /\b[lL]iquidatore?\b/      or
+               /\bliquidateur\b/          or
                /\bliquidatrice\b/         or
                /\bGeschäftsleiter(in)?\b/ or
                /\bmembro\b/               or
                /\bSekretär(in)?\b/        or
+               /\bsegretari[ao]\b/        or
                /\bsoci[oa]\b/             or
                /\badministrateur\b/       or
+               /Beisitzer(in)?'b/         or
                /Leiter de/                or
                /\bsecrétaire\b/           or
                /\btitolare\b/             or
@@ -396,7 +407,9 @@ sub find_persons_from_daily_summary_rec { #_{
                /[Pp]rokura/                or
                /[Zz]eichnungsberechtigung/ or
                /signature/                 or
-               /con firma /                or
+               /\bcon firma /              or
+               /\bcon procura /            or
+               /\bavec procuration\b/      or
                /senza diritto di firma/
               ) {
 
@@ -441,10 +454,10 @@ sub find_persons_from_daily_summary_rec { #_{
       push @ret, $person_rec;
     } #_}
 
-  } #-}
+  } #_}
 
-
-  if (grep { $rec->{registeramt} eq $_ } qw(550)) { #_{
+  } #_}
+  else { #_{ 550, 660
 
     while ($text =~ s/Associée: ([^,.]+), à ([^,.]+), ([^,]+parts de [^,.]+)//) { #_{
 
@@ -536,7 +549,7 @@ sub are_persons_expected { #_{
 
   my $rec = shift;
 
-  unless ($rec->{mut_firma} or $rec->{mut_rechtsform} or $rec->{mut_kapital} or $rec->{mut_domizil} or $rec->{mut_zweck} or $rec->{mut_organ} or $rec->{neueintrag} or $rec->{mut_status}) {
+  unless ($rec->{mut_firma} or $rec->{mut_rechtsform} or $rec->{mut_kapital} or $rec->{mut_domizil} or $rec->{mut_zweck} or $rec->{mut_organ} or $rec->{mut_status}) {
    
     goto skip if $rec->{mut_status} == 20;
     goto skip if $rec->{text} =~ /La procédure de faillite, suspendue faute d'actif, a été clôturée/;
