@@ -8,7 +8,7 @@ use Getopt::Long;
 GetOptions (
   'ids'      => \my $ids,
   'regexp:s' => \my $regexp
-) or die;
+) or exit;
 
 
 my $downloaded_dir = "$ENV{digitales_backup}Zefix/downloaded/";
