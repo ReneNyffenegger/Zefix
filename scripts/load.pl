@@ -742,6 +742,7 @@ sub init_stichwoerter { #_{
    'Papeterie'                  => {qrs => [ qr/papeterie/               ] },
    'Parkett'                    => {qrs => [ qr/parkett/                 ] },
    'Parfümerie'                 => {qrs => [ qr/parfumerie/              ] },
+   'Partnervermittlung'         => {qrs => [ qr/partnervermittlung/      ] },  # Vermittlung
    'Partyservice'               => {qrs => [ qr/party-?service/          ] },
    'Persönlichkeitsentwicklung' => {qrs => [ qr/personlichkeitsentwicklung/] },
    'Pharma'                     => {qrs => [ qr/\bpharma/                ] },

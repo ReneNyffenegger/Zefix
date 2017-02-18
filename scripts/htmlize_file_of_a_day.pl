@@ -101,7 +101,7 @@ while (my $rec = Zefix::parse_next_daily_summary_line($zefix_file)) {
   $text =~ s/>/&gt;/g;
 
   my $keine_personen ='';
-  if (Zefix::are_persons_expected($rec)) {
+  if (Zefix::are_persons_expected($rec) and not Zefix::registeramt_with_special_wording($rec)) {
     $keine_personen = "<div class='no-pers'>Keine Personen, obwohl welche erwartet</div>" unless @personen;
   }
 

@@ -265,7 +265,7 @@ sub find_persons_from_daily_summary_rec { #_{
 
   my @ret = ();
 
-  if (not grep { $rec->{registeramt} eq $_ } qw(550 645 660/)) { #_{
+  if (not registeramt_with_special_wording($rec)) { #_{
 
   while ($text =~ s/(Ausgeschiedene Personen und erloschene Unterschriften|Eingetragene Personen(?: neu oder mutierend)?|Personne et signature radiée|Inscription ou modification de personne(?:\(s\))?|Persone dimissionarie e firme cancellate|Persone iscritte|Nuove persone iscritte o modifiche|Personne\(s\) inscrite\(s\)):? *(.*?)\.//) { # ||Inscription ou modification de personne\(s\)|Procuration collective à deux, limitée aux affaires de la succursale, a été conférée à|Inscription ou modification de personnes)//) { #_{
 
@@ -377,13 +377,16 @@ sub find_persons_from_daily_summary_rec { #_{
                /\bsegretari[ao]\b/        or
                /\bsoci[oa]\b/             or
                /\badministrateur\b/       or
-               /Beisitzer(in)?'b/         or
+               /Beisitzer(in)?\b/         or
                /Leiter de/                or
                /\bsecrétaire\b/           or
                /\btitolare\b/             or
                /\bdelegato\b/             or
                /\bgerente\b/              or
-               /Kommanditär(in)?/       ) {
+               /Kommanditär(in)?/         or
+               /responsabile della succursale/   or
+               /Aufsichtsbehörde/         or
+               /Bankleiter(in)?/          ) {
 
               if (exists $person_rec->{function}) {
                 $person_rec->{funktion} .= ', '. $_;
@@ -535,6 +538,11 @@ sub find_persons_from_daily_summary_rec { #_{
 
 
 } #_}
+
+sub registeramt_with_special_wording {
+  my $rec = shift;
+  return grep { $rec->{registeramt} eq $_ } qw(550 645 660) ;
+}
 
 sub True_False_to_1_0 { #_{
   my $tf = shift;
