@@ -91,9 +91,11 @@ sub read_next_daily_summary_line { #_{
 
 } #_}
 
-sub parse_daily_summary_row { #_{
+sub parse_daily_summary_line { #_{
   my $zefix_file = shift;
-  my @row      = @_;
+  my $line     = shift;
+
+  my @row = split "\t", $line;
 
 # my ($yr, $no) = $filename =~ m/(\d+)-(\d+)$/;
 
@@ -135,7 +137,7 @@ sub parse_daily_summary_row { #_{
   }
 
   $i ++;
-  $rec->{neueintrag} = True_False_to_1_0($row[$i]);
+  $rec->{neueintrag} = True_False_to_1_0($row[$i], $i);
 
   $i ++;
   $rec->{mut_status} = $row[$i];
@@ -153,10 +155,10 @@ sub parse_daily_summary_row { #_{
   $rec->{mut_domizil} = $row[$i];
 
   $i ++;
-  $rec->{mut_zweck} = True_False_to_1_0($row[$i]);
+  $rec->{mut_zweck} = True_False_to_1_0($row[$i], $i);
 
   $i ++;
-  $rec->{mut_organ} = True_False_to_1_0($row[$i]);
+  $rec->{mut_organ} = True_False_to_1_0($row[$i], $i);
 
   $i ++; # ???
 
@@ -200,17 +202,11 @@ sub parse_next_daily_summary_line { #_{
   my $in = read_next_daily_summary_line($zefix_file);
   return unless $in;
 
-# my $in = readline($zefix_file->{fh});
-# unless ($in) {
-#   close ($zefix_file->{fh});
-#   return;
-# }
-# chomp $in;
-# $in =~ s/\x{a0}/ /g;
 
-  my @row = split("\t", $in);
+# my @row = split("\t", $in);
 
-  return parse_daily_summary_row($zefix_file, @row);
+# return parse_daily_summary_row($zefix_file, @row);
+  return parse_daily_summary_line($zefix_file, $in);
 
 } #_}
 
@@ -555,6 +551,13 @@ sub registeramt_with_special_wording { #_{
 
 sub True_False_to_1_0 { #_{
   my $tf = shift;
+  my $i  = shift;
+
+  if (not defined $tf) {
+
+    print "not defined $i\n";
+    return;
+  }
 
   return 1 if $tf eq 'True';
   return 0 if $tf eq 'False';

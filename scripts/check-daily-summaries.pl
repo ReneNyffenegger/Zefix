@@ -101,9 +101,9 @@ for my $file (Zefix::daily_summary_files()) {
 #    goto skip if $rec->{mut_status} == 20;
 #    goto skip if $rec->{text} =~ /La procédure de faillite, suspendue faute d'actif, a été clôturée/;
 
-   if (Zefix::are_persons_expected($rec)) {
+   if (not  Zefix::registeramt_with_special_wording and Zefix::are_persons_expected($rec)) {
      my @personen = Zefix::find_persons_from_daily_summary_rec($rec);
-     die "Keine Personen: " .  $file_ ."\n" . $rec->{id_firma} unless @personen;
+     print "Keine Personen: " .  $file_ ."\n" . $rec->{id_firma} unless @personen;
    }
 
     

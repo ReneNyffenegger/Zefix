@@ -4,6 +4,7 @@ use strict;
 use File::Basename;
 
 use Getopt::Long;
+use Text::Wrap; $Text::Wrap::columns = 180;
 
 use Zefix;
 
@@ -18,15 +19,15 @@ Zefix::init('dev');
 my $dest_dir       = "q/";
 # 
 # die unless -d $downloaded_dir;
-die unless -d $dest_dir;
 
 my @ids_firma;
 if ($ids) {
+  die unless -d $dest_dir;
   die if glob("$dest_dir*-*");
   @ids_firma = @ARGV or die;
 }
 elsif ($regexp) {
-
+# print "regexp: $regexp\n";
 }
 else {
   die "what exactly am I supposed to do?"
@@ -57,12 +58,13 @@ for my $file (Zefix::daily_summary_files) { #_{
     elsif ($regexp) { #_{
 
       if ($in =~ /$regexp/) {
-        my $rec = Zefix::parse_daily_summary_row($f, $in);
+        my $rec = Zefix::parse_daily_summary_line($f, $in);
+        print "  file;         $file\n";
         print "  id_firma:     $rec->{id_firma}\n";
         print "  ch_ident:     $rec->{ch_ident}\n";
         print "  registeramt:  $rec->{registeramt}\n";
         print "  dt_journal:   $rec->{dt_journal}\n";
-        print "  text:         $rec->{text}\n";
+        print "  text:         " . wrap("", "                ", $rec->{text}), "\n";
         print "\n";
 #       print $in;
       }
