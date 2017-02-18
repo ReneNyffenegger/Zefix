@@ -523,6 +523,7 @@ sub init_stichwoerter { #_{
    'Archäologie'                => {qrs => [ qr/archaolog/               ] },
    'Architekt'                  => {qrs => [ qr/architekt/               ] },
    'Artist'                     => {qrs => [ qr/clown/, qr/pantomim/, qr/komik/, qr/animation/            ] },  # Firmen/f844659
+   'Atelier'                    => {qrs => [ qr/atelier/                 ] },
    'Autohandel'                 => {qrs => [ qr/autohandel/              ] },
    'Automobil'                  => {qrs => [ qr/automobil/               ] },
    'Baby'                       => {qrs => [ qr/\bbab(y|i)/, qr/saugling/  ] },
