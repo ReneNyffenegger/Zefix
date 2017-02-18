@@ -3,6 +3,7 @@ use warnings;
 use strict;
 
 use Zefix;
+use utf8;
 
 Zefix::init('dev');
 
@@ -11,7 +12,7 @@ my $filename = shift or die;
 
 my $zefix_file = Zefix::open_daily_summary_file($filename);
 
-open (my $out, '>', 'abc.html') or die;
+open (my $out, '>:encoding(utf-8)', 'abc.html') or die;
 print $out '<!DOCTYPE HTML>
 <html><head> <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
@@ -34,7 +35,6 @@ while (my $rec = Zefix::parse_next_daily_summary_line($zefix_file)) {
     <td>Bezeichung</td>
     <td>in</td>
 
-    <td>Gesellschafter</td>
     <td>Funktion</td>
     <td>Zeichnung</td>
 
@@ -42,12 +42,14 @@ while (my $rec = Zefix::parse_next_daily_summary_line($zefix_file)) {
 
     <td>Rest</td>
 
-  </tr>';
+  </tr>
+';
 
   my @personen = Zefix::find_persons_from_daily_summary_rec($rec);
 
   for my $personen_rec (@personen) { #_{
 
+    print "Rest: $personen_rec->{rest}","\n" if $personen_rec->{rest};
 
     $personen_trs .= sprintf( #_{
       "<tr class='%s'>
@@ -60,11 +62,9 @@ while (my $rec = Zefix::parse_next_daily_summary_line($zefix_file)) {
         <td>%s</td>
         <td>%s</td>
         <td>%s</td>
-
-        <td>%s</td>
       <!-- ---------- -->
         <td class='%s'>%s</td>
-        </tr>",
+        </tr>\n",
 #     $personen_rec->{add_rm},
       $personen_rec->{add_rm} eq '-' ? 'del' : 'add',
       $personen_rec->{nachname} //'',
@@ -73,10 +73,8 @@ while (my $rec = Zefix::parse_next_daily_summary_line($zefix_file)) {
       $personen_rec->{bezeichnung} // '',
       $personen_rec->{in} //'',
 
-      $personen_rec->{gesellschafter} ? 'Gesellschafter' : '',
-      $personen_rec->{funktion} // '', # $funktion_text,
-      $personen_rec->{zeichnung} // '', # $zeichnung_text,
-
+      $personen_rec->{funktion} // '',
+      $personen_rec->{zeichnung} // '',
       $personen_rec->{stammeinlage} // '',
 
       $personen_rec->{rest} ? 'rest': '',
@@ -103,13 +101,13 @@ while (my $rec = Zefix::parse_next_daily_summary_line($zefix_file)) {
   $text =~ s/>/&gt;/g;
 
   my $keine_personen ='';
-  if (Zefix::are_persons_expected($rec)) {
+  if (Zefix::are_persons_expected($rec) and not Zefix::registeramt_with_special_wording($rec)) {
     $keine_personen = "<div class='no-pers'>Keine Personen, obwohl welche erwartet</div>" unless @personen;
   }
 
   print $out <<HTML;
 
-  id_firma: $rec->{id_firma}  (Registeramt: $rec->{registeramt})
+  id_firma: $rec->{id_firma}  (Registeramt: $rec->{registeramt}, Dt Journal: $rec->{dt_journal}
   <br>
 
   $stati

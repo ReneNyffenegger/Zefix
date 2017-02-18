@@ -5,6 +5,7 @@ use Encode qw(decode encode);
 
 use warnings;
 use strict;
+use utf8;
 
 use DBI;
 
@@ -56,50 +57,43 @@ sub open_daily_summary_file { #_{
   my $filename = shift;
 
   my $zefix_file = {};
-  open ($zefix_file->{fh}, '<', $filename) or die;
+  open ($zefix_file->{fh}, '<:encoding(iso-8859-1)', $filename) or die "Could not open $filename";
 
+  my ($yr, $no) = $filename =~ m/(\d+)-(\d+)$/;
+  if ($yr gt '01' or $no gt '164') {
+    $zefix_file->{gt_01_164} = 1;
+  }
+  else {
+    $zefix_file->{gt_01_164} = 0;
+  }
+  if ($yr gt '03' or $no gt '076') {
+    $zefix_file->{gt_03_076} = 1;
+  }
+  else {
+    $zefix_file->{gt_03_076} = 0;
+  }
 
-   my ($yr, $no) = $filename =~ m/(\d+)-(\d+)$/;
-   if ($yr gt '01' or $no gt '164') {
-     $zefix_file->{gt_01_164} = 1;
-   }
-   else {
-     $zefix_file->{gt_01_164} = 0;
-   }
-   if ($yr gt '03' or $no gt '076') {
-     $zefix_file->{gt_03_076} = 1;
-   }
-   else {
-     $zefix_file->{gt_03_076} = 0;
-   }
-
-   return $zefix_file;
+  return $zefix_file;
 
 } #_}
 
-# sub read_summary_line { #_{
-#   my $fh       = shift;
-#   my $filename = shift;
-# 
-#   my $in = <$fh>;
-# 
-#   return unless $in;
-# 
-#   chomp $in;
-# 
-#   $in = encode('utf-8', decode('iso-8859-1', $in));
-# 
-#   my @row = split("\t", $in);
-# 
-#   return parse_daily_summary_row($filename, @row);
-# 
-# } #_}
+sub read_next_daily_summary_line { #_{
+  my $zefix_file = shift;
+
+  my $in = readline($zefix_file->{fh});
+  unless ($in) {
+    close ($zefix_file->{fh});
+    return;
+  }
+  chomp $in;
+  $in =~ s/\x{a0}/ /g;
+  return $in;
+
+} #_}
 
 sub parse_daily_summary_row { #_{
   my $zefix_file = shift;
-# my $filename = shift;
   my @row      = @_;
-
 
 # my ($yr, $no) = $filename =~ m/(\d+)-(\d+)$/;
 
@@ -203,14 +197,17 @@ sub parse_daily_summary_row { #_{
 sub parse_next_daily_summary_line { #_{
   my $zefix_file = shift;
 
-  my $in = readline($zefix_file->{fh});
-  unless ($in) {
-    close ($zefix_file->{fh});
-    return;
-  }
-  chomp $in;
-  $in =~ s/\x{a0}/ /g;
-  $in = encode('utf-8', decode('iso-8859-1', $in));
+  my $in = read_next_daily_summary_line($zefix_file);
+  return unless $in;
+
+# my $in = readline($zefix_file->{fh});
+# unless ($in) {
+#   close ($zefix_file->{fh});
+#   return;
+# }
+# chomp $in;
+# $in =~ s/\x{a0}/ /g;
+
   my @row = split("\t", $in);
 
   return parse_daily_summary_row($zefix_file, @row);
@@ -229,6 +226,7 @@ sub s_back { #_{
 # $text =~ s/##S_A_##/S.A./g;
 
   $text =~ s/##([^#]+)##/$1./g;
+  $text =~ s/##k_(.*?)##/, $1/g;
 
   return $text;
 
@@ -238,8 +236,13 @@ sub find_persons_from_daily_summary_rec { #_{
   my $rec  = shift;
   my $text = $rec ->{text};
 
+
   $text =~ s/(\d)\.(\d)/##$1d$2##/g;
   $text =~ s/(.)\.(.)\./##$1_$2_##/g; # a.A. / S.A.
+
+  $text =~ s/(##._._##) (Präsident|Gesellschafter|Inhaber|Aktuar|Mitglied|Vizepräsident|Direktor)/$1, $2/g;
+
+
   $text =~ s/ (.)\./## $1##/g;
   $text =~ s/\.--/##--##/g;
 
@@ -255,78 +258,41 @@ sub find_persons_from_daily_summary_rec { #_{
 # $text =~ s/S\.A\./##S_A_##/g;
 
   $text =~ s/Prof\./##Prof##/g;
+  $text =~ s/, GB\b/##k_GB##/g;
+  $text =~ s/, USA\b/##k_USA##/g;
 
   $text =~ s/(<(R|M)>CH.*?<E>)/ my $x = $1; $x =~ s![.-]!!g; $x /eg;
-# $text =~ s/\( *\)//g;
 
   my @ret = ();
 
-  while ($text =~ s/(Ausgeschiedene Personen und erloschene Unterschriften|Eingetragene Personen(?: neu oder mutierend)?|Personne et signature radiée|Inscription ou modification de personne(?:\(s\))?|Persone dimissionarie e firme cancellate):? *(.*?)\.//) { # ||Inscription ou modification de personne\(s\)|Nuove persone iscritte o modifiche|Procuration collective à deux, limitée aux affaires de la succursale, a été conférée à|Inscription ou modification de personnes)//) {
+  if (not registeramt_with_special_wording($rec)) { #_{
 
+  while ($text =~ s/(Ausgeschiedene Personen und erloschene Unterschriften|Eingetragene Personen(?: neu oder mutierend)?|Personne et signature radiée|Inscription ou modification de personne(?:\(s\))?|Persone dimissionarie e firme cancellate|Persone iscritte|Nuove persone iscritte o modifiche|Personne\(s\) inscrite\(s\)):? *(.*?)\.//) { # ||Inscription ou modification de personne\(s\)|Procuration collective à deux, limitée aux affaires de la succursale, a été conférée à|Inscription ou modification de personnes)//) { #_{
 
     my ($intro_text, $personen_text) = ($1, $2);
 
-    for my $person_text (split ';', $personen_text) {
+    for my $person_text (split ';', $personen_text) { #_{
 
 
       my $person_rec = {};
 
-      if ($intro_text =~ /^Eingetragene Personen/ or $intro_text =~ /^Inscription/) { #_{
+      if ($intro_text =~ /^Eingetragene Personen/ or $intro_text =~ /[iI]nscrip?t/ or $intro_text =~ /[Pp]ersone iscritte/) { #_{
          $person_rec = {'add_rm' => '+'};
       }
       else {
          $person_rec = {'add_rm' => '-'};
       } #_}
 
-      if ($person_text =~ s! *\(?<R>([^<]+)<E>\)?!!g)  {
+      if ($person_text =~ s! *[([]?<R>([^<]+)<E>[)\]]?!!g)  { #_{
         $person_rec->{firma} = s_back($1);
-      }
-#q      if ($person_text =~ / *(.+), (Zweigniederlassung )?(?:in|à) ([^,]+), (Revisionsstelle|organe de révision|Gesellschafterin|Liquidatorin|ufficio di revisione)(.*)/) { #_{
-#q
-#q        $person_rec->{bezeichnung} = s_back($1);
-#q        $person_rec->{in}          = s_back($3);
-#q
-#q        my $grl = s_back($4);
-#q        print "grl: $grl\n";
-#q        my $grl_bisher = bisher_nicht_etc($grl, 'bisher');
-#q        print "grl: $grl\ngrl bisher: $grl_bisher\n\n";
-#q
-#q     
-#q        if ($grl eq 'Gesellschafterin') {
-#q          $person_rec->{gesellschafterin} = 1;
-#q        }
-#q        elsif ($grl eq 'Revisionsstelle' or $4 eq 'organe de révision' or $4 eq 'ufficio di revisione') {
-#q          $person_rec->{revisionsstelle} = 1;
-#q        }
-#q        elsif ($grl eq 'Liquidatorin') {
-#q          $person_rec->{liquidatorin} = 1;
-#q        }
-#q
-#q        my $det = s_back($5);
-#q        my $det_bisher  = bisher_nicht_etc($det, 'bisher');
-#q
-#q        if ($det =~ s/ohne Zeichnungsberechtigung//) {
-#q           $person_rec -> {oz} = 1;
-#q        }
-#q        else {
-#q           $person_rec -> {oz} = 0;
-#q        }
-#q
-#q        $person_rec->{stammeinlage} = stammeinlage($det);
-#q
-#q        $det =~ s/,//g;
-#q        $det =~ s/^ *//g;
-#q        $person_rec->{rest} = $det;
-#q
-#q      } #_}
-#       if ($person_text =~ / *([^,]+), *([^,]+), (von )?([^,]+), (?:in|à) ([^,]+), *(.*)/) { #_{
-      if ($person_text =~ / *(.*), (?:in|à) ([^,]+), *(.*)/) {
+      } #_}
+      if ($person_text =~ / *(.*), (?:in|à) ([^,]+), *(.*)/) { #_{
 
         my $name = s_back($1);
         my $more = $3;
         $person_rec->{in} = s_back($2);
-        
-        if ($name =~ / *(.*), (?:von|de) (.*)/) { #_{
+
+        if ($name =~ / *(.*), (?:von|de|da) (.*)/) { #_{
 
           my $naturliche_person = $1;
           $person_rec->{von} = $2;
@@ -337,7 +303,7 @@ sub find_persons_from_daily_summary_rec { #_{
           $person_rec->{vorname } = $2;
 
         } #_}
-        elsif ($name =~ / *(.*), *([^,]+Staatsangehöriger)/) { #_{
+        elsif ($name =~ / *(.*), *([^,]*(?:Staatsangehöriger?|ressortissant|cittadino|\bcitoyen)[^]]*)/) { #_{
 
           my $naturliche_person = $1;
           $person_rec->{von} = $2;
@@ -355,30 +321,72 @@ sub find_persons_from_daily_summary_rec { #_{
         } #_}
 
 
-
-
-
-#       my $person_det = s_back($6);
-
         my $person_det_bisher = bisher_nicht_etc($more, 'bisher');
+#       my $person_det_bisher = bisher_nicht_etc($more, 'come finora');
+
+        $more =~ s/\[come finora\]//;
+        $more =~ s/\[wie bisher\]//;
 
         my $person_det_nicht = bisher_nicht_etc($more, 'nicht');
 
 
-#       @parts = grep { /\w/ } @parts;
 
         my @parts = split ' *, *', $more;
 
-        
         @parts = grep { #_{ Funktion
 
-           if (/Verwaltungsrates/ or
-               /[pP]räsident/     or
-               /Geschäftsführer/  or
-               /Geschäftsleitung/ or
-               /Mitglied/         or
-               /\bmembre\b/       or
-               /président/) {
+
+           if (/Verwaltungsrat/           or
+               /[pP]räsident/             or
+               /Geschäftsführer/          or
+               /Revisionsstelle\b/        or
+               /Geschäftsleitung/         or
+               /Gesellschafter(in)?\b/    or
+               /Mitglied/                 or
+               /Aktuar(in)?\b/            or
+               /Inhaber(in)?\b/           or
+               /Geschäftsführung\b/       or
+               /Vorsitzender?\b/          or
+               /\bassocié\b/              or
+               /\bgérant\b/               or
+               /[Kk]assier/               or
+               /\bmembre\b/               or
+               /organe de révision/       or
+               /Sekrertär(in)?\b/         or
+               /Direktor(in)?\b/          or
+               /Generaldirektor(in)?\b/   or
+               /\bprésident/              or
+               /\bpresidente\b/           or
+               /Liquidator(in)\b/         or
+               /Delegierter?\b/           or
+               /ufficio di revisione/     or
+               /\btitulaire\b/            or
+               /\bassociée?\b/            or
+               /\bdirecteur\b/            or
+               /\bdirectrice\b/           or
+               /\bdirettore\b/            or
+               /\bdirettrice\b/           or
+               /\bamministratore\b/       or
+               /\bamministratrice\b/      or
+               /\b[lL]iquidatore?\b/      or
+               /\bliquidateur\b/          or
+               /\bliquidatrice\b/         or
+               /\bGeschäftsleiter(in)?\b/ or
+               /\bmembro\b/               or
+               /\bSekretär(in)?\b/        or
+               /\bsegretari[ao]\b/        or
+               /\bsoci[oa]\b/             or
+               /\badministrateur\b/       or
+               /Beisitzer(in)?\b/         or
+               /Leiter de/                or
+               /\bsecrétaire\b/           or
+               /\btitolare\b/             or
+               /\bdelegato\b/             or
+               /\bgerente\b/              or
+               /Kommanditär(in)?/         or
+               /responsabile della succursale/   or
+               /Aufsichtsbehörde/         or
+               /Bankleiter(in)?/          ) {
 
               if (exists $person_rec->{function}) {
                 $person_rec->{funktion} .= ', '. $_;
@@ -398,10 +406,14 @@ sub find_persons_from_daily_summary_rec { #_{
 
         @parts = grep { #_{ Zeichnung
 
-           if (/[Uu]nterschrift/ or
-               /[Pp]rokura/      or
+           if (/[Uu]nterschrift/           or
+               /[Pp]rokura/                or
                /[Zz]eichnungsberechtigung/ or
-               /signature/
+               /signature/                 or
+               /\bcon firma /              or
+               /\bcon procura /            or
+               /\bavec procuration\b/      or
+               /senza diritto di firma/
               ) {
 
               print "Already exists $rec->{id_firma}: $person_rec->{zeichnung}, _ = $_\n" if exists $person_rec->{zeichnung} and $_ ne $person_rec->{zeichnung};
@@ -417,8 +429,10 @@ sub find_persons_from_daily_summary_rec { #_{
 
         @parts = grep { #_{ Stammeinlage
 
-           if (/Stammanteil/     or
-               /Stammeinlage/
+           if (/Stammanteil/                 or
+               /Stammeinlage/                or
+               /con (una|\d+) quot[ea]\b/    or
+               /pour (une|\d+) parts? sociales? de /
             ) {
 
               print "Already exists: $person_rec->{stammeinlage}, _ = $_\n" if exists $person_rec->{stammeinlage};
@@ -432,21 +446,103 @@ sub find_persons_from_daily_summary_rec { #_{
 
         } @parts; #_}
 
+        $person_rec->{rest} = join " @ ",  @parts;
 
-        $person_rec->{rest} = join @parts;
       } #_}
-      else {
+      else { #_{
 #q        print "**** $rec->{id_firma} $person_text\n";
-      }
+      } #_}
 
 
       push @ret, $person_rec;
+    } #_}
+
+  } #_}
+
+  } #_}
+  else { #_{ 550, 660
+
+    while ($text =~ s/Associée: ([^,.]+), à ([^,.]+), ([^,]+parts de [^,.]+)//) { #_{
+
+      my $person_rec = {
+        add_rm       =>'+',
+        bezeichnung  => s_back($1),
+        funktion     => 'Associée',
+        in           => s_back($2),
+        stammeinlage => s_back($3)
+      };
+
+      push @ret, $person_rec;
+
+    } #_}
+
+    if ($text =~ s/ *([^.]+) est conférée à ([^.]+)\.//) {
+
+      my $zeichnung        = $1;
+      my $signature_halter = $2;
+
+      my @persons;
+
+      while ($signature_halter =~ s/([^,]+), (?:de |d')([^,]+), à ([^,]+)(?:, (présidente[^,]*))? *//) { #_{
+
+        my $name = $1;
+
+        my $person_rec = {
+           add_rm    =>'+',
+           in        => $2,
+           von       => $3,
+           zeichnung => $zeichnung
+        };
+
+        if ($4) {
+          $person_rec -> {funktion} = $4;
+        }
+
+        $name =~ s/^ *et *//;
+        $name =~ /([^ ]+) +(.*)/;
+        $person_rec -> {nachname} = $1;
+        $person_rec -> {vorname} = $2;
+
+
+        push @persons, $person_rec;
+     
+      } #_}
+
+
+      if ($signature_halter =~ /les (\w+) gérants/) { #_{
+
+        map {
+          if ($_->{funktion}) {
+
+            if (substr($_->{funktion}, -1) eq 'e') {
+              $_->{funktion} .= ' et gérante';
+            }
+            else {
+              $_->{funktion} .= ' et gérant';
+            }
+          }
+          else {
+            $_->{funktion} = 'gérant';
+          }
+        }  @persons;
+
+      } #_}
+
+      push @ret, @persons;
+
     }
-  }
+
+  } #_}
+
   return @ret;
 
 
 } #_}
+
+sub registeramt_with_special_wording {
+  my $rec = shift;
+  return grep { $rec->{registeramt} eq $_ } qw(550 645 660) ;
+}
 
 sub True_False_to_1_0 { #_{
   my $tf = shift;
@@ -461,7 +557,7 @@ sub are_persons_expected { #_{
 
   my $rec = shift;
 
-  unless ($rec->{mut_firma} or $rec->{mut_rechtsform} or $rec->{mut_kapital} or $rec->{mut_domizil} or $rec->{mut_zweck} or $rec->{mut_organ}) {
+  unless ($rec->{mut_firma} or $rec->{mut_rechtsform} or $rec->{mut_kapital} or $rec->{mut_domizil} or $rec->{mut_zweck} or $rec->{mut_organ} or $rec->{mut_status}) {
    
     goto skip if $rec->{mut_status} == 20;
     goto skip if $rec->{text} =~ /La procédure de faillite, suspendue faute d'actif, a été clôturée/;
@@ -484,14 +580,19 @@ sub bisher_nicht_etc { #_{
   # $_[1]  ... nicht, bisher ...
   
 
-  if ($_[0] =~ s/ *\[$_[1]:([^]]*)\]//) {
+  if ($_[0] =~ s/ *[[(]$_[1]:([^]]*)[\])]//) {
     return $1;
   }
-  if ($_[1] eq 'bisher') {
-    if ($_[0] =~ s/ *\[précédemment:([^]]*)\]//) {
-      return $1;
+  if ($_[1] eq 'bisher') { #_{
+    my $ret = bisher_nicht_etc($_[0], 'précédemment'); 
+    unless ($ret) {
+      return bisher_nicht_etc($_[0], 'finora');
     }
-  }
+  } #_}
+  if ($_[1] eq 'nicht') { #_{
+    my $ret = bisher_nicht_etc($_[0], 'non'); 
+    return $ret;
+  } #_}
   return '';
 } #_}
 
