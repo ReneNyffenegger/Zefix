@@ -296,6 +296,7 @@ sub find_persons_from_daily_summary_rec { #_{
         my $more = $3;
         $person_rec->{in} = s_back($2);
 
+
         if ($name =~ / *(.*), (?:von|de|da) (.*)/) { #_{
 
           my $naturliche_person = $1;
@@ -308,10 +309,14 @@ sub find_persons_from_daily_summary_rec { #_{
              $person_rec->{vorname } = $2;
           }
           else {  # Registeramt 229 does not seem to have commas between first and last name
+#       print "$name, In: $person_rec->{in}, Von: $person_rec->\n";
              $naturliche_person =~ /([^ ]+) +(.*)/;
 
              $person_rec->{nachname} = $1;
              $person_rec->{vorname } = $2;
+
+             $person_rec->{von} =~ s/ *\(bisher von .*\)//;
+             $person_rec->{in}  =~ s/ *\(bisher in .*\)//;
 
           }
 
@@ -334,20 +339,15 @@ sub find_persons_from_daily_summary_rec { #_{
         } #_}
 
 
-
         $more =~ s/ *[[(](?:bisher|précédemment|finora): *([^\])]+)[\])]//;
 
         my $person_det_bisher = $1;
-#       my $person_det_bisher = rm_bisher($more);
-#       my $person_det_bisher = bisher_nicht_etc($more, 'bisher');
 
         $more =~ s/\[come finora\]//;
         $more =~ s/\[wie bisher\]//;
 
         $more =~ s/ *[[(](?:nicht|non): *([^\])]+)[\])]//;
         my $person_det_nicht = $1;
-#       my $person_det_nicht = rm_nicht($more);
-#       my $person_det_nicht = bisher_nicht_etc($more, 'nicht');
 
 
 
@@ -429,13 +429,14 @@ sub find_persons_from_daily_summary_rec { #_{
                /Kommanditär(in)?/         or
                /responsabile della succursale/   or
                /Aufsichtsbehörde/         or
-               /Obmann\b/         or
-               /Obmännin\b/         or
-               /Vizeobmann\b/         or
-               /Vizeobmännin\b/         or
-               /Bankleiter(in)?/       or
+               /Obmann\b/                 or
+               /Prokurist(in)?\b/         or
+               /Obmännin\b/               or
+               /Vizeobmann\b/             or
+               /Vizeobmännin\b/           or
+               /Bankleiter(in)?/          or
                /Flugplatzchef(in)?/       or
-               /\bdipl\./       or
+               /\bdipl\./                 or
                /Chef/          
                
              ) {
@@ -611,46 +612,6 @@ sub are_persons_expected { #_{
   return 0;
 
 } #_}
-
-#QQsub rm_bisher { #_{
-#QQ  
-#QQ  return rm_between_paranthesis($_[0], 'bisher|précédemment|finora');
-#QQ
-#QQ} #_}
-#QQ
-#QQsub rm_nicht { #_{
-#QQ  
-#QQ  return rm_between_paranthesis($_[0], 'nicht|non');
-#QQ
-#QQ} #_}
-#QQ
-#QQsub rm_between_paranthesis {
-#QQ  if ($_[0] =~ s/ *[[(](?:$_[1]): *([^\])]+)[\])]//) {
-#QQ    return $1;
-#QQ  }
-#QQ  return;
-#QQ}
-
-#Qsub bisher_nicht_etc { #_{
-#Q  # $_[0]  ... text
-#Q  # $_[1]  ... nicht, bisher ...
-#Q  
-#Q
-#Q  if ($_[0] =~ s/ *[[(]$_[1]:([^]]*)[\])]//) {
-#Q    return $1;
-#Q  }
-#Q  if ($_[1] eq 'bisher') { #_{
-#Q    my $ret = bisher_nicht_etc($_[0], 'précédemment'); 
-#Q    unless ($ret) {
-#Q      return bisher_nicht_etc($_[0], 'finora');
-#Q    }
-#Q  } #_}
-#Q  if ($_[1] eq 'nicht') { #_{
-#Q    my $ret = bisher_nicht_etc($_[0], 'non'); 
-#Q    return $ret;
-#Q  } #_}
-#Q  return '';
-#Q} #_}
 
 sub stammeinlage { #_{
 
