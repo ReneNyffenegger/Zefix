@@ -278,7 +278,7 @@ sub find_persons_from_daily_summary_rec { #_{
 
     my $special_parsing = shift @PARTS;
 
-    if ($special_parsing =~ /\. *([^.]+?) von ([^.]+) ist erloschen/) {
+    if ($special_parsing =~ s/\. *([^.]+?) von ([^.]+) ist erloschen//) { #_{
 
 
       print "unexpected registeramt $rec->{registeramt} for special_parsing\n" unless $rec->{registeramt} == 217;
@@ -304,6 +304,30 @@ sub find_persons_from_daily_summary_rec { #_{
       else {
         print "unexpected Zeichnung $zeichnung\n";
       }
+
+    } #_}
+    if ($special_parsing =~ s/\. *([^.]+?) zeichne. (?:\w+) (mit [^.]+)\.//) {
+      my $who = $1;
+      my $zeichnung = $2;
+
+      for my $person (split /,? und /, $who ) {
+        print "person: $person\n";
+
+        my $person_rec = {add_rm=>'+'};
+        $person_rec->{zeichnung} = $zeichnung;
+
+        $person =~ /(.*?), von (.*?), in (.*?)(,|$)/;
+
+        my $name = $1;
+        $person_rec -> {von} = $2;
+        $person_rec -> {in}  = $3;
+
+       ($person_rec->{nachname}, $person_rec->{vorname}) = name_to_nachname_vorname($name);
+
+        push @ret, $person_rec;
+
+      }
+#     print "who: $who\nz: $zeichnung\n";
 
     }
 

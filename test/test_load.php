@@ -316,7 +316,7 @@ function check_person_firma($dbh) { #_{
   $stang = 'Staatsangehörige';
   $stangr = 'Staatsangehöriger';
 
-  check_count($dbh, 'person_firma', 192);
+  check_count($dbh, 'person_firma', 194);
   $sth = db_prep_exec($dbh, 'select * from person_firma order by dt_journal, id_firma');
 
   $cnt=1;
@@ -350,6 +350,8 @@ function check_person_firma($dbh) { #_{
   cmp_person_firma($sth, $cnt++, 728139   ,'2003-11-20'  ,'+'  ,'Lienert'          ,'Joachim Georg'    ,'Einsiedeln'                          , null                                       ,'Elsau'                     ,$inh                                         , 'mit Einzelunterschrift'                              ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 325321   ,'2004-05-04'  ,'-'  ,'Hügli'            ,'Jürg'             , null                                 , null                                       , null                       , null                                        ,'Kollektivprokura zu zweien'                           ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 325321   ,'2004-05-04'  ,'-'  ,'von Burg'         ,'René'             , null                                 , null                                       , null                       , null                                        ,'Kollektivprokura zu zweien'                           ,  null                                                  );
+  cmp_person_firma($sth, $cnt++, 325321   ,'2005-01-20'  ,'+'  ,'Ellenberger'      ,'Werner'           ,'Biglen'                              , null                                       ,'Bern'                      , null                                        , $kp2                                                  ,  null                                                  );
+  cmp_person_firma($sth, $cnt++, 325321   ,'2005-01-20'  ,'+'  ,'Schütz'           ,'Martin'           ,'Sumiswald'                           , null                                       ,'Mühlethurnen'              , null                                        , $kp2                                                  ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 790603   ,'2005-04-29'  ,'+'  ,'Ritler-Faisthuber','Karin'            ,"österreichische $stang"              , null                                       ,'Blatten'                   ,$inhin                                       ,$eu                                                    ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 150042   ,'2005-06-09'  ,'-'  ,'Sidler'           ,'Ruth'             ,'Rifferswil und Luzern'               , null                                       ,'Affoltern a.A.'            ,'Mitglied'                                   , 'ohne Zeichnungsberechtigung'                         ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 150042   ,'2005-06-09'  ,'-'  ,'Messerli'         ,'Rudolf'           ,'Rüeggisberg'                         , null                                       ,'Oberwil BL'                ,'Präsident'                                  ,$ku2                                                   ,  null                                                  );
