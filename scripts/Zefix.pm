@@ -274,7 +274,6 @@ sub find_persons_from_daily_summary_rec { #_{
 
     for my $person_text (split ';', $personen_text) { #_{
 
-
       my $person_rec = {};
 
       if ($intro_text =~ /^Eingetragene Personen/ or $intro_text =~ /[iI]nscrip?t/ or $intro_text =~ /[Pp]ersone iscritte/) { #_{
@@ -287,7 +286,7 @@ sub find_persons_from_daily_summary_rec { #_{
       if ($person_text =~ s! *[([]?<R>([^<]+)<E>[)\]]?!!g)  { #_{
         $person_rec->{firma} = s_back($1);
       } #_}
-      if ($person_text =~ / *(.*), (?:in|à) ([^,]+), *(.*)/) { #_{
+      if ($person_text =~ / *(.*?), (?:in|à) ([^,]+?), *(.*)/) { #_{
 
         my $name = s_back($1);
         my $more = $3;
