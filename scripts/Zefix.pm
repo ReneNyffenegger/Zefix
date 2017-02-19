@@ -431,7 +431,8 @@ sub find_persons_from_daily_summary_rec { #_{
                 $person_rec->{funktion} .= ', '. $_;
               }
               else {
-                $person_rec->{funktion} .= $_;
+                $person_rec->{funktion} .= s_back($_);
+                $person_rec->{funktion} =~ s/^ *//;
               }
 #             print "Already exists $rec->{id_firma}, $person_rec->{nachname}: $person_rec->{funktion}, _ = $_\n" if exists $person_rec->{funktion};
               0;

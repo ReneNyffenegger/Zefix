@@ -59,7 +59,7 @@ $dbh->{AutoCommit} = 0;
 load_daily_summaries();
 
 $dbh -> commit;
-exit;
+#exit;
 
 my %word_cnt;
 load_stichwoerter();

@@ -311,7 +311,7 @@ function check_person_firma($dbh) { #_{
   $stang = 'Staatsangehörige';
   $stangr = 'Staatsangehöriger';
 
-  check_count($dbh, 'person_firma', 151);
+  check_count($dbh, 'person_firma', 161);
   $sth = db_prep_exec($dbh, 'select * from person_firma order by dt_journal, id_firma');
 
   $cnt=1;
@@ -344,6 +344,16 @@ function check_person_firma($dbh) { #_{
   cmp_person_firma($sth, $cnt++, 823465   ,'2006-05-16'  ,'+'  ,'Hagger'           ,'Joachim Andreas'  ,'Basel'                               ,NULL                                        ,'Zürich'                    ,'Präsident'                                  ,$ku2                                                   ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 823465   ,'2006-05-16'  ,'+'  ,'Gränicher'        ,'Hans Peter'       ,'Röthenbach bei Herzogenbuchsee'      ,NULL                                        ,'Zürich'                    ,'Mitglied'                                   ,$ku2                                                   ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 823465   ,'2006-05-16'  ,'+'  ,'Hefti'            ,'Simon'            ,'Thun'                                ,NULL                                        ,'Zürich'                    ,'Mitglied'                                   ,$ku2                                                   ,  null                                                  );
+  cmp_person_firma($sth, $cnt++,  60442   ,'2006-05-26'  ,'-'  ,'Walz'             ,'Felix'            ,'Rorschach'                           , null                                       ,'Schmerikon'                ,'Vizeobmann und Flugplatzchef'               ,"$ku2 mit einem Mitglied"                              ,  null                                                  );
+  cmp_person_firma($sth, $cnt++,  60442   ,'2006-05-26'  ,'-'  ,'Notz'             ,'Markus'           ,'Schleinikon'                         , null                                       ,'Schwändi'                  ,'Aktuar'                                     ,"$ku2 mit dem Obmann oder Vizeobmann"                  ,  null                                                  );
+  cmp_person_firma($sth, $cnt++,  60442   ,'2006-05-26'  ,'-'  ,'Bianchi'          ,'Claudio'          ,'Zürich'                              , null                                       ,'Galgenen'                  ,'1. Kassier'                                 ,"$ku2 mit dem Obmann oder Vizeobmann"                  ,  null                                                  );
+  cmp_person_firma($sth, $cnt++,  60442   ,'2006-05-26'  ,'-'  ,'Quinci'           ,'Romeo'            ,'Waldkirch'                           , null                                       ,'Zürich'                    ,'2. Kassier'                                 , $eu                                                   ,  null                                                  );
+  cmp_person_firma($sth, $cnt++,  60442   ,'2006-05-26'  ,'-'  ,'Hess'             ,'Ralph'            ,'Wald ZH'                             , null                                       ,'Mollis'                    ,'Cheffluglehrer'                             ,"$ku2 mit dem Obmann oder Vizeobmann"                  ,  null                                                  );
+  cmp_person_firma($sth, $cnt++,  60442   ,'2006-05-26'  ,'+'  ,'Müller'           ,'Daniel'           ,'Näfels'                              , null                                       ,'Schwanden GL'              ,'Vizeobmann und Kassier'                     ,"$ku2 mit einem Mitglied"                              ,  null                                                  );
+  cmp_person_firma($sth, $cnt++,  60442   ,'2006-05-26'  ,'+'  ,'Zimmermann'       ,'Daniel'           ,'Schwändi'                            , null                                       ,'Nidfurn'                   ,'Mitglied und Aktuar'                        ,"$ku2 mit dem Obmann oder Vizeobmann"                  ,  null                                                  );
+  cmp_person_firma($sth, $cnt++,  60442   ,'2006-05-26'  ,'+'  ,'Heidelberger'     ,'David'            ,'Hochfelden'                          , null                                       ,'Weesen'                    ,'Cheffluglehrer'                             ,"$ku2 mit dem Obmann oder Vizeobmann"                  ,  null                                                  );
+  cmp_person_firma($sth, $cnt++,  60442   ,'2006-05-26'  ,'+'  ,'Oswald'           ,'Stefan'           ,'Näfels'                              , null                                       ,'Oberurnen'                 ,'Beisitzer'                                  ,'ohne Zeichnungsberechtigung'                          ,  null                                                  );
+  cmp_person_firma($sth, $cnt++,  60442   ,'2006-05-26'  ,'+'  ,'Bäbler'           ,'Rico'             ,'Elm'                                 , null                                       ,'Elm'                       ,'Beisitzer'                                  ,'ohne Zeichnungsberechtigung'                          ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 712087   ,'2007-02-13'  ,'+'  ,'Oderbolz'         ,'Fritz'            ,'Tübach'                              , null                                       ,'Hünenberg'                 ,'Gesellschafter'                             ,$ku2                                                   ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 712087   ,'2007-02-13'  ,'+'  , null              , null              , null                                 ,$varian                                     ,'Zug'                       ,'Gesellschafterin'                           ,'ohne Zeichnungsberechtigung'                          , 'mit einer Stammeinlage von CHF 2\'000\'000.--'        );
   cmp_person_firma($sth, $cnt++, 712087   ,'2007-02-13'  ,'+'  ,'Amstutz'          ,'Martin'           ,'Engelberg'                           , null                                       ,'Döttingen'                 , null                                        ,$ku2                                                   ,  null                                                  );
@@ -555,7 +565,7 @@ function check_count($dbh, $table_name, $expected_cnt) { #_{
   $cnt = db_cnt_table($dbh, $table_name);
   
   if ($cnt != $expected_cnt) {
-    throw new Exception("$table_name cnt: $cnt");
+    throw new Exception("$table_name cnt: $cnt found, but expected was $expected_cnt");
   }
 } #_}
 
