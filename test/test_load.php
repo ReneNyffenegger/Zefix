@@ -311,7 +311,7 @@ function check_person_firma($dbh) { #_{
   $stang = 'Staatsangehörige';
   $stangr = 'Staatsangehöriger';
 
-  check_count($dbh, 'person_firma', 163);
+  check_count($dbh, 'person_firma', 166);
   $sth = db_prep_exec($dbh, 'select * from person_firma order by dt_journal, id_firma');
 
   $cnt=1;
@@ -387,6 +387,9 @@ function check_person_firma($dbh) { #_{
   cmp_person_firma($sth, $cnt++, 451407   ,'2009-12-03'  ,'+'  ,'Norgate'          ,'Thomas Aylwin'    ,'britischer Staatsangehöriger'        ,NULL                                        ,'Freienbach'                ,'Gesellschafter'                             ,$ku2                                                   , 'mit 30 Stammanteilen zu je CHF 100.00'                );
   cmp_person_firma($sth, $cnt++, 251792   ,'2010-07-07'  ,'-'  ,'Riedmüller'       ,'Josef'            ,'deutscher Staatsangehöriger'         ,NULL                                        ,'Biberach an der Riss (D)'  ,$gs_gf                                       , 'mit Einzelunterschrift'                              ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 251792   ,'2010-07-07'  ,'-'  ,'Wüst'             ,'Günter'           ,'Oberriet SG'                         ,NULL                                        ,'Lüchingen (Altstätten)'    ,$gs_gf                                       , 'mit Einzelunterschrift'                              ,  null                                                  );
+  cmp_person_firma($sth, $cnt++,  60442   ,'2010-12-22'  ,'+'  ,'Oswald'           ,'Beat'             ,'Näfels'                              , null                                       ,'Filzbach'                  ,'Obmann'                                     ,"$ku2 mit einem Mitglied"                              ,  null                                                  );
+  cmp_person_firma($sth, $cnt++,  60442   ,'2010-12-22'  ,'+'  ,'Müller'           ,'Daniel'           ,'Näfels'                              , null                                       ,'Filzbach'                  ,'Vizeobmann und Kassier und Cheffluglehrer'  ,"$ku2 mit einem Mitglied"                              ,  null                                                  );
+  cmp_person_firma($sth, $cnt++,  60442   ,'2010-12-22'  ,'+'  ,'Heidelberger'     ,'David'            ,'Hochfelden'                          , null                                       ,'Adliswil'                  ,'stellvertretender Cheffluglehrer'           ,"$ku2 mit dem Obmann oder Vizeobmann"                  ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 728139   ,'2011-05-23'  ,'+'  ,'Lienert'          ,'Joachim Georg'    ,'Einsiedeln'                          , null                                       ,'Stäfa'                     ,$inh                                         , 'mit Einzelunterschrift'                              ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 823465   ,'2011-10-27'  ,'+'  ,'Hefti'            ,'Simon'            ,'Thun'                                ,NULL                                        ,'Zürich'                    ,'Präsident des Verwaltungsrates'             ,$ku2                                                   ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 823465   ,'2011-10-27'  ,'+'  ,'Hagger'           ,'Joachim Andreas'  ,'Basel'                               ,NULL                                        ,'Zürich'                    ,$vr_mg                                       ,$ku2                                                   ,  null                                                  );
