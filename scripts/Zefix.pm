@@ -85,8 +85,8 @@ sub read_next_daily_summary_line { #_{
     close ($zefix_file->{fh});
     return;
   }
-  chomp $in;
-  $in =~ s/\x{a0}/ /g;
+# chomp $in;
+# $in =~ s/\x{a0}/ /g;
   return $in;
 
 } #_}
@@ -94,6 +94,9 @@ sub read_next_daily_summary_line { #_{
 sub parse_daily_summary_line { #_{
   my $zefix_file = shift;
   my $line     = shift;
+
+  chomp $line;
+  $line =~ s/\x{a0}/ /g;
 
   my @row = split "\t", $line;
 
@@ -391,6 +394,10 @@ sub find_persons_from_daily_summary_rec { #_{
                /Kommanditär(in)?/         or
                /responsabile della succursale/   or
                /Aufsichtsbehörde/         or
+               /Obmann\b/         or
+               /Obmännin\b/         or
+               /Vizeobmann\b/         or
+               /Vizeobmännin\b/         or
                /Bankleiter(in)?/          ) {
 
               if (exists $person_rec->{function}) {
