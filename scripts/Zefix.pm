@@ -276,13 +276,41 @@ sub find_persons_from_daily_summary_rec { #_{
 
     my @PARTS = split /(Ausgeschiedene Personen(?: und|,) erloschene Unterschriften|Eingetragene Personen(?: neu oder mutierend)?|Personne et signature radiée|Inscription ou modification de personne(?:\(s\))?|Persone dimissionarie e firme cancellate|Persone iscritte|Nuove persone iscritte o modifiche|Personne\(s\) inscrite\(s\)|Personen neu oder mutierend|Ausgeschiedene Personen): */, $text;
 
-    shift @PARTS;
+    my $special_parsing = shift @PARTS;
+
+    if ($special_parsing =~ /\. *([^.]+?) von ([^.]+) ist erloschen/) {
+
+
+      print "unexpected registeramt $rec->{registeramt} for special_parsing\n" unless $rec->{registeramt} == 217;
+      my $zeichnung = $1;
+      my $whom      = $2;
+      if ($zeichnung =~ /Kollkektivprokura|zu zweien/) {
+
+        $zeichnung =~ s/^Die //;
+
+        for my $name (split ' und ', $whom) {
+
+          my $person_rec = {add_rm => '-'};
+
+          $person_rec -> {zeichnung} = $zeichnung;
+
+          ($person_rec->{nachname}, $person_rec->{vorname}) = name_to_nachname_vorname($name);
+
+          push @ret, $person_rec;
+
+        }
+         
+      }
+      else {
+        print "unexpected Zeichnung $zeichnung\n";
+      }
+
+    }
 
     while (@PARTS) { #_{
 
       my $intro_text    = shift @PARTS;
       my $personen_text = shift @PARTS;
-
 
       my @person_parts;
       @person_parts = split /(?:\.|;) */, $personen_text;
@@ -321,14 +349,16 @@ sub find_persons_from_daily_summary_rec { #_{
           } #_}
           else {  #_{ Registeramt 229 does not seem to have commas between first and last name
 
-             $naturliche_person =~ s/^([Vv]on) /$1%%/;
+             ($person_rec->{nachname}, $person_rec->{vorname}) = name_to_nachname_vorname($naturliche_person);
 
-             $naturliche_person =~ /([^ ]+) +(.*)/;
+#            $naturliche_person =~ s/^([Vv]on) /$1%%/;
 
-             $person_rec->{nachname} = $1;
-             $person_rec->{vorname } = $2;
+#            $naturliche_person =~ /([^ ]+) +(.*)/;
 
-             $person_rec->{nachname} =~ s/(.*)%%/$1 /;
+#            $person_rec->{nachname} = $1;
+#            $person_rec->{vorname } = $2;
+
+#            $person_rec->{nachname} =~ s/(.*)%%/$1 /;
 
              $person_rec->{von} =~ s/ *\(bisher von .*\)//;
              $person_rec->{in}  =~ s/ *\(bisher in .*\)//;
@@ -657,5 +687,21 @@ sub to_dt { #_{
 
   return $dt;
 } #_}
+
+sub name_to_nachname_vorname {
+  my $name = shift;
+
+  $name =~ s/^([Vv]on) /$1%%/;
+
+  $name =~ /([^ ]+) +(.*)/;
+
+  my $nachname = $1;
+  my $vorname  = $2;
+
+  $nachname =~ s/(.*)%%/$1 /;
+
+  return ($nachname, $vorname);
+
+}
 
 1;
