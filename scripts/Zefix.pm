@@ -423,7 +423,7 @@ sub find_persons_from_daily_summary_rec { #_{
                /Vizeobmännin\b/         or
                /Bankleiter(in)?/       or
                /Flugplatzchef(in)?/       or
-               /Cheffluglehrer(in)?/          
+               /Chef/          
                
              ) {
 

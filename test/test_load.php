@@ -311,7 +311,7 @@ function check_person_firma($dbh) { #_{
   $stang = 'Staatsangehörige';
   $stangr = 'Staatsangehöriger';
 
-  check_count($dbh, 'person_firma', 161);
+  check_count($dbh, 'person_firma', 163);
   $sth = db_prep_exec($dbh, 'select * from person_firma order by dt_journal, id_firma');
 
   $cnt=1;
@@ -361,6 +361,8 @@ function check_person_firma($dbh) { #_{
   cmp_person_firma($sth, $cnt++, 712087   ,'2007-02-20'  ,'+'  ,'Oderbolz'         ,'Fritz'            ,'Tübach'                              , null                                       ,'Hünenberg'                 , null                                        ,$ku2                                                   ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 451407   ,'2007-05-07'  ,'+'  ,'Ginnow'           ,'Richard'          ,'Volketswil'                          ,NULL                                        ,'Rüschlikon'                ,$gs_gf                                       ,$ku2                                                   , 'mit einer Stammeinlage von CHF 10\'000.--'            );
   cmp_person_firma($sth, $cnt++, 451407   ,'2007-05-07'  ,'+'  ,'Nyffenegger'      ,'René'             ,'Eriswil'                             ,NULL                                        ,'Zürich'                    ,$gs_gf                                       ,$ku2                                                   , 'mit einer Stammeinlage von CHF 10\'000.--'            );
+  cmp_person_firma($sth, $cnt++,  60442   ,'2008-05-30'  ,'-'  ,'Oswald'           ,'Bruno'            ,'Näfels'                              , null                                       ,'Oberurnen'                 ,'Chef Unterhalt'                             ,"$ku2 mit dem Obmann oder Vizeobmann"                  ,  null                                                  );
+  cmp_person_firma($sth, $cnt++,  60442   ,'2008-05-30'  ,'+'  ,'Stüssi'           ,'Jakob jun.'       ,'Glarus'                              , null                                       ,'Glarus'                    ,'Chef Unterhalt'                             ,"$ku2 mit dem Obmann oder Vizeobmann"                  ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 451407   ,'2008-09-08'  ,'-'  ,'Nyffenegger'      ,'René'             ,'Eriswil'                             ,NULL                                        ,'Zürich'                    ,$gs_gf                                       ,$ku2                                                   , 'mit einem Stammanteil von CHF 10\'000.00'             );
   cmp_person_firma($sth, $cnt++, 451407   ,'2008-09-08'  ,'+'  ,'Ginnow'           ,'Richard'          ,'Volketswil'                          ,NULL                                        ,'Rüschlikon'                ,$gs_gf                                       , 'mit Einzelunterschrift'                              , 'mit 200 Stammanteilen zu je CHF 100.00'               );
   cmp_person_firma($sth, $cnt++, 451407   ,'2008-09-08'  ,'+'  ,'Weber'            ,'Melanie'          ,'Gränichen'                           ,NULL                                        ,'Zell ZH'                   , null                                        , 'mit Einzelprokura'                                   ,  null                                                  );
