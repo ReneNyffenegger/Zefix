@@ -341,6 +341,29 @@ sub find_persons_from_daily_summary_rec { #_{
 
         my @parts = split ' *, *', $more;
 
+        @parts = grep { #_{ Zeichnung
+
+           if (/[Uu]nterschrift/           or
+               /[Pp]rokura/                or
+               /[Zz]eichnungsberechtigung/ or
+               /signature/                 or
+               /\bcon firma /              or
+               /\bcon procura /            or
+               /\bavec procuration\b/      or
+               /senza diritto di firma/
+              ) {
+
+              print "Already exists $rec->{id_firma}: $person_rec->{zeichnung}, _ = $_\n" if exists $person_rec->{zeichnung} and $_ ne $person_rec->{zeichnung};
+              $person_rec->{zeichnung} = $_;
+              0;
+
+            }
+            else {
+              1;
+            }
+
+        } @parts; #_}
+
         @parts = grep { #_{ Funktion
 
 
@@ -398,7 +421,11 @@ sub find_persons_from_daily_summary_rec { #_{
                /Obmännin\b/         or
                /Vizeobmann\b/         or
                /Vizeobmännin\b/         or
-               /Bankleiter(in)?/          ) {
+               /Bankleiter(in)?/       or
+               /Flugplatzchef(in)?/       or
+               /Cheffluglehrer(in)?/          
+               
+             ) {
 
               if (exists $person_rec->{function}) {
                 $person_rec->{funktion} .= ', '. $_;
@@ -407,29 +434,6 @@ sub find_persons_from_daily_summary_rec { #_{
                 $person_rec->{funktion} .= $_;
               }
 #             print "Already exists $rec->{id_firma}, $person_rec->{nachname}: $person_rec->{funktion}, _ = $_\n" if exists $person_rec->{funktion};
-              0;
-
-            }
-            else {
-              1;
-            }
-
-        } @parts; #_}
-
-        @parts = grep { #_{ Zeichnung
-
-           if (/[Uu]nterschrift/           or
-               /[Pp]rokura/                or
-               /[Zz]eichnungsberechtigung/ or
-               /signature/                 or
-               /\bcon firma /              or
-               /\bcon procura /            or
-               /\bavec procuration\b/      or
-               /senza diritto di firma/
-              ) {
-
-              print "Already exists $rec->{id_firma}: $person_rec->{zeichnung}, _ = $_\n" if exists $person_rec->{zeichnung} and $_ ne $person_rec->{zeichnung};
-              $person_rec->{zeichnung} = $_;
               0;
 
             }
