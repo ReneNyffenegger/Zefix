@@ -268,7 +268,7 @@ sub find_persons_from_daily_summary_rec { #_{
 
   if (not registeramt_with_special_wording($rec)) { #_{
 
-  while ($text =~ s/(Ausgeschiedene Personen und erloschene Unterschriften|Eingetragene Personen(?: neu oder mutierend)?|Personne et signature radiée|Inscription ou modification de personne(?:\(s\))?|Persone dimissionarie e firme cancellate|Persone iscritte|Nuove persone iscritte o modifiche|Personne\(s\) inscrite\(s\)):? *(.*?)\.//) { # ||Inscription ou modification de personne\(s\)|Procuration collective à deux, limitée aux affaires de la succursale, a été conférée à|Inscription ou modification de personnes)//) { #_{
+  while ($text =~ s/(Ausgeschiedene Personen und erloschene Unterschriften|Eingetragene Personen(?: neu oder mutierend)?|Personne et signature radiée|Inscription ou modification de personne(?:\(s\))?|Persone dimissionarie e firme cancellate|Persone iscritte|Nuove persone iscritte o modifiche|Personne\(s\) inscrite\(s\)|Personen neu oder mutierend):? *(.*?)\.//) { # ||Inscription ou modification de personne\(s\)|Procuration collective à deux, limitée aux affaires de la succursale, a été conférée à|Inscription ou modification de personnes)//) { #_{
 
     my ($intro_text, $personen_text) = ($1, $2);
 
