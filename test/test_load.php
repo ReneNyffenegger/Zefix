@@ -316,13 +316,14 @@ function check_person_firma($dbh) { #_{
   $stang = 'Staatsangehörige';
   $stangr = 'Staatsangehöriger';
 
-  check_count($dbh, 'person_firma', 173);
+  check_count($dbh, 'person_firma', 174);
   $sth = db_prep_exec($dbh, 'select * from person_firma order by dt_journal, id_firma');
 
   $cnt=1;
 
   cmp_person_firma($sth, $cnt++, 468163   ,'2001-01-23'  ,'-'  ,'Dettwiler'        ,'Werner'           ,'Reigoldswil'                         ,NULL                                        ,'Eichberg'                  ,'socio e gerente'                            , 'con firma individuale'                               , 'con una quota da CHF 1\'000.--'                       ); #_{
   cmp_person_firma($sth, $cnt++, 468163   ,'2001-01-23'  ,'+'  ,'Wüst'             ,'Günter'           ,'Oberriet SG'                         , null                                       ,$luech_com_alt              ,'socio e gerente'                            , 'con firma individuale'                               , 'con una quota da CHF 1\'000.--'                       );
+  cmp_person_firma($sth, $cnt++, 325321   ,'2001-04-03'  ,'-'  ,'Erhard'           ,'Daniel'           ,'Laufenburg AG'                       , null                                       ,'Düdingen'                  , null                                        ,"$kp2, beschränkt auf den Hauptsitz"                   ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 251792   ,'2001-07-30'  ,'-'  ,'Dettwiler'        ,'Werner'           ,'Reigoldswil'                         ,NULL                                        ,'Eichberg'                  ,$gs_gf                                       , 'mit Einzelunterschrift'                              ,  NULL                                                  );
   cmp_person_firma($sth, $cnt++, 251792   ,'2001-07-30'  ,'+'  ,'Wüst'             ,'Günter'           ,'Oberriet SG'                         ,NULL                                        ,'Lüchingen (Altstätten)'    ,$gs_gf                                       , 'mit Einzelunterschrift'                              ,  NULL                                                  );
   cmp_person_firma($sth, $cnt++, 150042   ,'2002-04-30'  ,'+'  ,'Huber'            ,'Marcel'           ,'Eschenbach LU'                       ,NULL                                        ,'Eschenbach LU'             ,'Kassier'                                    ,$ku2                                                   ,  null                                                  );
@@ -506,7 +507,7 @@ function cmp_person_firma($sth, $cnt, $id_firma, $dt_journal, $add_rm, $nachname
 
   if (! eq($row[ 0], $id_firma        )) {throw new Exception("cmp_person_firma (cnt = $cnt) id_firma differs row[0] = $row[0] but $id_firma expected row[1]=$row[1]  dtJournal=$dt_journal"); }
   if (! eq($row[ 1], $dt_journal      )) {throw new Exception("cmp_person_firma (cnt = $cnt) 1, row[1] = $row[1], id_firma=$id_firma, dt_journal=$dt_journal"); }
-  if (! eq($row[ 2], $add_rm          )) {throw new Exception("cmp_person_firma (cnt = $cnt) 2"); }
+  if (! eq($row[ 2], $add_rm          )) {throw new Exception("cmp_person_firma (cnt = $cnt) 2 add_rm expected: $add_rm, found: $row[2]"); }
   if (! eq($row[ 3], $nachname        )) {throw new Exception("cmp_person_firma (cnt = $cnt) 3 Nachname found: $row[3], expected: $nachname, id_firma=$id_firma, dt_journal=$dt_journal"); }
   if (! eq($row[ 4], $vorname         )) {throw new Exception("cmp_person_firma (cnt = $cnt) 4 Vorname found: $row[4], expected $vorname"); }
   if (! eq($row[ 5], $von             )) {throw new Exception("cmp_person_firma (cnt = $cnt) 5 von found: $row[5], expected $von"); }

@@ -216,6 +216,7 @@ sub parse_next_daily_summary_line { #_{
 sub s_back { #_{
   my $text = shift;
 
+  $text =~ s/##k beschr##/, beschränkt/g;
   $text =~ s/##(\d)d(\d)##/$1.$2/g;
   $text =~ s/## (.)##/ $1./g;
   $text =~ s/##--##/.--/g;
@@ -261,6 +262,7 @@ sub find_persons_from_daily_summary_rec { #_{
   $text =~ s/, GB\b/##k_GB##/g;
   $text =~ s/, USA\b/##k_USA##/g;
   $text =~ s/ \((.{1,3})\)/##p_$1##/g;
+  $text =~ s/, beschränkt\b/##k beschr##/g;
 
   $text =~ s/(<(R|M)>CH.*?<E>)/ my $x = $1; $x =~ s![.-]!!g; $x /eg;
 
@@ -353,7 +355,7 @@ sub find_persons_from_daily_summary_rec { #_{
               ) {
 
               print "Already exists $rec->{id_firma}: $person_rec->{zeichnung}, _ = $_\n" if exists $person_rec->{zeichnung} and $_ ne $person_rec->{zeichnung};
-              $person_rec->{zeichnung} = $_;
+              $person_rec->{zeichnung} = s_back($_);
               0;
 
             }
