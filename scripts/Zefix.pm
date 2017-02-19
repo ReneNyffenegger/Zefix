@@ -278,17 +278,41 @@ sub find_persons_from_daily_summary_rec { #_{
 
     my $special_parsing = shift @PARTS;
 
-    if ($special_parsing =~ s/\. *([^.]+?) von ([^.]+) ist erloschen//) { #_{
+    while ($special_parsing =~ s/\. *([^.]+), sind zurückgetreten, ihre Unterschrift ist erloschen//) { #_{
+
+      my $personen = $1;
+      for my $person (split /; */, $personen) {
+
+        my $person_rec = {add_rm => '-'};
+
+        $person =~ /([^,]+), (.*)/;
+        my $name     = $1;
+        $person_rec->{funktion} = $2;
+
+#      (my $name, $person_rec->{von}, $person_rec->{in}) = text_to_name_in_von($person);
+       ($person_rec->{nachname}, $person_rec->{vorname}) = name_to_nachname_vorname($name);
+
+       push @ret, $person_rec;
+
+      }
+
+    } #_}
+ 
+    print "\n\n *** $special_parsing\n";
+
+    while ($special_parsing =~ s/\. *([^.]+?) von ([^.]+) ist erloschen//) { #_{
 
 
-      print "unexpected registeramt $rec->{registeramt} for special_parsing\n" unless $rec->{registeramt} == 217;
       my $zeichnung = $1;
       my $whom      = $2;
-      if ($zeichnung =~ /Kollkektivprokura|zu zweien/) {
+
+
+#     print "unexpected registeramt $rec->{registeramt} for special_parsing\n" unless $rec->{registeramt} == 217;
+      if ($zeichnung =~ /Kollektivprokura|zu zweien/) {
 
         $zeichnung =~ s/^Die //;
 
-        for my $name (split ' und ', $whom) {
+        for my $name (split /(?:, und|,| und) */, $whom) {
 
           my $person_rec = {add_rm => '-'};
 
@@ -306,30 +330,71 @@ sub find_persons_from_daily_summary_rec { #_{
       }
 
     } #_}
-    if ($special_parsing =~ s/\. *([^.]+?) zeichne. (?:\w+) (mit [^.]+)\.//) {
+    while ($special_parsing =~ s/\. *([^.]+?), bisher [^,]+, zeichnet neu mit ([^.]+)//) { #_{
+
+      my $name      = $1;
+      my $zeichnung = $2;
+
+      my $person_rec = {add_rm => '+'};
+      $person_rec -> {zeichnung} = $zeichnung;
+
+     ($person_rec->{nachname}, $person_rec->{vorname}) = name_to_nachname_vorname($name);
+
+      push @ret, $person_rec;
+
+    } #_}
+    while ($special_parsing =~ s/\. *([^.]+?, von [^.]+?, in [^.]+?), beide (mit [^.]+)//) { #_{
+
+
+      my $personen  = $1;
+      my $zeichnung = $2;
+
+      print "Matched: \np: $personen\nz: $zeichnung\n";
+
+      for my $person (split ';', $personen) {
+ 
+         my $person_rec ={add_rm => '+'};
+         $person_rec -> {zeichnung} = $zeichnung;
+
+         $person =~ /(.*), von (.*?), in (.*?), ist (.*)/;
+
+         my $name     = $1;
+         my $von      = $2;
+         my $in       = $3;
+         my $funktion = $4;
+
+        ($person_rec->{nachname}, $person_rec->{vorname}) = name_to_nachname_vorname($name);
+
+         $person_rec->{von} = s_back($von);
+         $person_rec->{in } = s_back($in);
+         $person_rec->{funktion } = $funktion;
+ 
+#       (my $name, $person_rec->{von}, $person_rec->{in}) = text_to_name_von_in($person);
+ 
+         push @ret, $person_rec;
+ 
+      }
+
+    } #_}
+    while ($special_parsing =~ s/\. *([^.]+?) zeichne. (?:\w+ )?(mit [^.]+)//) { #_{
       my $who = $1;
       my $zeichnung = $2;
 
       for my $person (split /,? und /, $who ) {
-        print "person: $person\n";
 
         my $person_rec = {add_rm=>'+'};
         $person_rec->{zeichnung} = $zeichnung;
 
-        $person =~ /(.*?), von (.*?), in (.*?)(,|$)/;
+       (my $name, $person_rec->{von}, $person_rec->{in}) = text_to_name_von_in($person);
 
-        my $name = $1;
-        $person_rec -> {von} = $2;
-        $person_rec -> {in}  = $3;
 
        ($person_rec->{nachname}, $person_rec->{vorname}) = name_to_nachname_vorname($name);
 
         push @ret, $person_rec;
 
       }
-#     print "who: $who\nz: $zeichnung\n";
 
-    }
+    } #_}
 
     while (@PARTS) { #_{
 
@@ -712,7 +777,7 @@ sub to_dt { #_{
   return $dt;
 } #_}
 
-sub name_to_nachname_vorname {
+sub name_to_nachname_vorname { #_{
   my $name = shift;
 
   $name =~ s/^([Vv]on) /$1%%/;
@@ -724,8 +789,19 @@ sub name_to_nachname_vorname {
 
   $nachname =~ s/(.*)%%/$1 /;
 
-  return ($nachname, $vorname);
+  return (s_back($nachname), s_back($vorname));
 
-}
+} #_}
+
+sub text_to_name_von_in { #_{
+  my $text = shift;
+  $text =~ /(.*?), von (.*?), in (.*?)(,|$)/;
+
+  my $name = $1;
+  my $von  = $2;
+  my $in   = $3;
+
+  return (s_back($name), s_back($von), s_back($in));
+} #_}
 
 1;
