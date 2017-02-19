@@ -321,10 +321,14 @@ sub find_persons_from_daily_summary_rec { #_{
           } #_}
           else {  #_{ Registeramt 229 does not seem to have commas between first and last name
 
+             $naturliche_person =~ s/^([Vv]on) /$1%%/;
+
              $naturliche_person =~ /([^ ]+) +(.*)/;
 
              $person_rec->{nachname} = $1;
              $person_rec->{vorname } = $2;
+
+             $person_rec->{nachname} =~ s/(.*)%%/$1 /;
 
              $person_rec->{von} =~ s/ *\(bisher von .*\)//;
              $person_rec->{in}  =~ s/ *\(bisher in .*\)//;
