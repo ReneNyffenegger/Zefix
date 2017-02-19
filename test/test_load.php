@@ -316,14 +316,16 @@ function check_person_firma($dbh) { #_{
   $stang = 'Staatsangehörige';
   $stangr = 'Staatsangehöriger';
 
-  check_count($dbh, 'person_firma', 174);
+  check_count($dbh, 'person_firma', 176);
   $sth = db_prep_exec($dbh, 'select * from person_firma order by dt_journal, id_firma');
 
   $cnt=1;
 
   cmp_person_firma($sth, $cnt++, 468163   ,'2001-01-23'  ,'-'  ,'Dettwiler'        ,'Werner'           ,'Reigoldswil'                         ,NULL                                        ,'Eichberg'                  ,'socio e gerente'                            , 'con firma individuale'                               , 'con una quota da CHF 1\'000.--'                       ); #_{
   cmp_person_firma($sth, $cnt++, 468163   ,'2001-01-23'  ,'+'  ,'Wüst'             ,'Günter'           ,'Oberriet SG'                         , null                                       ,$luech_com_alt              ,'socio e gerente'                            , 'con firma individuale'                               , 'con una quota da CHF 1\'000.--'                       );
-  cmp_person_firma($sth, $cnt++, 325321   ,'2001-04-03'  ,'-'  ,'Erhard'           ,'Daniel'           ,'Laufenburg AG'                       , null                                       ,'Düdingen'                  , null                                        ,"$kp2, beschränkt auf den Hauptsitz"                   ,  null                                                  );
+  cmp_person_firma($sth, $cnt++, 325321   ,'2001-04-03'  ,'+'  ,'Erhard'           ,'Daniel'           ,'Laufenburg AG'                       , null                                       ,'Düdingen'                  , null                                        ,"$kp2, beschränkt auf den Hauptsitz"                   ,  null                                                  );
+  cmp_person_firma($sth, $cnt++, 325321   ,'2001-05-31'  ,'-'  , null              , null              , null                                 ,'Jäggi Peter, dipl. Bücherexperte'          ,'Frauenkappelen'            ,'Revisionsstelle'                            , null                                                  ,  null                                                  );
+  cmp_person_firma($sth, $cnt++, 325321   ,'2001-05-31'  ,'+'  , null              , null              , null                                 ,'PricewaterhouseCoopers AG'                 ,'Bern'                      ,'Revisionsstelle'                            , null                                                  ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 251792   ,'2001-07-30'  ,'-'  ,'Dettwiler'        ,'Werner'           ,'Reigoldswil'                         ,NULL                                        ,'Eichberg'                  ,$gs_gf                                       , 'mit Einzelunterschrift'                              ,  NULL                                                  );
   cmp_person_firma($sth, $cnt++, 251792   ,'2001-07-30'  ,'+'  ,'Wüst'             ,'Günter'           ,'Oberriet SG'                         ,NULL                                        ,'Lüchingen (Altstätten)'    ,$gs_gf                                       , 'mit Einzelunterschrift'                              ,  NULL                                                  );
   cmp_person_firma($sth, $cnt++, 150042   ,'2002-04-30'  ,'+'  ,'Huber'            ,'Marcel'           ,'Eschenbach LU'                       ,NULL                                        ,'Eschenbach LU'             ,'Kassier'                                    ,$ku2                                                   ,  null                                                  );

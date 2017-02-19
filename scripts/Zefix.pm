@@ -216,6 +216,7 @@ sub parse_next_daily_summary_line { #_{
 sub s_back { #_{
   my $text = shift;
 
+  $text =~ s/##dipl_##/dipl./g;
   $text =~ s/##k beschr##/, beschränkt/g;
   $text =~ s/##(\d)d(\d)##/$1.$2/g;
   $text =~ s/## (.)##/ $1./g;
@@ -263,6 +264,7 @@ sub find_persons_from_daily_summary_rec { #_{
   $text =~ s/, USA\b/##k_USA##/g;
   $text =~ s/ \((.{1,3})\)/##p_$1##/g;
   $text =~ s/, beschränkt\b/##k beschr##/g;
+  $text =~ s/\bdipl\./##dipl_##/g; # f325321, 2001-05-31
 
   $text =~ s/(<(R|M)>CH.*?<E>)/ my $x = $1; $x =~ s![.-]!!g; $x /eg;
 
@@ -278,7 +280,7 @@ sub find_persons_from_daily_summary_rec { #_{
 
       my $person_rec = {};
 
-      if ($intro_text =~ /^Eingetragene Personen/ or $intro_text =~ /[iI]nscrip?t/ or $intro_text =~ /[Pp]ersone iscritte/) { #_{
+      if ($intro_text =~ /^Eingetragene Personen/ or $intro_text =~ /[iI]nscrip?t/ or $intro_text =~ /[Pp]ersone iscritte/ or $intro_text =~ /^Personen neu/) { #_{
          $person_rec = {'add_rm' => '+'};
       }
       else {
@@ -433,6 +435,7 @@ sub find_persons_from_daily_summary_rec { #_{
                /Vizeobmännin\b/         or
                /Bankleiter(in)?/       or
                /Flugplatzchef(in)?/       or
+               /\bdipl\./       or
                /Chef/          
                
              ) {
