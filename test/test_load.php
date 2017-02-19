@@ -14,16 +14,17 @@ echo "Ok\n";
 
 function check_firma($dbh) { #_{
 
-  check_count($dbh, 'firma', 27);
+  check_count($dbh, 'firma', 28);
 
   $zuffrey = 'Zufferey Aurélie et Tânia Margarida da Mota Cardoso Kiosque Liberté';
   $fiduc_crans = 'Fiduciaire de Crans-Montana (FCM) SA';
 
   $sth = db_prep_exec($dbh, 'select * from firma order by id', array());
   #                    id,                                                           code13 ,    hpts,  gem, k apital,   cur, st,  del         ,   shab#,                                     ,                           ,       ,zus.,        pf, plz ,   ort                Rf
-  cmp_firma($sth,   74461, 'Guamo SA'                                      , 'CH52430026861',    null,  5250,  200000, 'CHF',  2, null         , 3258589, null                                ,'Via Bossi'                ,  50   ,null,      null,  6830 ,'Chiasso'         , 3);
-  cmp_firma($sth,   76284, 'Frédéric Hänni S.A., installations électriques', 'CH67730001455',    null,  6800,  210000, 'CHF',  2, null         , 5320100, null                                ,'rue du Temple'            ,   3   ,null,      null,  2900 ,'Porrentruy'      , 3);
-  cmp_firma($sth,  150042, 'Genossenschaft christkatholisches Jugendhaus'  , 'CH14050020797',    null,  1403,    null,  null,  2, null         , 3259371,'c/o Peter von Moos'                 ,'Melchaaweg'               ,   2   ,null,      null,  6074 ,'Giswil'          , 5);
+  cmp_firma($sth,   60442, 'Fluggruppe Mollis'                             , 'CH16060033075',    null,  1630,    null,  null,  2, null         , 2789387, null                                ,'Flugplatzareal'           ,  '4'  ,null,      null,  8753 ,'Mollis'          , 6);
+  cmp_firma($sth,   74461, 'Guamo SA'                                      , 'CH52430026861',    null,  5250,  200000, 'CHF',  2, null         , 3258589, null                                ,'Via Bossi'                , '50'  ,null,      null,  6830 ,'Chiasso'         , 3);
+  cmp_firma($sth,   76284, 'Frédéric Hänni S.A., installations électriques', 'CH67730001455',    null,  6800,  210000, 'CHF',  2, null         , 5320100, null                                ,'rue du Temple'            ,  '3'  ,null,      null,  2900 ,'Porrentruy'      , 3);
+  cmp_firma($sth,  150042, 'Genossenschaft christkatholisches Jugendhaus'  , 'CH14050020797',    null,  1403,    null,  null,  2, null         , 3259371,'c/o Peter von Moos'                 ,'Melchaaweg'               ,  '2'  ,null,      null,  6074 ,'Giswil'          , 5);
   cmp_firma($sth,  186673, 'Storella AG'                                   , 'CH50930004966',    null,  5097,   50000, 'CHF',  0,'2001-05-09'  ,    null, null                                ,''                         , null  ,null,      null,  null , null             , 3);
   cmp_firma($sth,  251792, 'Storella GmbH'                                 , 'CH32090204910',  468163,  3251,    null,  null,  2, null         , 5723906, null                                ,'Tiefenackerstrasse'       , '49'  ,null,      null, '9450', 'Altstätten'     , 9);
   cmp_firma($sth,  451407, 'ADP Analyse Design Planung AG'                 , 'CH02040197464',    null,   261,  100000, 'CHF',  2, null         , 3242819, null                                ,'Glatttalstrasse'          ,'104 h',null,      null, '8052', 'Zürich'         , 3);
@@ -117,10 +118,11 @@ function cmp_firma($sth, $id, $bezeichnung, $code13, $id_hauptsitz, $id_gemeinde
 
 function check_firma_bez($dbh) { #_{
 
-  check_count($dbh, 'firma_bez', 43);
+  check_count($dbh, 'firma_bez', 44);
 
 
   $sth = db_prep_exec($dbh, 'select * from firma_bez order by id_firma, dt_ab', array());
+  cmp_firma_bez($sth,   60442, '940', 1, 'DE',  3, 'Fluggruppe Mollis'                                                         , '1996-01-01', '9999-12-31');
   cmp_firma_bez($sth,   74461, '940', 1, 'IT',  3, 'Guamo SA'                                                                  , '1996-01-01', '9999-12-31');
   cmp_firma_bez($sth,   76284, '940', 1, 'FR',  3, 'Frédéric Hänni S.A., installations électriques'                            , '1996-01-01', '9999-12-31');
   cmp_firma_bez($sth,  150042, '940', 1, 'DE',  3, 'Genossenschaft christkatholisches Jugendhaus'                              , '1996-01-01', '9999-12-31');
@@ -214,9 +216,10 @@ function cmp_firma_bez($sth, $id_firma, $seq, $typ, $sprachcode, $status, $bezei
 
 function check_zweck($dbh) { #_{
 
-  check_count($dbh, 'zweck', 27);
+  check_count($dbh, 'zweck', 28);
 
   $sth = db_prep_exec($dbh, 'select * from zweck order by id_firma', array());
+  cmp_zweck($sth,   60442, 'Die Fluggruppe Mollis vereinigt die am Motorflug auf dem Flugplatz Mollis interessierten Personen des Kantons Glarus und Umgebung mit dem Zweck der Förderung der Luftfahrt im allgemeinen und der Schulung und des Trainings der Mitglieder im besonderen. Sie stellt die notwendige Infrastruktur für die Sicherstellung des Motorflugbetriebes.');
   cmp_zweck($sth,   74461, 'la compra-vendita, la costruzione e l\'amministrazione di immobili, nonché la partecipazione a società similari, sia nazionali che estere. La società può inoltre effettuare ogni operazione ed assumere ogni funzione suscettibile di contribuire direttamente o indirettamente a raggiungere lo scopo.');
   cmp_zweck($sth,   76284, 'L\'exploitation d\'une entreprise d\'électricité ainsi que l\'exploitation d\'une concession téléphonique. Elle pourra également s\'occuper de l\'achat et de la vente d\'appareils électriques.');
   cmp_zweck($sth,  150042, 'Bau, Unterhalt und Betrieb eines Jugendhauses zur Durchführung von Ferienlagern, Tagungen und Kursen, Landschulwochen, Familienferien und ähnlichem.');
@@ -502,7 +505,7 @@ function cmp_person_firma($sth, $cnt, $id_firma, $dt_journal, $add_rm, $nachname
 
 function check_gemeinde($dbh) { #_{
 
-  check_count($dbh, 'gemeinde', 18);
+  check_count($dbh, 'gemeinde', 19);
 
   $sth = db_prep_exec($dbh, 'select * from gemeinde order by id', array());
   cmp_gemeinde($sth,   56, 'Embrach'            );
@@ -512,6 +515,7 @@ function check_gemeinde($dbh) { #_{
   cmp_gemeinde($sth,  371, 'Biel/Bienne'        );
   cmp_gemeinde($sth, 1301, 'Einsiedeln'         );
   cmp_gemeinde($sth, 1403, 'Giswil'             );
+  cmp_gemeinde($sth, 1630, 'Glarus Nord'        );
   cmp_gemeinde($sth, 3251, 'Altstätten'         );
   cmp_gemeinde($sth, 4021, 'Baden'              );
   cmp_gemeinde($sth, 5097, 'Brissago'           );
