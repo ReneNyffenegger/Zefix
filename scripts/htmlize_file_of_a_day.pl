@@ -69,12 +69,12 @@ while (my $rec = Zefix::parse_next_daily_summary_line($zefix_file)) {
       $personen_rec->{add_rm} eq '-' ? 'del' : 'add',
       $personen_rec->{nachname} //'',
       $personen_rec->{vorname} //'',
-      $personen_rec->{von} //'',
-      $personen_rec->{bezeichnung} // '',
-      $personen_rec->{in} //'',
+      $personen_rec->{von}          // '',
+      $personen_rec->{bezeichnung}  // '',
+      $personen_rec->{in}           // '',
 
-      $personen_rec->{funktion} // '',
-      $personen_rec->{zeichnung} // '',
+      $personen_rec->{funktion}     // '',
+      $personen_rec->{zeichnung}.'&lt;'   // '',
       $personen_rec->{stammeinlage} // '',
 
       $personen_rec->{rest} ? 'rest': '',

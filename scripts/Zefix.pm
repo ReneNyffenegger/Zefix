@@ -238,6 +238,8 @@ sub find_persons_from_daily_summary_rec { #_{
   my $rec  = shift;
   my $text = $rec ->{text};
 
+  $text =~ s/\. *<B>.*//;
+
 
   $text =~ s/(\d)\.(\d)/##$1d$2##/g;
   $text =~ s/(.)\.(.)\./##$1_$2_##/g; # a.A. / S.A.
@@ -272,11 +274,20 @@ sub find_persons_from_daily_summary_rec { #_{
 
   if (not registeramt_with_special_wording($rec)) { #_{
 
-  while ($text =~ s/(Ausgeschiedene Personen und erloschene Unterschriften|Eingetragene Personen(?: neu oder mutierend)?|Personne et signature radiée|Inscription ou modification de personne(?:\(s\))?|Persone dimissionarie e firme cancellate|Persone iscritte|Nuove persone iscritte o modifiche|Personne\(s\) inscrite\(s\)|Personen neu oder mutierend|Ausgeschiedene Personen):? *(.*?)\.//) { # ||Inscription ou modification de personne\(s\)|Procuration collective à deux, limitée aux affaires de la succursale, a été conférée à|Inscription ou modification de personnes)//) { #_{
+    my @PARTS = split /(Ausgeschiedene Personen(?: und|,) erloschene Unterschriften|Eingetragene Personen(?: neu oder mutierend)?|Personne et signature radiée|Inscription ou modification de personne(?:\(s\))?|Persone dimissionarie e firme cancellate|Persone iscritte|Nuove persone iscritte o modifiche|Personne\(s\) inscrite\(s\)|Personen neu oder mutierend|Ausgeschiedene Personen): */, $text;
 
-    my ($intro_text, $personen_text) = ($1, $2);
+    shift @PARTS;
 
-    for my $person_text (split ';', $personen_text) { #_{
+    while (@PARTS) { #_{
+
+      my $intro_text    = shift @PARTS;
+      my $personen_text = shift @PARTS;
+
+
+      my @person_parts;
+      @person_parts = split /(?:\.|;) */, $personen_text;
+
+      for my $person_text (@person_parts) { #_{
 
       my $person_rec = {};
 
@@ -302,14 +313,14 @@ sub find_persons_from_daily_summary_rec { #_{
           my $naturliche_person = $1;
           $person_rec->{von} = $2;
 
-          if ($rec->{registeramt} != 229) {
+          if ($rec->{registeramt} != 229) { #_{
              $naturliche_person =~ /([^,]+), *(.*)/;
 
              $person_rec->{nachname} = $1;
              $person_rec->{vorname } = $2;
-          }
-          else {  # Registeramt 229 does not seem to have commas between first and last name
-#       print "$name, In: $person_rec->{in}, Von: $person_rec->\n";
+          } #_}
+          else {  #_{ Registeramt 229 does not seem to have commas between first and last name
+
              $naturliche_person =~ /([^ ]+) +(.*)/;
 
              $person_rec->{nachname} = $1;
@@ -318,7 +329,7 @@ sub find_persons_from_daily_summary_rec { #_{
              $person_rec->{von} =~ s/ *\(bisher von .*\)//;
              $person_rec->{in}  =~ s/ *\(bisher in .*\)//;
 
-          }
+          } #_}
 
         } #_}
         elsif ($name =~ / *(.*), *([^,]*(?:Staatsangehöriger?|ressortissant|cittadino|\bcitoyen)[^]]*)/) { #_{
@@ -339,12 +350,12 @@ sub find_persons_from_daily_summary_rec { #_{
         } #_}
 
 
-        $more =~ s/ *[[(](?:bisher|précédemment|finora): *([^\])]+)[\])]//;
+        $more =~ s/ *[[(](?:bisher|précédemment|finora):? *([^\])]+)[\])]//;
 
         my $person_det_bisher = $1;
 
-        $more =~ s/\[come finora\]//;
-        $more =~ s/\[wie bisher\]//;
+        $more =~ s/ *\[come finora\]//;
+        $more =~ s/ *[[(]wie bisher[\])]//;
 
         $more =~ s/ *[[(](?:nicht|non): *([^\])]+)[\])]//;
         my $person_det_nicht = $1;
@@ -485,7 +496,9 @@ sub find_persons_from_daily_summary_rec { #_{
       } #_}
 
 
-      push @ret, $person_rec;
+      if ($person_rec->{bezeichnung} or $person_rec->{vorname} or $person_rec->{nachname}) {
+        push @ret, $person_rec;
+      }
     } #_}
 
   } #_}
