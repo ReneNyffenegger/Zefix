@@ -73,9 +73,9 @@ while (my $rec = Zefix::parse_next_daily_summary_line($zefix_file)) {
       $personen_rec->{bezeichnung}  // '',
       $personen_rec->{in}           // '',
 
-      $personen_rec->{funktion}     // '',
-      $personen_rec->{zeichnung}    // '',
-      $personen_rec->{stammeinlage} // '',
+      $personen_rec->{funktion}     // '<i>null</i>',
+      $personen_rec->{zeichnung}    // '<i>null</i>',
+      $personen_rec->{stammeinlage} // '<i>null</i>',
 
       $personen_rec->{rest} ? 'rest': '',
       $personen_rec->{rest} // '?'

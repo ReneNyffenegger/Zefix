@@ -104,6 +104,10 @@ sub load_daily_summaries { #_{
       my @personen = Zefix::find_persons_from_daily_summary_rec($rec);
       for my $personen_rec (@personen) { #_{
 
+        if ($rec->{dt_journal} eq '2017-01-06') {
+           printf "%-20s %-20s\n", $personen_rec->{nachname}, $personen_rec->{vorname};
+        }
+
         $sth_ins_person_firma->execute( #_{
                  $rec         ->{id_firma},
                  $rec         ->{dt_journal},
