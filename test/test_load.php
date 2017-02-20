@@ -316,7 +316,7 @@ function check_person_firma($dbh) { #_{
   $stang = 'Staatsangehörige';
   $stangr = 'Staatsangehöriger';
 
-  check_count($dbh, 'person_firma', 203);
+  check_count($dbh, 'person_firma', 205);
   $sth = db_prep_exec($dbh, 'select * from person_firma order by dt_journal, id_firma');
 
   $cnt=1;
@@ -380,7 +380,6 @@ function check_person_firma($dbh) { #_{
   cmp_person_firma($sth, $cnt++,  60442   ,'2006-05-26'  ,'+'  ,'Heidelberger'     ,'David'            ,'Hochfelden'                          , null                                       ,'Weesen'                    ,'Cheffluglehrer'                             ,"$ku2 mit dem Obmann oder Vizeobmann"                  ,  null                                                  );
   cmp_person_firma($sth, $cnt++,  60442   ,'2006-05-26'  ,'+'  ,'Oswald'           ,'Stefan'           ,'Näfels'                              , null                                       ,'Oberurnen'                 ,'Beisitzer'                                  ,'ohne Zeichnungsberechtigung'                          ,  null                                                  );
   cmp_person_firma($sth, $cnt++,  60442   ,'2006-05-26'  ,'+'  ,'Bäbler'           ,'Rico'             ,'Elm'                                 , null                                       ,'Elm'                       ,'Beisitzer'                                  ,'ohne Zeichnungsberechtigung'                          ,  null                                                  );
-
   cmp_person_firma($sth, $cnt++, 325321   ,'2006-06-22'  ,'-'  ,'Zbinden'          ,'Paul'             , null                                 , null                                       , null                       ,'Präsident'                                  , null                                                  ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 325321   ,'2006-06-22'  ,'-'  ,'Philipona'        ,'Anton'            , null                                 , null                                       , null                       ,'Verwaltungsratsmitglied'                    , null                                                  ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 325321   ,'2006-06-22'  ,'-'  ,'Gregorini'        ,'Theresa'          , null                                 , null                                       , null                       , null                                        ,'Kollektivprokura'                                     ,  null                                                  );
@@ -390,6 +389,9 @@ function check_person_firma($dbh) { #_{
   cmp_person_firma($sth, $cnt++, 325321   ,'2006-06-22'  ,'+'  ,'Martz'            ,'Wolfgang'         ,'Küsnacht (ZH)'                       , null                                       ,'Montreux'                  ,'Präsident'                                  ,'mit Kollektivunterschrift zu zweien'                  ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 325321   ,'2006-06-22'  ,'+'  ,'Strickler'        ,'Hans J.'          ,'Schönenberg (ZH)'                    , null                                       ,'Zürich'                    ,'Verwaltungsratsmitglied'                    ,'mit Kollektivunterschrift zu zweien'                  ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 325321   ,'2006-06-22'  ,'+'  ,'Henzi'            ,'Jürg'             ,'Günsberg'                            , null                                       ,'Mühleberg'                 , null                                        ,'mit Kollektivprokura zu zweien'                       ,  null                                                  );
+
+  cmp_person_firma($sth, $cnt++, 325321   ,'2006-12-07'  ,'-'  ,'Brischoux'        ,'Michel'           , null                                 , null                                       , null                       , null                                        ,'Kollektivprokura'                                     ,  null                                                  );
+  cmp_person_firma($sth, $cnt++, 325321   ,'2006-12-07'  ,'+'  ,'Herzig'           ,'Alain'            ,'Wynau'                               , null                                       ,'Wengi b. Büren'            ,'Mitglied der Geschäftsleitung'              , $ku2                                                  ,  null                                                  );
 
   cmp_person_firma($sth, $cnt++, 712087   ,'2007-02-13'  ,'+'  ,'Oderbolz'         ,'Fritz'            ,'Tübach'                              , null                                       ,'Hünenberg'                 ,'Gesellschafter'                             ,$ku2                                                   ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 712087   ,'2007-02-13'  ,'+'  , null              , null              , null                                 ,$varian                                     ,'Zug'                       ,'Gesellschafterin'                           ,'ohne Zeichnungsberechtigung'                          , 'mit einer Stammeinlage von CHF 2\'000\'000.--'        );

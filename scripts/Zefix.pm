@@ -298,10 +298,7 @@ sub find_persons_from_daily_summary_rec { #_{
 
     } #_}
  
-    print "\n\n *** $special_parsing\n";
-
     while ($special_parsing =~ s/\. *([^.]+?) von ([^.]+) ist erloschen//) { #_{
-
 
       my $zeichnung = $1;
       my $whom      = $2;
@@ -393,6 +390,39 @@ sub find_persons_from_daily_summary_rec { #_{
         push @ret, $person_rec;
 
       }
+
+    } #_}
+    while ($special_parsing =~ s/\. *([^,]+?), von ([^.]+?), in ([^.]+?), ist ([^.]+) (mit [^.]+)//) { #_{
+
+      my $rec_person = {
+        add_rm    => '+',
+        von       =>  s_back($2),
+        in        =>  s_back($3),
+        funktion  =>  s_back($4),
+        zeichnung =>  s_back($5)
+      };
+
+      my $name = $1;
+
+#     my $who      = $1;
+#     my $von      = $2;
+#     my $in       = $3;
+#     my $funktion = $4;
+#     my $zeichung = $5;
+
+#     for my $person (split /,? und /, $who ) {
+
+#       my $person_rec = {add_rm=>'+'};
+#       $person_rec->{zeichnung} = $zeichnung;
+
+#      (my $name, $person_rec->{von}, $person_rec->{in}) = text_to_name_von_in($person);
+
+
+       ($rec_person->{nachname}, $rec_person->{vorname}) = name_to_nachname_vorname($name);
+
+        push @ret, $rec_person;
+
+#     }
 
     } #_}
 
