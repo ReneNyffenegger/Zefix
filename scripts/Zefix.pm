@@ -340,6 +340,24 @@ sub find_persons_from_daily_summary_rec { #_{
       push @ret, $person_rec;
 
     } #_}
+    while ($special_parsing =~ s/\. *(?<name>[^.]+), (?:von und in )(?<wo>[^.]+?), ist zum (?<funktion>[^.]*?) (?<zeichnung>mit [^.]*?) ernannt worden//) { #_{
+      my $person_rec = {add_rm => '+'};
+
+
+      my $name     = $+{name};
+      my $funktion = $+{funktion};
+      $person_rec -> {zeichnung} = $+{zeichnung};
+      $person_rec -> {von} = s_back($+{wo});
+      $person_rec -> {in} = $+{wo};
+
+      $funktion =~ s/räsidenten\b/räsident/;
+      $person_rec -> {funktion} = $funktion;
+      
+     ($person_rec->{nachname}, $person_rec->{vorname}) = name_to_nachname_vorname($name);
+
+      push @ret, $person_rec;
+
+    } #_}
     while ($special_parsing =~ s/\. *(?<name>[^.]+), bisher eingetragen, ist zum (?<funktion>[^.]+?) ernannt worden//) { #_{
       my $person_rec = {add_rm => '+'};
 
