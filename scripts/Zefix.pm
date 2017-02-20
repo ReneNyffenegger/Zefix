@@ -302,6 +302,8 @@ sub find_persons_from_daily_summary_rec { #_{
     } #_}
     while ($special_parsing =~ s/\. *([^.]+?)(?:, sind )?zurückgetreten, (?:ihre|seine) Unterschrift ist erloschen//) { #_{
 
+      print "MATCHED $1\n";
+
       my $personen = $1;
       for my $person (split /(?:;| und) */, $personen) {
 
@@ -319,9 +321,10 @@ sub find_persons_from_daily_summary_rec { #_{
       }
 
     } #_}
-    while ($special_parsing =~ s/\. *(?<name>[^.]+), (?:von (?<von>[^.]+?)|(?<von>.*?Staatsangehörige.*?)), in (?<in>[^,]+?), ist zum (?<funktion>.*?) (?<zeichnung>mit .*?) ernannt worden//) { #_{
+    while ($special_parsing =~ s/\. *(?<name>[^.]+), (?:von (?<von>[^.]+?)|(?<von>[^.]*?Staatsangehörige[^.]*?)), in (?<in>[^.,]+?), ist zum (?<funktion>[^.]*?) (?<zeichnung>mit [^.]*?) ernannt worden//) { #_{
       my $person_rec = {add_rm => '+'};
 
+      print "MATCHED $+{name}\n";
 
       my $name     = $+{name};
       my $funktion = $+{funktion};
