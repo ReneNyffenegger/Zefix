@@ -318,7 +318,7 @@ function check_person_firma($dbh) { #_{
   $stang = 'Staatsangehörige';
   $stangr = 'Staatsangehöriger';
 
-  check_count($dbh, 'person_firma', 232);
+  check_count($dbh, 'person_firma', 233);
   $sth = db_prep_exec($dbh, 'select * from person_firma order by dt_journal, id_firma');
 
   $cnt=1;
@@ -484,6 +484,7 @@ function check_person_firma($dbh) { #_{
   cmp_person_firma($sth, $cnt++, 823465   ,'2014-08-13'  ,'+'  ,'Franz'            ,'Mike'             ,'Frick'                               ,NULL                                        ,'Gipf-Oberfrick'            ,$vr_mg                                       ,$ku2                                                   ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 712087   ,'2014-09-26'  ,'+'  ,'Hübner'           ,'Ernst'            ,'deutscher Staatsangehöriger'         , null                                       ,'Ingenbohl'                 , null                                        ,$kp2                                                   ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 325321   ,'2014-11-28'  ,'-'  ,'Sägesser'         ,'Hans Jörg'        , null                                 , null                                       , null                       ,'Verwaltungsratsmitglied'                    , null                                                  , null                                                   );
+  cmp_person_firma($sth, $cnt++, 325321   ,'2015-02-03'  ,'+'  ,'Ritler'           ,'Beat'             ,'Wiler (Lötschen)'                    , null                                       ,'Burgdorf'                  ,'Verwaltungsratsmitglied'                    ,$ku2                                                   , null                                                   );
   cmp_person_firma($sth, $cnt++, 712087   ,'2015-05-29'  ,'-'  ,'Hauri'            ,'Reto'             ,'Niederlenz'                          , null                                       ,'Gränichen'                 , null                                        ,$kp2                                                   ,  null                                                  );
   cmp_person_firma($sth, $cnt++,  60442   ,'2016-04-15'  ,'-'  ,'Oswald'           ,'Beat'             ,'Näfels'                              , null                                       ,'Filzbach'                   ,'Obmann'                                    ,"$ku2 mit einem Mitglied"                              ,  null                                                  );
   cmp_person_firma($sth, $cnt++,  60442   ,'2016-04-15'  ,'+'  ,'Oswald'           ,'Stefan'           ,'Glarus Nord'                         , null                                       ,'Netstal (Glarus)'           ,'Beisitzer'                                 ,"$ku2 mit dem Obmann oder Vizeobmann"                  ,  null                                                  );
