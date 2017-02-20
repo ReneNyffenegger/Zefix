@@ -290,6 +290,22 @@ sub find_persons_from_daily_summary_rec { #_{
 
 
     } #_}
+    while ($special_parsing =~ s/\. *(?<name_alt>[^.]+?)? (?:ist nicht mehr) (?<funktion>Revisionsstelle)\. Neue \k'funktion': (?<name_neu>.[^.]+?), in (?<in>[^.]+)//) { #_{
+
+       my $person_rec = {add_rm => '-'};
+       $person_rec -> {funktion} = $+{funktion};
+       $person_rec -> {bezeichnung} = $+{name_alt};
+
+       push @ret, $person_rec;
+
+       $person_rec = {add_rm => '+'};
+       $person_rec -> {funktion} = $+{funktion};
+       $person_rec -> {bezeichnung} = $+{name_neu};
+       $person_rec -> {in} = $+{in};
+
+       push @ret, $person_rec;
+
+    } #_}
     while ($special_parsing =~ s/\. *(?<name_alt>[^.]+?), bisher eingetragen, zeichnet neu mit dem Namen (?<name_neu>[^.]+)//) { #_{
 
         my $name_alt = $+{name_alt};

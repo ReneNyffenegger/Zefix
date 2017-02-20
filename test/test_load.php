@@ -312,11 +312,13 @@ function check_person_firma($dbh) { #_{
   $new_horiz = 'NEW HORIZON MANAGEMENT SA (<M>CHE342.773.049<E>)';
   $das_rechts = 'DAS Rechtsschutz-Versicherungs-AG (<M>CHE106.111.319<E>)';
   $pwc = 'PricewaterhouseCoopers AG (<M>CHE106.839.438<E>)';
+  $pwc_R = 'PricewaterhouseCoopers AG (<R>CH03590199172<E>)';
+  $wistag_R = 'WISTAG Treuhand AG (<R>CH09230010507<E>)';
 
   $stang = 'Staatsangehörige';
   $stangr = 'Staatsangehöriger';
 
-  check_count($dbh, 'person_firma', 227);
+  check_count($dbh, 'person_firma', 231);
   $sth = db_prep_exec($dbh, 'select * from person_firma order by dt_journal, id_firma');
 
   $cnt=1;
@@ -468,10 +470,14 @@ function check_person_firma($dbh) { #_{
   cmp_person_firma($sth, $cnt++, 823465   ,'2013-07-29'  ,'-'  ,'Brabec'           ,'Dr. Bernhard'     ,'österreichischer Staatsangehöriger'  ,NULL                                        ,'Zollikon'                  , null                                        , 'mit Kollektivprokura zu zweien'                      ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 823465   ,'2013-07-29'  ,'-'  ,'Hausmann'         ,'Alexander'        ,'Dietikon'                            ,NULL                                        ,'Dietikon'                  , null                                        , 'mit Kollektivprokura zu zweien'                      ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 823465   ,'2013-07-29'  ,'+'  ,NULL               ,NULL               ,NULL                                  ,'ORTAG AG'                                  ,'Zürich'                    ,'Revisionsstelle'                            ,  null                                                 ,  null                                                  );
-
   cmp_person_firma($sth, $cnt++, 325321   ,'2013-07-30'  ,'-'  ,'Zbinden'          ,'Chollet Yvonne'   , null                                 , null                                       , null                       ,'Mitglied der Geschäftsleitung'              , null                                                  , null                                                   );
-
   cmp_person_firma($sth, $cnt++, 150042   ,'2013-08-28'  ,'+'  , null              , null              , null                                 ,$tro_typo                                   ,'Olten'                     ,'Revisionsstelle'                            ,  null                                                 ,  null                                                  );
+
+  cmp_person_firma($sth, $cnt++, 325321   ,'2013-11-11'  ,'-'  ,'Gadient'          ,'Robert Marco'     , null                                 , null                                       , null                       ,'Mitglied der Geschäftsleitung'              , null                                                  , null                                                   );
+  cmp_person_firma($sth, $cnt++, 325321   ,'2013-11-11'  ,'-'  , null              , null              , null                                 , $pwc_R                                     , null                       ,'Revisionsstelle'                            , null                                                  , null                                                   );
+  cmp_person_firma($sth, $cnt++, 325321   ,'2013-11-11'  ,'+'  , null              , null              , null                                 , $wistag_R                                  ,'Thun'                      ,'Revisionsstelle'                            , null                                                  , null                                                   );
+  cmp_person_firma($sth, $cnt++, 325321   ,'2013-11-11'  ,'+'  ,'Gerteis'          ,'André'            ,'Zürich'                              , null                                       ,'Neuenegg'                  , $gl_mg                                      ,$ku2                                                   , null                                                   );
+
   cmp_person_firma($sth, $cnt++, 712087   ,'2014-02-24'  ,'-'  ,'Balmer'           ,'Ralph'            ,'Wilderswil'                          , null                                       ,'Bern'                      , null                                        ,$kp2                                                   ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 712087   ,'2014-02-24'  ,'+'  ,'Cavallari'        ,'Mario'            ,'Alpnach'                             , null                                       ,'Alpnach'                   , null                                        ,$kp2                                                   ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 712087   ,'2014-02-24'  ,'+'  ,'Hauri'            ,'Reto'             ,'Niederlenz'                          , null                                       ,'Gränichen'                 , null                                        ,$kp2                                                   ,  null                                                  );
