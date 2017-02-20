@@ -318,7 +318,7 @@ function check_person_firma($dbh) { #_{
   $stang = 'Staatsangehörige';
   $stangr = 'Staatsangehöriger';
 
-  check_count($dbh, 'person_firma', 233);
+  check_count($dbh, 'person_firma', 234);
   $sth = db_prep_exec($dbh, 'select * from person_firma order by dt_journal, id_firma');
 
   $cnt=1;
@@ -494,6 +494,7 @@ function check_person_firma($dbh) { #_{
   cmp_person_firma($sth, $cnt++,  60442   ,'2016-04-15'  ,'+'  ,'Rickenbacher'     ,'Max'              ,'Oltingen'                            , null                                       ,'Weesen (Amden)'             ,'Obmann'                                    ,"$ku2 mit einem Mitglied"                              ,  null                                                  );
   cmp_person_firma($sth, $cnt++,  60442   ,'2016-04-15'  ,'+'  ,'Zimmermann'       ,'Daniel'           ,'Glarus Süd'                          , null                                       ,'Nidfurn (Glarus Süd)'       ,'Aktuar'                                    ,"$ku2 mit dem Obmann oder Vizeobmann"                  ,  null                                                  );
   cmp_person_firma($sth, $cnt++,1263109   ,'2016-05-10'  ,'+'  ,'Maïka'            ,'Grégorio'         ,'ressortissant français'              , null                                       ,'Montana'                   ,'titulaire'                                  ,'avec signature individuelle'                          ,  null                                                  );
+  cmp_person_firma($sth, $cnt++, 325321   ,'2016-05-11'  ,'+'  ,'Sauvant'          ,'Nicolas'          ,'Valbirse'                            , null                                       ,'Champagne'                 ,'Mitglied der Geschäftsleitung'              ,$ku2                                                   , null                                                   );
   cmp_person_firma($sth, $cnt++,1268712   ,'2016-06-24'  ,'+'  ,'Rey'              ,$fabien            ,'Montana'                             , null                                       ,'Montana'                   ,'associé et gérant'                          ,'avec signature individuelle'                          , 'pour 200 parts sociales de CHF 100.00'                );
   cmp_person_firma($sth, $cnt++, 468163   ,'2016-07-05'  ,'+'  ,'Riedmüller'       ,'Josef'            ,'cittadino germanico'                 ,NULL                                        ,'Brissago'                  ,'socio e gerente'                            ,$con_firma_inv                                         , 'con 1 quota da CHF 49\'000.00'                        );
   cmp_person_firma($sth, $cnt++, 1271188  ,'2016-07-13'  ,'+'  , null              , null              , null                                 , $new_horiz                                 ,'Lugano'                    ,'socia'                                      , null                                                  ,'con 102 quote da CHF 100.00'                           );
