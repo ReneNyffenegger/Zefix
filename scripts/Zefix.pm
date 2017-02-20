@@ -278,7 +278,7 @@ sub find_persons_from_daily_summary_rec { #_{
 
     my $special_parsing = shift @PARTS;
 
-    while ($special_parsing =~ s/\. *([^.]+?)(?:, sind )?zurückgetreten, ihre Unterschrift ist erloschen//) { #_{
+    while ($special_parsing =~ s/\. *([^.]+?)(?:, sind )?zurückgetreten, (?:ihre|seine) Unterschrift ist erloschen//) { #_{
 
       my $personen = $1;
       for my $person (split /(?:;| und) */, $personen) {
@@ -297,7 +297,37 @@ sub find_persons_from_daily_summary_rec { #_{
       }
 
     } #_}
- 
+    while ($special_parsing =~ s/\. *(?<name>[^.]+), (?:von (?<von>[^.]+?)|(?<von>.*?Staatsangehörige.*?)), in (?<in>[^.]+?) ist zum (?<funktion>.*?) (?<zeichnung>mit .*?) ernannt worden//) { #_{
+      my $person_rec = {add_rm => '+'};
+
+
+      my $name     = $+{name};
+      my $funktion = $+{funktion};
+      $person_rec -> {zeichnung} = $+{zeichnung};
+      $person_rec -> {von} = $+{von};
+      $person_rec -> {in} = $+{in};
+
+      $funktion =~ s/räsidenten\b/räsident/;
+      $person_rec -> {funktion} = $funktion;
+      
+     ($person_rec->{nachname}, $person_rec->{vorname}) = name_to_nachname_vorname($name);
+
+      push @ret, $person_rec;
+
+    } #_}
+    while ($special_parsing =~ s/\. *(?<name>[^.]+), bisher eingetragen, ist zum (?<funktion>[^.]+?) ernannt worden//) { #_{
+      my $person_rec = {add_rm => '+'};
+
+
+      my $name     = $+{name};
+      my $funktion = $+{funktion};
+      $funktion =~ s/räsidenten\b/räsident/;
+      $person_rec -> {funktion} = $funktion;
+     ($person_rec->{nachname}, $person_rec->{vorname}) = name_to_nachname_vorname($name);
+
+      push @ret, $person_rec;
+
+    } #_}
     while ($special_parsing =~ s/\. *([^.]+?) von ([^.]+) ist erloschen//) { #_{
 
       my $zeichnung = $1;
