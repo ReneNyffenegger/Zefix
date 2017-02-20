@@ -316,7 +316,7 @@ function check_person_firma($dbh) { #_{
   $stang = 'Staatsangehörige';
   $stangr = 'Staatsangehöriger';
 
-  check_count($dbh, 'person_firma', 215);
+  check_count($dbh, 'person_firma', 217);
   $sth = db_prep_exec($dbh, 'select * from person_firma order by dt_journal, id_firma');
 
   $cnt=1;
@@ -430,11 +430,13 @@ function check_person_firma($dbh) { #_{
   cmp_person_firma($sth, $cnt++, 325321   ,'2010-02-09'  ,'+'  ,'Vierkorn'         ,'Marcus'           ,"deutscher $stangr"                   , null                                       ,'Neuenegg'                  ,'Geschäftsleitungsmitglied'                  ,$ku2                                                   , null                                                   );
   cmp_person_firma($sth, $cnt++, 251792   ,'2010-07-07'  ,'-'  ,'Riedmüller'       ,'Josef'            ,'deutscher Staatsangehöriger'         ,NULL                                        ,'Biberach an der Riss (D)'  ,$gs_gf                                       , 'mit Einzelunterschrift'                              ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 251792   ,'2010-07-07'  ,'-'  ,'Wüst'             ,'Günter'           ,'Oberriet SG'                         ,NULL                                        ,'Lüchingen (Altstätten)'    ,$gs_gf                                       , 'mit Einzelunterschrift'                              ,  null                                                  );
-
   cmp_person_firma($sth, $cnt++, 325321   ,'2010-08-04'  ,'-'  ,'Martz'            ,'Wolfgang'         , null                                 , null                                       , null                       ,'Verwaltungsratsmitglied'                    , null                                                  , null                                                   );
   cmp_person_firma($sth, $cnt++, 325321   ,'2010-08-04'  ,'+'  ,'Sägesser'         ,'Hans Jörg'        ,'Aarwangen'                           , null                                       ,'Münchenbuchsee'            ,'Verwaltungsratsmitglied'                    ,$ku2                                                   , null                                                   );
   cmp_person_firma($sth, $cnt++, 325321   ,'2010-08-04'  ,'+'  ,'Philipona'        ,'Raoul'            , null                                 , null                                       , null                       ,'Präsident'                                  , null                                                  , null                                                   );
   cmp_person_firma($sth, $cnt++, 325321   ,'2010-08-04'  ,'+'  ,'Strickler'        ,'Hans J.'          , null                                 , null                                       , null                       ,'Vizepräsident'                              , null                                                  , null                                                   );
+
+  cmp_person_firma($sth, $cnt++, 325321   ,'2010-10-25'  ,'-'  ,'Herzig'           ,'Alain'            , null                                 , null                                       , null                       ,'Mitglied der Geschäftsleitung'              , null                                                  , null                                                   );
+  cmp_person_firma($sth, $cnt++, 325321   ,'2010-10-25'  ,'+'  ,'Kalbermatter'     ,'Jörg'             ,'St. Niklaus'                         , null                                       ,'Worb'                      ,'Mitglied der Geschäftsleitung'              , $ku2                                                  , null                                                   );
 
   cmp_person_firma($sth, $cnt++,  60442   ,'2010-12-22'  ,'+'  ,'Oswald'           ,'Beat'             ,'Näfels'                              , null                                       ,'Filzbach'                  ,'Obmann'                                     ,"$ku2 mit einem Mitglied"                              ,  null                                                  );
   cmp_person_firma($sth, $cnt++,  60442   ,'2010-12-22'  ,'+'  ,'Müller'           ,'Daniel'           ,'Näfels'                              , null                                       ,'Filzbach'                  ,'Vizeobmann und Kassier und Cheffluglehrer'  ,"$ku2 mit einem Mitglied"                              ,  null                                                  );
