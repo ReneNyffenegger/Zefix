@@ -278,14 +278,14 @@ sub find_persons_from_daily_summary_rec { #_{
 
     my $special_parsing = shift @PARTS;
 
-    while ($special_parsing =~ s/\. *([^.]+), sind zurückgetreten, ihre Unterschrift ist erloschen//) { #_{
+    while ($special_parsing =~ s/\. *([^.]+?)(?:, sind )?zurückgetreten, ihre Unterschrift ist erloschen//) { #_{
 
       my $personen = $1;
-      for my $person (split /; */, $personen) {
+      for my $person (split /(?:;| und) */, $personen) {
 
         my $person_rec = {add_rm => '-'};
 
-        $person =~ /([^,]+), (.*)/;
+        $person =~ /([^,]+)(?:,| ist als) (.*?) *$/;
         my $name     = $1;
         $person_rec->{funktion} = $2;
 
@@ -325,6 +325,22 @@ sub find_persons_from_daily_summary_rec { #_{
       else {
         print "unexpected Zeichnung $zeichnung\n";
       }
+
+    } #_}
+    while ($special_parsing =~ s/\. *(?<funktion>[^:.]+?): (?<name>[^,]+?), (?:von (?<von>[^.]+?)|(?<von>.*?Staatsangehörige.*?)), in (?<in>[^.]+?), zeichnet (?<zeichnung>mit [^.]+)//) { #_{
+
+      my $name      = $+{name};
+#     my $zeichnung = ${zeichnung};
+
+      my $person_rec = {add_rm => '+'};
+      $person_rec -> {funktion}  = $+{funktion} ;
+      $person_rec -> {zeichnung} = $+{zeichnung};
+      $person_rec -> {von}       = $+{von};
+      $person_rec -> {in}        = $+{in};
+
+     ($person_rec->{nachname}, $person_rec->{vorname}) = name_to_nachname_vorname($name);
+
+      push @ret, $person_rec;
 
     } #_}
     while ($special_parsing =~ s/\. *([^.]+?), bisher [^,]+, zeichnet neu mit ([^.]+)//) { #_{
