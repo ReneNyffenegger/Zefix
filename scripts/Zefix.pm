@@ -278,26 +278,16 @@ sub find_persons_from_daily_summary_rec { #_{
 
     my $special_parsing = shift @PARTS;
 
-    while ($special_parsing =~ s/\. *(?<name>[^.]+?) (?:ist nicht mehr) (?<funktion>[^,]+), (seine) Unterschrift ist erloschen//) { #_{
+    while ($special_parsing =~ s/\. *(?<name>[^.]+?),? (?:ist nicht mehr) (?<funktion>[^,]+), (seine) Unterschrift ist erloschen//) { #_{
 
        my $name = $+{name};
 
        my $person_rec = {add_rm => '-'};
        $person_rec -> {funktion} = $+{funktion};
-#      for my $person (split /(?:;| und) */, $personen) {
-#
-#        my $person_rec = {add_rm => '-'};
-#
-#        $person =~ /([^,]+)(?:,| ist als) (.*?) *$/;
-#        my $name     = $1;
-#        $person_rec->{funktion} = $2;
-#
-##      (my $name, $person_rec->{von}, $person_rec->{in}) = text_to_name_in_von($person);
       ($person_rec->{nachname}, $person_rec->{vorname}) = name_to_nachname_vorname($name);
-#
+
        push @ret, $person_rec;
 
-#     }
 
     } #_}
     while ($special_parsing =~ s/\. *(?<name_alt>[^.]+?), bisher eingetragen, zeichnet neu mit dem Namen (?<name_neu>[^.]+)//) { #_{
