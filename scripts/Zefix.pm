@@ -758,7 +758,8 @@ sub find_persons_from_daily_summary_rec { #_{
            if (/Stammanteil/                 or
                /Stammeinlage/                or
                /con (una|\d+) quot[ea]\b/    or
-               /pour (une|\d+) parts? sociales? de /
+               /pour (une|\d+) parts? sociales? de / or
+               /mit einer Kommanditsumme von/
             ) {
 
               print "Already exists: $person_rec->{stammeinlage}, _ = $_\n" if exists $person_rec->{stammeinlage};
