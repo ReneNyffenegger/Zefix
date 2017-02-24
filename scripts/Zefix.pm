@@ -653,7 +653,8 @@ sub find_persons_from_daily_summary_rec { #_{
                /\bcon firma /              or
                /\bcon procura /            or
                /\bavec procuration\b/      or
-               /senza diritto di firma/
+               /senza diritto di firma/    or
+               /\bKU\b/
               ) {
 
               print "Already exists $rec->{id_firma}: $person_rec->{zeichnung}, _ = $_\n" if exists $person_rec->{zeichnung} and $_ ne $person_rec->{zeichnung};
@@ -711,6 +712,7 @@ sub find_persons_from_daily_summary_rec { #_{
                /\bsegretari[ao]\b/        or
                /\bsoci[oa]\b/             or
                /\badministrateur\b/       or
+               /\badministratrice\b/       or
                /Beisitzer(in)?\b/         or
                /Leiter de/                or
                /\bsecrétaire\b/           or
@@ -727,6 +729,8 @@ sub find_persons_from_daily_summary_rec { #_{
                /Vizeobmännin\b/           or
                /Bankleiter(in)?/          or
                /Flugplatzchef(in)?/       or
+               /Quästor(in)?\b/       or
+               /Rechnungsführer(in)?\b/       or
                /\bdipl\./                 or
                /Chef/          
                
