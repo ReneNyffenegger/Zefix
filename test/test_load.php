@@ -323,7 +323,7 @@ function check_person_firma($dbh) { #_{
   $stang = 'Staatsangehörige';
   $stangr = 'Staatsangehöriger';
 
-  check_count($dbh, 'person_firma', 246);
+  check_count($dbh, 'person_firma', 247);
   $sth = db_prep_exec($dbh, 'select * from person_firma order by dt_journal, id_firma');
 
   $cnt=1;
@@ -452,6 +452,9 @@ function check_person_firma($dbh) { #_{
   cmp_person_firma($sth, $cnt++,  60442   ,'2010-12-22'  ,'+'  ,'Müller'           ,'Daniel'           ,'Näfels'                              , null                                       ,'Filzbach'                  ,'Vizeobmann und Kassier und Cheffluglehrer'  ,"$ku2 mit einem Mitglied"                              ,  null                                                  );
   cmp_person_firma($sth, $cnt++,  60442   ,'2010-12-22'  ,'+'  ,'Heidelberger'     ,'David'            ,'Hochfelden'                          , null                                       ,'Adliswil'                  ,'stellvertretender Cheffluglehrer'           ,"$ku2 mit dem Obmann oder Vizeobmann"                  ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 728139   ,'2011-05-23'  ,'+'  ,'Lienert'          ,'Joachim Georg'    ,'Einsiedeln'                          , null                                       ,'Stäfa'                     ,$inh                                         , 'mit Einzelunterschrift'                              ,  null                                                  );
+
+  cmp_person_firma($sth, $cnt++, 601097   ,'2011-06-14'  ,'+'  ,'Kälin'            ,'Angelo'           ,'Einsiedeln'                          ,NULL                                        ,'Wangen SZ'                 ,"$gs und $vors der $gf"                      ,  $eu                                                  , 'mit einem Stammanteil von CHF 49\'000.00'             );
+
   cmp_person_firma($sth, $cnt++, 325321   ,'2011-06-21'  ,'-'  ,'Mühlemann'        ,'Nicolas'          , null                                 , null                                       , null                       ,'Verwaltungsratsmitglied'                    , null                                                  , null                                                   );
   cmp_person_firma($sth, $cnt++, 325321   ,'2011-06-21'  ,'+'  ,'Fay-Buch'         ,'Alexandra'        ,"deutsche $stang"                     , null                                       ,'Villars-sur-Glâne'         , $gl_mg                                      ,$ku2                                                   , null                                                   );
   cmp_person_firma($sth, $cnt++, 325321   ,'2011-06-21'  ,'-'  ,'Kalbermatter'     ,'Jörg'             , null                                 , null                                       , null                       , null                                        ,"Kollektivunterschrift zu zweien"                      , null                                                   );
