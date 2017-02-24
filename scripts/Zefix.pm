@@ -606,21 +606,6 @@ sub find_persons_from_daily_summary_rec { #_{
           $person_rec->{von} = $2;
           name_to_nachname_vorname($rec, $person_rec, $naturliche_person);
 
-#         if ($rec->{registeramt} != 229) { #_{
-#            $naturliche_person =~ /([^,]+), *(.*)/;
-
-#            $person_rec->{nachname} = $1;
-#            $person_rec->{vorname } = $2;
-#         } #_}
-#         else {  #_{ Registeramt 229 does not seem to have commas between first and last name
-
-#            ($person_rec->{nachname}, $person_rec->{vorname}) = name_ohne_komma_to_nachname_vorname($naturliche_person);
-
-
-#            $person_rec->{von} =~ s/ *\(bisher von .*\)//;
-#            $person_rec->{in}  =~ s/ *\(bisher in .*\)//;
-
-#         } #_}
 
         } #_}
         elsif ($name =~ / *(.*), *([^,]*(?:Staatsangehöriger?|ressortissant|cittadino|\bcitoyen)[^]]*)/) { #_{
@@ -642,154 +627,6 @@ sub find_persons_from_daily_summary_rec { #_{
 
         parse_person_more($rec, $person_rec, $more);
 
-=pod
-
-        $more =~ s/ *[[(](?:bisher|précédemment|finora):? *([^\])]+)[\])]//;
-
-        my $person_det_bisher = $1;
-
-        $more =~ s/ *\[come finora\]//;
-        $more =~ s/ *[[(]wie bisher[\])]//;
-
-        $more =~ s/ *[[(](?:nicht|non): *([^\])]+)[\])]//;
-        my $person_det_nicht = $1;
-
-
-
-        my @parts = split ' *, *', $more;
-
-        @parts = grep { #_{ Zeichnung
-
-           if (/[Uu]nterschrift/           or
-               /[Pp]rokura/                or
-               /[Zz]eichnungsberechtigung/ or
-               /signature/                 or
-               /\bcon firma /              or
-               /\bcon procura /            or
-               /\bavec procuration\b/      or
-               /senza diritto di firma/    or
-               /\bKU\b/
-              ) {
-
-              print "Already exists $rec->{id_firma}: $person_rec->{zeichnung}, _ = $_\n" if exists $person_rec->{zeichnung} and $_ ne $person_rec->{zeichnung};
-              $person_rec->{zeichnung} = s_back($_);
-              0;
-
-            }
-            else {
-              1;
-            }
-
-        } @parts; #_}
-
-        @parts = grep { #_{ Funktion
-
-
-           if (/Verwaltungsrat/           or
-               /[pP]räsident/             or
-               /Geschäftsführer/          or
-               /Revisionsstelle\b/        or
-               /Geschäftsleitung/         or
-               /Gesellschafter(in)?\b/    or
-               /Mitglied/                 or
-               /Aktuar(in)?\b/            or
-               /Inhaber(in)?\b/           or
-               /Geschäftsführung\b/       or
-               /Vorsitzender?\b/          or
-               /\bassocié\b/              or
-               /\bgérant\b/               or
-               /[Kk]assier/               or
-               /\bmembre\b/               or
-               /organe de révision/       or
-               /Sekrertär(in)?\b/         or
-               /Direktor(in)?\b/          or
-               /Generaldirektor(in)?\b/   or
-               /\bprésident/              or
-               /\bpresidente\b/           or
-               /Liquidator(in)\b/         or
-               /Delegierter?\b/           or
-               /ufficio di revisione/     or
-               /\btitulaire\b/            or
-               /\bassociée?\b/            or
-               /\bdirecteur\b/            or
-               /\bdirectrice\b/           or
-               /\bdirettore\b/            or
-               /\bdirettrice\b/           or
-               /\bamministratore\b/       or
-               /\bamministratrice\b/      or
-               /\b[lL]iquidatore?\b/      or
-               /\bliquidateur\b/          or
-               /\bliquidatrice\b/         or
-               /\bGeschäftsleiter(in)?\b/ or
-               /\bmembro\b/               or
-               /\bSekretär(in)?\b/        or
-               /\bsegretari[ao]\b/        or
-               /\bsoci[oa]\b/             or
-               /\badministrateur\b/       or
-               /\badministratrice\b/       or
-               /Beisitzer(in)?\b/         or
-               /Leiter de/                or
-               /\bsecrétaire\b/           or
-               /\btitolare\b/             or
-               /\bdelegato\b/             or
-               /\bgerente\b/              or
-               /Kommanditär(in)?/         or
-               /responsabile della succursale/   or
-               /Aufsichtsbehörde/         or
-               /Obmann\b/                 or
-               /Prokurist(in)?\b/         or
-               /Obmännin\b/               or
-               /Vizeobmann\b/             or
-               /Vizeobmännin\b/           or
-               /Bankleiter(in)?/          or
-               /Flugplatzchef(in)?/       or
-               /Quästor(in)?\b/       or
-               /Rechnungsführer(in)?\b/       or
-               /\bdipl\./                 or
-               /Chef/          
-               
-             ) {
-
-              if (exists $person_rec->{function}) {
-                $person_rec->{funktion} .= ', '. $_;
-              }
-              else {
-                $person_rec->{funktion} .= s_back($_);
-                $person_rec->{funktion} =~ s/^ *//;
-              }
-#             print "Already exists $rec->{id_firma}, $person_rec->{nachname}: $person_rec->{funktion}, _ = $_\n" if exists $person_rec->{funktion};
-              0;
-
-            }
-            else {
-              1;
-            }
-
-        } @parts; #_}
-
-        @parts = grep { #_{ Stammeinlage
-
-           if (/Stammanteil/                 or
-               /Stammeinlage/                or
-               /con (una|\d+) quot[ea]\b/    or
-               /pour (une|\d+) parts? sociales? de / or
-               /mit einer Kommanditsumme von/
-            ) {
-
-              print "Already exists: $person_rec->{stammeinlage}, _ = $_\n" if exists $person_rec->{stammeinlage};
-              $person_rec->{stammeinlage} = s_back($_);
-              0;
-
-            }
-            else {
-              1;
-            }
-
-        } @parts; #_}
-
-        $person_rec->{rest} = join " @ ",  @parts;
-
-=cut
 
       } #_}
       else { #_{
@@ -916,9 +753,6 @@ sub are_persons_expected { #_{
 
     return 1;
 
-#   my @personen = Zefix::find_persons_from_daily_summary_rec($rec);
-#   die "Keine Personen: " .  $file_ ."\n" . $rec->{id_firma} unless @personen;
-
     skip:
 
   }
@@ -975,7 +809,9 @@ sub name_to_nachname_vorname { #_{
        $person_rec->{vorname } = $2;
      }
      else {
-       ($person_rec->{nachname}, $person_rec->{vorname}) = name_ohne_komma_to_nachname_vorname($name);
+
+      # Note the order here: vorname is first! Is this always correct?
+       ($person_rec->{vorname}, $person_rec->{nachname}) = name_ohne_komma_to_nachname_vorname($name);
      }
 
   } #_}
