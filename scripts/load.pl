@@ -57,6 +57,7 @@ my $dbh = DBI->connect("dbi:SQLite:dbname=$db") or die "Could not open/create $d
 $dbh->{AutoCommit} = 0;
 
 load_daily_summaries();
+load_person();
 
 $dbh -> commit;
 # exit;
@@ -85,14 +86,14 @@ load_firmen_bez();
 
 $dbh -> commit;
 
-sub load_daily_summaries { #_{
+sub load_daily_summaries { #_{ Basically loads person_firma_stg
 
-  trunc_table_person_firma();
+  trunc_table_person_firma_stg();
 
-  my $sth_ins_person_firma = $dbh->prepare('insert into person_firma values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+  my $sth_ins_person_firma_stg = $dbh->prepare('insert into person_firma_stg values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
 
   my $file_cnt = 0;
-  for my $file (Zefix::daily_summary_files()) {
+  for my $file (Zefix::daily_summary_files()) { #_{
     $file_cnt ++;
     print "$file [$file_cnt]\n";
 
@@ -108,7 +109,7 @@ sub load_daily_summaries { #_{
            printf "%-20s %-20s\n", $personen_rec->{nachname}, $personen_rec->{vorname};
         }
 
-        $sth_ins_person_firma->execute( #_{
+        $sth_ins_person_firma_stg->execute( #_{
                  $rec         ->{id_firma},
                  $rec         ->{dt_journal},
                  $personen_rec->{add_rm},
@@ -128,8 +129,88 @@ sub load_daily_summaries { #_{
 
     } #_}
 
+  } #_}
 
-  }
+} #_}
+
+sub load_person { #_{
+
+  $dbh -> do('drop table if exists person') or die;
+  $dbh -> do('
+    create table person (
+      id          integer primary key,
+      vorname     text,
+      nachname    text,
+      von         text,
+      bezeichnung text,
+--    in_         text,
+      cnt         integer not null,
+      cnt_firma   integer not null
+    )
+  ');
+
+  $dbh -> do('
+    insert into person (vorname, nachname, von, bezeichnung,
+    --in_,
+    cnt, cnt_firma)
+      select
+        vorname,
+        nachname,
+        von,
+        bezeichnung,
+--      in_,
+        count(*) cnt,
+        count(distinct id_firma) cnt_firma
+      from
+        person_firma_stg
+      group by
+        vorname,
+        nachname,
+        von,
+        bezeichnung
+ --     in_
+ --     having count(distinct id_firma) > 1
+   ');
+
+
+  $dbh -> do('drop table if exists person_firma') or die;
+
+# $dbh -> do("create index stage_ix_ on person_firma_stg (       vorname       ,         nachname,              von,                bezeichnung      )")
+  $dbh -> do("create index stage_ix_ on person_firma_stg (ifnull(vorname, '?') || ifnull(nachname, '?') || ifnull(von, '?') || ifnull(bezeichnung, '?'))")
+# $dbh -> do("create index stage_ix_ on person           (vorname || '?' || nachname || '?' || von || '?' || bezeichnung || '?' || in_)")
+
+  $dbh -> do("
+
+--  explain query plan
+
+    create table person_firma as
+    select
+      s.id_firma,
+      p.id            id_person,
+      s.dt_journal,
+      s.add_rm,
+      s.in_,
+      s.funktion,
+      s.zeichnung,
+      s.stammeinlage   einlage
+    from
+      person_firma_stg s                                                                join
+      person           p on
+        ifnull(s.vorname, '?') || ifnull(s.nachname, '?') || ifnull(s.von, '?') || ifnull(s.bezeichnung, '?') =
+        ifnull(p.vorname, '?') || ifnull(p.nachname, '?') || ifnull(p.von, '?') || ifnull(p.bezeichnung, '?')
+
+--    person           p on ifnull(s.vorname    , '?') = ifnull(p.vorname    , '?') and
+--                          ifnull(s.nachname   , '?') = ifnull(p.nachname   , '?') and
+--                          ifnull(s.von        , '?') = ifnull(p.von        , '?') and
+--                          ifnull(s.bezeichnung, '?') = ifnull(p.bezeichnung, '?')
+--                          ifnull(s.in_        , '?') = ifnull(p.in_        , '?')
+   ") or die;
+
+ $dbh -> do("drop table person_firma_stg");
+ $dbh -> do("create index person_firma_ix_id_firma on person_firma(id_firma)");
+
+ select pf.dt_journal, p.nachname, p.vorname, p.von, p.bezeichnung, pf.in_, pf.funktion, pf.zeichnung, pf.einlage from person_firma pf join person p on pf.id_person = p.id where pf.id_firma = 1281258
+
 } #_}
 
 sub load_firmen { #_{
@@ -1020,11 +1101,11 @@ create table stichwort_firma (
 ") or die;
 } #_}
 
-sub trunc_table_person_firma { #_{
-  $dbh -> do('drop table if exists person_firma') or die;
+sub trunc_table_person_firma_stg { #_{
+  $dbh -> do('drop table if exists person_firma_stg') or die;
   $dbh -> do("
 
-create table person_firma (
+create table person_firma_stg (
   id_firma          int  not null,
   dt_journal        text not null,
   add_rm            text not null,
