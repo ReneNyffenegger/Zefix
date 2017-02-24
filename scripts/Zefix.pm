@@ -284,7 +284,7 @@ sub find_persons_from_daily_summary_rec { #_{
 
        my $person_rec = {add_rm => '-'};
        $person_rec -> {funktion} = $+{funktion};
-      ($person_rec->{nachname}, $person_rec->{vorname}) = name_to_nachname_vorname($name);
+      ($person_rec->{nachname}, $person_rec->{vorname}) = name_ohne_komma_to_nachname_vorname($name);
 
        push @ret, $person_rec;
 
@@ -314,12 +314,12 @@ sub find_persons_from_daily_summary_rec { #_{
 
         my $person_rec = {add_rm => '-'};
 
-       ($person_rec->{nachname}, $person_rec->{vorname}) = name_to_nachname_vorname($name_alt);
+       ($person_rec->{nachname}, $person_rec->{vorname}) = name_ohne_komma_to_nachname_vorname($name_alt);
        push @ret, $person_rec;
 
        $person_rec = {add_rm => '+'};
 
-       ($person_rec->{nachname}, $person_rec->{vorname}) = name_to_nachname_vorname($name_neu);
+       ($person_rec->{nachname}, $person_rec->{vorname}) = name_ohne_komma_to_nachname_vorname($name_neu);
        push @ret, $person_rec;
 
 
@@ -338,7 +338,7 @@ sub find_persons_from_daily_summary_rec { #_{
         $person_rec->{funktion} = $2;
 
 #      (my $name, $person_rec->{von}, $person_rec->{in}) = text_to_name_in_von($person);
-       ($person_rec->{nachname}, $person_rec->{vorname}) = name_to_nachname_vorname($name);
+       ($person_rec->{nachname}, $person_rec->{vorname}) = name_ohne_komma_to_nachname_vorname($name);
 
        push @ret, $person_rec;
 
@@ -359,7 +359,7 @@ sub find_persons_from_daily_summary_rec { #_{
       $funktion =~ s/räsidenten\b/räsident/;
       $person_rec -> {funktion} = $funktion;
       
-     ($person_rec->{nachname}, $person_rec->{vorname}) = name_to_nachname_vorname($name);
+     ($person_rec->{nachname}, $person_rec->{vorname}) = name_ohne_komma_to_nachname_vorname($name);
 
       push @ret, $person_rec;
 
@@ -377,7 +377,7 @@ sub find_persons_from_daily_summary_rec { #_{
       $funktion =~ s/räsidenten\b/räsident/;
       $person_rec -> {funktion} = $funktion;
       
-     ($person_rec->{nachname}, $person_rec->{vorname}) = name_to_nachname_vorname($name);
+     ($person_rec->{nachname}, $person_rec->{vorname}) = name_ohne_komma_to_nachname_vorname($name);
 
       push @ret, $person_rec;
 
@@ -390,7 +390,7 @@ sub find_persons_from_daily_summary_rec { #_{
       my $funktion = $+{funktion};
       $funktion =~ s/räsidenten\b/räsident/;
       $person_rec -> {funktion} = $funktion;
-     ($person_rec->{nachname}, $person_rec->{vorname}) = name_to_nachname_vorname($name);
+     ($person_rec->{nachname}, $person_rec->{vorname}) = name_ohne_komma_to_nachname_vorname($name);
 
       push @ret, $person_rec;
 
@@ -412,7 +412,7 @@ sub find_persons_from_daily_summary_rec { #_{
 
           $person_rec -> {zeichnung} = $zeichnung;
 
-          ($person_rec->{nachname}, $person_rec->{vorname}) = name_to_nachname_vorname($name);
+          ($person_rec->{nachname}, $person_rec->{vorname}) = name_ohne_komma_to_nachname_vorname($name);
 
           push @ret, $person_rec;
 
@@ -435,7 +435,7 @@ sub find_persons_from_daily_summary_rec { #_{
       $person_rec -> {von}       = $+{von};
       $person_rec -> {in}        = $+{in};
 
-     ($person_rec->{nachname}, $person_rec->{vorname}) = name_to_nachname_vorname($name);
+     ($person_rec->{nachname}, $person_rec->{vorname}) = name_ohne_komma_to_nachname_vorname($name);
 
       push @ret, $person_rec;
 
@@ -449,7 +449,7 @@ sub find_persons_from_daily_summary_rec { #_{
        $person_rec -> {zeichnung} = $+{zeichnung};
        $person_rec -> {von} = $+{von};
        $person_rec -> {in} = $+{in};
-      ($person_rec->{nachname}, $person_rec->{vorname}) = name_to_nachname_vorname($name);
+      ($person_rec->{nachname}, $person_rec->{vorname}) = name_ohne_komma_to_nachname_vorname($name);
 
        push @ret, $person_rec;
 
@@ -463,7 +463,7 @@ sub find_persons_from_daily_summary_rec { #_{
       my $person_rec = {add_rm => '+'};
       $person_rec -> {zeichnung} = $zeichnung;
 
-     ($person_rec->{nachname}, $person_rec->{vorname}) = name_to_nachname_vorname($name);
+     ($person_rec->{nachname}, $person_rec->{vorname}) = name_ohne_komma_to_nachname_vorname($name);
 
       push @ret, $person_rec;
 
@@ -490,7 +490,7 @@ sub find_persons_from_daily_summary_rec { #_{
          my $in       = $3;
          my $funktion = $4;
 
-        ($person_rec->{nachname}, $person_rec->{vorname}) = name_to_nachname_vorname($name);
+        ($person_rec->{nachname}, $person_rec->{vorname}) = name_ohne_komma_to_nachname_vorname($name);
 
          $person_rec->{von} = s_back($von);
          $person_rec->{in } = s_back($in);
@@ -515,7 +515,7 @@ sub find_persons_from_daily_summary_rec { #_{
        (my $name, $person_rec->{von}, $person_rec->{in}) = text_to_name_von_in($person);
 
 
-       ($person_rec->{nachname}, $person_rec->{vorname}) = name_to_nachname_vorname($name);
+       ($person_rec->{nachname}, $person_rec->{vorname}) = name_ohne_komma_to_nachname_vorname($name);
 
         push @ret, $person_rec;
 
@@ -528,7 +528,7 @@ sub find_persons_from_daily_summary_rec { #_{
 
        my $person_rec = {add_rm => '-'};
        $person_rec -> {funktion} = $+{funktion};
-      ($person_rec->{nachname}, $person_rec->{vorname}) = name_to_nachname_vorname($name);
+      ($person_rec->{nachname}, $person_rec->{vorname}) = name_ohne_komma_to_nachname_vorname($name);
 
        push @ret, $person_rec;
 
@@ -546,7 +546,7 @@ sub find_persons_from_daily_summary_rec { #_{
 
       my $name = $1;
 
-     ($rec_person->{nachname}, $rec_person->{vorname}) = name_to_nachname_vorname($name);
+     ($rec_person->{nachname}, $rec_person->{vorname}) = name_ohne_komma_to_nachname_vorname($name);
 
       push @ret, $rec_person;
 
@@ -559,7 +559,7 @@ sub find_persons_from_daily_summary_rec { #_{
       my $personen_text = shift @PARTS;
 
       my @person_parts;
-      @person_parts = split /(?:\.|;) */, $personen_text;
+      @person_parts = split /(?:\.|;|, und ) */, $personen_text;
 
       for my $person_text (@person_parts) { #_{
 
@@ -575,7 +575,25 @@ sub find_persons_from_daily_summary_rec { #_{
       if ($person_text =~ s! *[([]?<R>([^<]+)<E>[)\]]?!!g)  { #_{
         $person_rec->{firma} = s_back($1);
       } #_}
-      if ($person_text =~ / *(.*?), (?:in|à) ([^,]+?), *(.*)/) { #_{
+      if ($person_text =~ / *(?<name>.*?), (?:von und in) (?<vonin>[^,]+?), *(?<more>.*)/) { #_{
+        my $name = $+{name};
+        my $more = $+{more};
+        $person_rec->{von}      = $+{vonin};
+        $person_rec->{in}       = $+{vonin};
+
+
+        print "\n\n$more\n\n";
+
+#       $name =~ /([^,]+), *(.*)/;
+
+        name_to_nachname_vorname($rec, $person_rec, $name);
+        parse_person_more       ($rec, $person_rec, $more);
+
+#       $person_rec->{nachname} = $1;
+#       $person_rec->{vorname } = $2;
+
+      } #_}
+      elsif ($person_text =~ / *(.*?), (?:in|à) ([^,]+?), *(.*)/) { #_{
 
         my $name = s_back($1);
         my $more = $3;
@@ -586,30 +604,23 @@ sub find_persons_from_daily_summary_rec { #_{
 
           my $naturliche_person = $1;
           $person_rec->{von} = $2;
+          name_to_nachname_vorname($rec, $person_rec, $naturliche_person);
 
-          if ($rec->{registeramt} != 229) { #_{
-             $naturliche_person =~ /([^,]+), *(.*)/;
-
-             $person_rec->{nachname} = $1;
-             $person_rec->{vorname } = $2;
-          } #_}
-          else {  #_{ Registeramt 229 does not seem to have commas between first and last name
-
-             ($person_rec->{nachname}, $person_rec->{vorname}) = name_to_nachname_vorname($naturliche_person);
-
-#            $naturliche_person =~ s/^([Vv]on) /$1%%/;
-
-#            $naturliche_person =~ /([^ ]+) +(.*)/;
+#         if ($rec->{registeramt} != 229) { #_{
+#            $naturliche_person =~ /([^,]+), *(.*)/;
 
 #            $person_rec->{nachname} = $1;
 #            $person_rec->{vorname } = $2;
+#         } #_}
+#         else {  #_{ Registeramt 229 does not seem to have commas between first and last name
 
-#            $person_rec->{nachname} =~ s/(.*)%%/$1 /;
+#            ($person_rec->{nachname}, $person_rec->{vorname}) = name_ohne_komma_to_nachname_vorname($naturliche_person);
 
-             $person_rec->{von} =~ s/ *\(bisher von .*\)//;
-             $person_rec->{in}  =~ s/ *\(bisher in .*\)//;
 
-          } #_}
+#            $person_rec->{von} =~ s/ *\(bisher von .*\)//;
+#            $person_rec->{in}  =~ s/ *\(bisher in .*\)//;
+
+#         } #_}
 
         } #_}
         elsif ($name =~ / *(.*), *([^,]*(?:Staatsangehöriger?|ressortissant|cittadino|\bcitoyen)[^]]*)/) { #_{
@@ -629,6 +640,9 @@ sub find_persons_from_daily_summary_rec { #_{
 
         } #_}
 
+        parse_person_more($rec, $person_rec, $more);
+
+=pod
 
         $more =~ s/ *[[(](?:bisher|précédemment|finora):? *([^\])]+)[\])]//;
 
@@ -774,6 +788,8 @@ sub find_persons_from_daily_summary_rec { #_{
         } @parts; #_}
 
         $person_rec->{rest} = join " @ ",  @parts;
+
+=cut
 
       } #_}
       else { #_{
@@ -940,6 +956,32 @@ sub to_dt { #_{
 } #_}
 
 sub name_to_nachname_vorname { #_{
+  my $rec        = shift;
+  my $person_rec = shift;
+  my $name       = shift;
+
+  if ($rec->{registeramt} == 229) {  #_{ Registeramt 229 does not seem to have commas between first and last name
+
+     ($person_rec->{nachname}, $person_rec->{vorname}) = name_ohne_komma_to_nachname_vorname($name);
+
+
+     $person_rec->{von} =~ s/ *\(bisher von .*\)//;
+     $person_rec->{in}  =~ s/ *\(bisher in .*\)//;
+
+  } #_}
+  else { #_{
+     if ($name =~ /([^,]+), *(.*)/) {
+       $person_rec->{nachname} = $1;
+       $person_rec->{vorname } = $2;
+     }
+     else {
+       ($person_rec->{nachname}, $person_rec->{vorname}) = name_ohne_komma_to_nachname_vorname($name);
+     }
+
+  } #_}
+
+} #_}
+sub name_ohne_komma_to_nachname_vorname { #_{
   my $name = shift;
 
   $name =~ s/^([Vv]on) /$1%%/;
@@ -952,6 +994,159 @@ sub name_to_nachname_vorname { #_{
   $nachname =~ s/(.*)%%/$1 /;
 
   return (s_back($nachname), s_back($vorname));
+
+} #_}
+
+sub parse_person_more { #_{
+  my $rec        = shift;
+  my $rec_person = shift;
+  my $more       = shift;
+
+  $more =~ s/ *[[(](?:bisher|précédemment|finora):? *([^\])]+)[\])]//;
+
+  my $person_det_bisher = $1;
+
+  $more =~ s/ *\[come finora\]//;
+  $more =~ s/ *[[(]wie bisher[\])]//;
+
+  $more =~ s/ *[[(](?:nicht|non): *([^\])]+)[\])]//;
+  my $person_det_nicht = $1;
+
+
+
+  my @parts = split ' *, *', $more;
+
+  @parts = grep { #_{ Zeichnung
+
+     if (/[Uu]nterschrift/           or
+         /[Pp]rokura/                or
+         /[Zz]eichnungsberechtigung/ or
+         /signature/                 or
+         /\bcon firma /              or
+         /\bcon procura /            or
+         /\bavec procuration\b/      or
+         /senza diritto di firma/    or
+         /\bKU\b/
+        ) {
+
+        print "Already exists $rec->{id_firma}: $rec_person->{zeichnung}, _ = $_\n" if exists $rec_person->{zeichnung} and $_ ne $rec_person->{zeichnung};
+        $rec_person->{zeichnung} = s_back($_);
+        0;
+
+      }
+      else {
+        1;
+      }
+
+  } @parts; #_}
+
+  @parts = grep { #_{ Funktion
+
+
+     if (/Verwaltungsrat/           or
+         /[pP]räsident/             or
+         /Geschäftsführer/          or
+         /Revisionsstelle\b/        or
+         /Geschäftsleitung/         or
+         /Gesellschafter(in)?\b/    or
+         /Mitglied/                 or
+         /Aktuar(in)?\b/            or
+         /Inhaber(in)?\b/           or
+         /Geschäftsführung\b/       or
+         /Vorsitzender?\b/          or
+         /\bassocié\b/              or
+         /\bgérant\b/               or
+         /[Kk]assier/               or
+         /\bmembre\b/               or
+         /organe de révision/       or
+         /Sekrertär(in)?\b/         or
+         /Direktor(in)?\b/          or
+         /Generaldirektor(in)?\b/   or
+         /\bprésident/              or
+         /\bpresidente\b/           or
+         /Liquidator(in)\b/         or
+         /Delegierter?\b/           or
+         /ufficio di revisione/     or
+         /\btitulaire\b/            or
+         /\bassociée?\b/            or
+         /\bdirecteur\b/            or
+         /\bdirectrice\b/           or
+         /\bdirettore\b/            or
+         /\bdirettrice\b/           or
+         /\bamministratore\b/       or
+         /\bamministratrice\b/      or
+         /\b[lL]iquidatore?\b/      or
+         /\bliquidateur\b/          or
+         /\bliquidatrice\b/         or
+         /\bGeschäftsleiter(in)?\b/ or
+         /\bmembro\b/               or
+         /\bSekretär(in)?\b/        or
+         /\bsegretari[ao]\b/        or
+         /\bsoci[oa]\b/             or
+         /\badministrateur\b/       or
+         /\badministratrice\b/       or
+         /Beisitzer(in)?\b/         or
+         /Leiter de/                or
+         /\bsecrétaire\b/           or
+         /\btitolare\b/             or
+         /\bdelegato\b/             or
+         /\bgerente\b/              or
+         /Kommanditär(in)?/         or
+         /responsabile della succursale/   or
+         /Aufsichtsbehörde/         or
+         /Obmann\b/                 or
+         /Prokurist(in)?\b/         or
+         /Obmännin\b/               or
+         /Vizeobmann\b/             or
+         /Vizeobmännin\b/           or
+         /Bankleiter(in)?/          or
+         /Flugplatzchef(in)?/       or
+         /Quästor(in)?\b/       or
+         /Rechnungsführer(in)?\b/       or
+         /\bdipl\./                 or
+         /Chef/          
+         
+       ) {
+
+        if (exists $rec_person->{function}) {
+          $rec_person->{funktion} .= ', '. $_;
+        }
+        else {
+          $rec_person->{funktion} .= s_back($_);
+          $rec_person->{funktion} =~ s/^ *//;
+        }
+#       print "Already exists $rec->{id_firma}, $rec_person->{nachname}: $rec_person->{funktion}, _ = $_\n" if exists $rec_person->{funktion};
+        0;
+
+      }
+      else {
+        1;
+      }
+
+  } @parts; #_}
+
+  @parts = grep { #_{ Stammeinlage
+
+     if (/Stammanteil/                 or
+         /Stammeinlage/                or
+         /con (una|\d+) quot[ea]\b/    or
+         /pour (une|\d+) parts? sociales? de / or
+         /mit einer Kommanditsumme von/
+      ) {
+
+        print "Already exists: $rec_person->{stammeinlage}, _ = $_\n" if exists $rec_person->{stammeinlage};
+        $rec_person->{stammeinlage} = s_back($_);
+        0;
+
+      }
+      else {
+        1;
+      }
+
+  } @parts; #_}
+
+  $rec_person->{rest} = join " @ ",  @parts;
+
 
 } #_}
 

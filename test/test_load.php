@@ -323,12 +323,14 @@ function check_person_firma($dbh) { #_{
   $stang = 'Staatsangehörige';
   $stangr = 'Staatsangehöriger';
 
-  check_count($dbh, 'person_firma', 244);
+  check_count($dbh, 'person_firma', 246);
   $sth = db_prep_exec($dbh, 'select * from person_firma order by dt_journal, id_firma');
 
   $cnt=1;
 
-  cmp_person_firma($sth, $cnt++, 468163   ,'2001-01-23'  ,'-'  ,'Dettwiler'        ,'Werner'           ,'Reigoldswil'                         ,NULL                                        ,'Eichberg'                  ,'socio e gerente'                            , 'con firma individuale'                               , 'con una quota da CHF 1\'000.--'                       ); #_{
+  cmp_person_firma($sth, $cnt++, 601097   ,'2001-01-22'  ,'+'  ,'Angelo'           ,'Kälin'            ,'Einsiedeln'                          ,NULL                                        ,'Wangen'                    , $gs_gf                                      ,  $eu                                                  , 'mit einer Stammeinlage von CHF 49\'000'               ); #_{
+  cmp_person_firma($sth, $cnt++, 601097   ,'2001-01-22'  ,'+'  ,'Gerhard'          ,'Zimmermann'       ,'Wohlenschwil'                        ,NULL                                        ,'Wohlenschwil'              , $gs_gf                                      , 'mit Kollektivunterschrift zu zweien'                 , 'mit einer Stammeinlage von CHF 1\'000'                );
+  cmp_person_firma($sth, $cnt++, 468163   ,'2001-01-23'  ,'-'  ,'Dettwiler'        ,'Werner'           ,'Reigoldswil'                         ,NULL                                        ,'Eichberg'                  ,'socio e gerente'                            , 'con firma individuale'                               , 'con una quota da CHF 1\'000.--'                       ); 
   cmp_person_firma($sth, $cnt++, 468163   ,'2001-01-23'  ,'+'  ,'Wüst'             ,'Günter'           ,'Oberriet SG'                         , null                                       ,$luech_com_alt              ,'socio e gerente'                            , 'con firma individuale'                               , 'con una quota da CHF 1\'000.--'                       );
   cmp_person_firma($sth, $cnt++, 325321   ,'2001-04-03'  ,'+'  ,'Erhard'           ,'Daniel'           ,'Laufenburg AG'                       , null                                       ,'Düdingen'                  , null                                        ,"$kp2, beschränkt auf den Hauptsitz"                   ,  null                                                  );
   cmp_person_firma($sth, $cnt++, 325321   ,'2001-05-31'  ,'-'  , null              , null              , null                                 ,'Jäggi Peter, dipl. Bücherexperte'          ,'Frauenkappelen'            ,'Revisionsstelle'                            , null                                                  ,  null                                                  );
