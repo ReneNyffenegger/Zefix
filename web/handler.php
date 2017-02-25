@@ -22,6 +22,8 @@ main($db);
 
 function main($db) { #_{
 
+  try {
+
   $topic = urldecode(substr($_SERVER['REQUEST_URI'], 8));
 
 //br("Topic: $topic");
@@ -43,6 +45,17 @@ function main($db) { #_{
     print_firma($db, $id_firma);
     return;
   } #_}
+  if (preg_match('/p' .
+                 '\•([^\•]+)' .
+                 '\•([^\•]+)' .
+                 '\•([^\•]+)' . '/', $topic,  $person_m)) { #_{
+    $nachname = $person_m[1];
+    $vorname  = $person_m[2];
+    $von      = $person_m[3];
+
+    print_person($db, $nachname, $vorname, $von);
+    return;
+  } #_}
 
   if (preg_match('/g(\d+)/', $topic,  $id_gemeinde_m)) { #_{
     $id_gemeinde = $id_gemeinde_m[1];
@@ -61,6 +74,18 @@ function main($db) { #_{
   br('basename(REQUEST_URI): ' . basename($_SERVER['REQUEST_URI']));
   br('urldecode(basename(REQUEST_URI)): ' . urldecode(basename($_SERVER['REQUEST_URI'])));
    */
+  print "topic: $topic";
+
+  }
+  catch (Exception $e) {
+
+    print "execption";
+
+    if (is_tq84()) {
+      print "<p>$e";
+    }
+
+  }
 
 } #_}
 
@@ -76,9 +101,7 @@ function print_firma($db, $id_firma) { #_{
     $firma_bezeichnung .= ' (in Auflösung)';
   }
 
-
   print_html_start($firma_bezeichnung);
-# printf ("<h1>%s</h1>\n", $firma['bezeichnung']);
 
   print $firma['rechtsform_bezeichnung']. "<p>";
 
@@ -122,21 +145,51 @@ function print_firma($db, $id_firma) { #_{
   print "<table border=1><tr><td>J</td><td>N</td><td>V</td><td>v</td><td>B</td><td>i</td><td>F</td><td>Z</td><td></td></tr>";
 
   $res = db_prep_exec_fetchall($db, 
-    'select
-      pf.*
+   '
+    select
+--    pf.id_firma,
+      pf.dt_journal,
+      pf.add_rm,
+      p.nachname,
+      p.vorname,
+      p.von,
+      p.bezeichnung,
+      pf.in_,
+      pf.funktion,
+      pf.zeichnung,
+      pf.einlage,
+      p.cnt_firma
     from
-      person_firma pf
+      person_firma pf join
+      person       p on pf.id_person = p.id
     where
       pf.id_firma = ?
     order by
       pf.dt_journal
-    ', array($id_firma));
+    '
+#   'select
+#     pf.*
+#   from
+#     person_firma pf
+#   where
+#     pf.id_firma = ?
+    , array($id_firma));
 
   foreach ($res as $row) {
+
+
+    $nachname = $row['nachname'];
+
+    if ($row['cnt_firma'] > 1) {
+#      $nachname = sprintf("<a href='p/%s/%s/%s'>%s</a>", $row['nachname'], $row['vorname'], $row['von'], $row['nachname']);
+       $nachname = sprintf("<a href='p•%s•%s•%s'>%s</a>", $row['nachname'], $row['vorname'], $row['von'], $row['nachname']);
+    }
+
     printf ("<tr class='%s'><td>%s</td></td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>\n",
       $row['add_rm'] == '+' ? 'add' : 'rm', 
       $row['dt_journal'],
-      $row['nachname'], $row['vorname'], $row['von'],
+ #    $row['nachname'], $row['vorname'], $row['von'],
+      $nachname       , $row['vorname'], $row['von'],
       $row['bezeichnung'],
       $row['in_'],
       $row['funktion'], $row['zeichnung'],
@@ -178,6 +231,41 @@ function print_firma($db, $id_firma) { #_{
   printf ("Weitere Firmen in <a href='g%d'>%s</a>", $firma['id_gemeinde'], gemeinde_name($db, $firma['id_gemeinde']));
 
   printf("<p><a href='.'>Hauptseite</a>");
+
+
+} #_}
+
+function print_person($db, $nachname, $vorname, $in) { #_{
+
+  print_html_start("$vorname $nachname");
+ 
+  print "$vorname $nachname erscheint im Zusammenhang mit folgenden Firmen:";
+
+  $res = db_prep_exec_fetchall($db, 
+
+   "select distinct
+      f.id             id_firma,
+      f.bezeichnung,
+      f.id_gemeinde,
+      g.name           name_gemeinde
+    from
+      person          p                         join
+      person_firma    pf on p.id = pf.id_person join
+      firma           f  on f.id = pf.id_firma  join
+      gemeinde        g  on g.id = f.id_gemeinde
+    where
+      p.nachname = ? and
+      p.vorname  = ? and
+      p.von      = ?
+    ",
+      array($nachname, $vorname, $in)
+  );
+
+  print "<table border=1>";
+  foreach ($res as $row) {
+    printf ("<tr><td><a href='f%d'>%s</a></td><td><a href='g%d'>%s</td></tr>", $row['id_firma'], $row['bezeichnung'], $row['id_gemeinde'], $row['name_gemeinde']);
+  }
+  print "</table>";
 
 
 } #_}
