@@ -86,6 +86,11 @@ load_firmen_bez();
 
 $dbh -> commit;
 
+if ($env eq 'test') {
+  chdir '../test';
+  print readpipe 'php test_load.php';
+}
+
 sub load_daily_summaries { #_{ Basically loads person_firma_stg
 
   trunc_table_person_firma_stg();
@@ -176,7 +181,7 @@ sub load_person { #_{
   $dbh -> do('drop table if exists person_firma') or die;
 
 # $dbh -> do("create index stage_ix_ on person_firma_stg (       vorname       ,         nachname,              von,                bezeichnung      )")
-  $dbh -> do("create index stage_ix_ on person_firma_stg (ifnull(vorname, '?') || ifnull(nachname, '?') || ifnull(von, '?') || ifnull(bezeichnung, '?'))")
+  $dbh -> do("create index stage_ix_ on person_firma_stg (ifnull(vorname, '?') || ifnull(nachname, '?') || ifnull(von, '?') || ifnull(bezeichnung, '?'))");
 # $dbh -> do("create index stage_ix_ on person           (vorname || '?' || nachname || '?' || von || '?' || bezeichnung || '?' || in_)")
 
   $dbh -> do("
@@ -209,7 +214,6 @@ sub load_person { #_{
  $dbh -> do("drop table person_firma_stg");
  $dbh -> do("create index person_firma_ix_id_firma on person_firma(id_firma)");
 
- select pf.dt_journal, p.nachname, p.vorname, p.von, p.bezeichnung, pf.in_, pf.funktion, pf.zeichnung, pf.einlage from person_firma pf join person p on pf.id_person = p.id where pf.id_firma = 1281258
 
 } #_}
 
