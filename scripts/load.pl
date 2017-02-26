@@ -102,17 +102,12 @@ sub load_daily_summaries { #_{ Basically loads person_firma_stg
     $file_cnt ++;
     print "$file [$file_cnt]\n";
 
-#   $dbh->commit unless $file_cnt % 333;
-
     my $zefix_file = Zefix::open_daily_summary_file($file);
     while (my $rec = Zefix::parse_next_daily_summary_line($zefix_file)) { #_{
 
       my @personen = Zefix::find_persons_from_daily_summary_rec($rec);
       for my $personen_rec (@personen) { #_{
 
-        if ($rec->{dt_journal} eq '2017-01-06') {
-           printf "%-20s %-20s\n", $personen_rec->{nachname}, $personen_rec->{vorname};
-        }
 
         $sth_ins_person_firma_stg->execute( #_{
                  $rec         ->{id_firma},
@@ -212,7 +207,9 @@ sub load_person { #_{
    ") or die;
 
  $dbh -> do("drop table person_firma_stg");
- $dbh -> do("create index person_firma_ix_id_firma on person_firma(id_firma)");
+ $dbh -> do("create index person_firma_ix_id_firma  on person_firma(id_firma )");
+ $dbh -> do("create index person_firma_ix_id_person on person_firma(id_person)");
+ $dbh -> do("create index person_ix_nachname_vorname_von on person(nachname, vorname, von)");
 
 
 } #_}
