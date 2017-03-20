@@ -325,7 +325,7 @@ function check_person_firma($dbh) { #_{
   $stang = 'Staatsangehörige';
   $stangr = 'Staatsangehöriger';
 
-  check_count($dbh, 'person_firma', 253);
+  check_count($dbh, 'person_firma', 254);
   $sth = db_prep_exec($dbh, "
     select
       pf.id_firma,
@@ -457,6 +457,7 @@ function check_person_firma($dbh) { #_{
     cmp_person_firma($sth,  $cnt++,  325321   , '2009-08-06'  , '-'  , 'Burkard'          , 'Andreas Urs'      ,  null                                 ,  null                                       ,  null                       ,  null                                        , 'Kollektivprokura zu zweien'                           ,  null                                                   );
     cmp_person_firma($sth,  $cnt++,  325321   , '2009-08-06'  , '+'  , 'Diekmann'         , 'Roger'            , 'deutscher Staatsangehöriger'         ,  null                                       , 'Ueberstorf'                , $gl_mg                                       ,  $ku2                                                  ,  null                                                   );
     cmp_person_firma($sth,  $cnt++,  325321   , '2009-08-06'  , '-'  , 'Henzi'            , 'Jürg'             ,  null                                 ,  null                                       ,  null                       ,  null                                        , 'Kollektivprokura zu zweien'                           ,  null                                                   );
+    cmp_person_firma($sth,  $cnt++,  601009   , '2009-09-15'  , '+'  , 'Lauffer'          , 'Rudolf'           , 'Glattfelden'                         , NULL                                        , 'Glattfelden'               ,"$vors $gfr und $gs"                          ,   $eu                                                  ,  'mit einem Stammanteil von CHF 10\'000.00'             );
     cmp_person_firma($sth,  $cnt++,   76284   , '2009-10-26'  , '-'  ,  null              ,  null              ,  null                                 , 'Fiduciaire Jean-Maurice Maitre S.A.'       , 'Porrentruy'                , 'organe de révision'                         ,   null                                                 ,   null                                                  );
     cmp_person_firma($sth,  $cnt++,   76284   , '2009-10-26'  , '+'  ,  null              ,  null              ,  null                                 , 'RéviAjoie Sàrl'                            , 'Porrentruy'                , 'organe de révision'                         ,   null                                                 ,   null                                                  );
     cmp_person_firma($sth,  $cnt++,  934296   , '2009-11-06'  , '+'  , 'Ginnow'           , 'Richard'          , 'Volketswil'                          , NULL                                        , 'Mettmenstetten'            , 'Präsident des Verwaltungsrates'             , $ku2                                                   ,   null                                                  );
