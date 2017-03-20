@@ -14,7 +14,7 @@ echo "Ok\n";
 
 function check_firma($dbh) { #_{
 
-  check_count($dbh, 'firma', 31);
+  check_count($dbh, 'firma', 32);
 
   $zuffrey = 'Zufferey Aurélie et Tânia Margarida da Mota Cardoso Kiosque Liberté';
   $fiduc_crans = 'Fiduciaire de Crans-Montana (FCM) SA';
@@ -31,6 +31,8 @@ function check_firma($dbh) { #_{
   cmp_firma($sth,  451407, 'ADP Analyse Design Planung AG'                 , 'CH02040197464',    null,   261,  100000, 'CHF',  2, null         , 3242819, null                                ,'Glatttalstrasse'          ,'104 h',null,      null, '8052', 'Zürich'         , 3);
   cmp_firma($sth,  468163, 'Storella Sagl'                                 , 'CH50940068681',    null,  5097,   50000, 'CHF',  2, null         , 2942553, null                                ,'Via Gabbietta'            ,  '3'  ,null,      null, '6614', 'Brissago'       , 4);
   cmp_firma($sth,  563696, 'Federer & Partner Kommanditgesellschaft'       , 'CH02020015631',    null,  '141',   null, null ,  2, null         , 3194841, null                                ,'Zehntenhofweg'            ,  '6'  ,null,      null, '8800', 'Thalwil'        ,10);
+
+  cmp_firma($sth,  601009, 'Abaco Design GmbH'                             , 'CH29040137240',    null,  2939,   20000, 'CHF',  2, null         , 5254450, null                                ,'Stadthausgasse'           ,  '1'  ,null,      null, '8200', 'Schaffhausen'   ,  4);
   cmp_firma($sth,  601097, 'Kälin & Partner Bauingenieure/Planer GmbH'     , 'CH13000119169',    null,  1349 ,  50000, 'CHF',  2, null         , 6209698, null                                ,'Sonnenriedstrasse'        ,  '9'  ,null,      null, '8855', 'Wangen'         , 4);
   cmp_firma($sth,  712087, 'Varian Medical Systems Imaging Laboratory GmbH', 'CH40040245074',    null,  4021, 2000000, 'CHF',  2, null         , 2185269, null                                ,'Täfernstrasse'            ,  '7'  ,null,      null, '5405', 'Baden-Dättwil'  , 4);
   cmp_firma($sth,  728139, 'Volltext Lienert'                              , 'CH02010440290',    null,   155,    null, null ,  2, null         , 6180656, null                                ,'Bahnhofstrasse'           , '14'  ,null,      null, '8708', 'Männedorf'      , 1);
@@ -120,7 +122,7 @@ function cmp_firma($sth, $id, $bezeichnung, $code13, $id_hauptsitz, $id_gemeinde
 
 function check_firma_bez($dbh) { #_{
 
-  check_count($dbh, 'firma_bez', 50);
+  check_count($dbh, 'firma_bez', 51);
 
   $sth = db_prep_exec($dbh, 'select * from firma_bez order by id_firma, dt_ab', array());
   cmp_firma_bez($sth,   60442, '940', 1, 'DE',  3, 'Fluggruppe Mollis'                                                         , '1996-01-01', '9999-12-31');
@@ -139,6 +141,7 @@ function check_firma_bez($dbh) { #_{
   cmp_firma_bez($sth,  468163, '940', 1, 'IT',  3, 'Storella Sagl'                                                             , '1999-12-04', '9999-12-31');
   cmp_firma_bez($sth,  468163, '940', 2, 'FR',  3, 'Storella GmbH'                                                             , '1999-12-04', '9999-12-31');
   cmp_firma_bez($sth,  563696, '940', 1, 'DE',  3, 'Federer & Partner Kommanditgesellschaft'                                   , '2000-10-22', '9999-12-31');
+  cmp_firma_bez($sth,  601009, '990', 1, 'DE',  3, 'Abaco Design GmbH'                                                         , '2001-01-31', '9999-12-31');
   cmp_firma_bez($sth,  601097, '990', 1, 'DE',  3, 'Kälin & Partner Bauingenieure/Planer GmbH'                                 , '2001-01-31', '9999-12-31');
   cmp_firma_bez($sth,  712087, '990', 1, 'DE',  3, 'Varian Medical Systems Imaging Laboratory GmbH'                            , '2003-07-03', '9999-12-31');
   cmp_firma_bez($sth,  728139, '990', 1, 'DE',  3, 'Volltext Lienert'                                                          , '2003-11-26', '9999-12-31');
@@ -223,7 +226,7 @@ function cmp_firma_bez($sth, $id_firma, $seq, $typ, $sprachcode, $status, $bezei
 
 function check_zweck($dbh) { #_{
 
-  check_count($dbh, 'zweck', 31);
+  check_count($dbh, 'zweck', 32);
 
   $sth = db_prep_exec($dbh, 'select * from zweck order by id_firma', array());
   cmp_zweck($sth,   60442, 'Die Fluggruppe Mollis vereinigt die am Motorflug auf dem Flugplatz Mollis interessierten Personen des Kantons Glarus und Umgebung mit dem Zweck der Förderung der Luftfahrt im allgemeinen und der Schulung und des Trainings der Mitglieder im besonderen. Sie stellt die notwendige Infrastruktur für die Sicherstellung des Motorflugbetriebes.');
@@ -236,6 +239,7 @@ function check_zweck($dbh) { #_{
   cmp_zweck($sth,  451407, 'Die Gesellschaft bezweckt die Beratung und Schulung von Unternehmen und Verwaltungen in allen wirtschaftlichen, organisatorischen und technischen Belangen, insbesondere der Analyse, Konzeption, Planung und Projektierung sowie Entwicklung, Lieferung und Unterhalt von IT-Software und -Infrastruktur.  Die Gesellschaft kann Zweigniederlassungen und Tochtergesellschaften im In- und Ausland errichten und sich an anderen Unternehmen im In- und Ausland beteiligen sowie alle Geschäfte tätigen, die direkt oder indirekt mit ihrem Zweck in Zusammenhang stehen. Die Gesellschaft kann im In- und Ausland Grundeigentum erwerben, belasten, veräussern und verwalten. Sie kann auch Finanzierungen für eigene oder fremde Rechnung vornehmen sowie Garantien und Bürgschaften für Tochtergesellschaften und Dritte eingehen.');
   cmp_zweck($sth,  468163, 'Il commercio di impianti solari e di case prefabbricate risparmianti energia, tecnica energetica, elementi edili di tutti i generi come pure il commercio all\'ingrosso di prodotti tessili per la protezione solare ed il tempo libero. La società può eseguire tutte le operazioni direttamente o indirettamente correlate allo scopo sociale o che ne favoriscano l\'attuazione, istituire succursali o stabilimenti sul territorio nazionale o all\'estero, partecipare direttamente o indirettamente ad altre società o istituzioni o erogare loro servizi finanziari. La società può acquistare, amministrare e vendere degli immobili.');
   cmp_zweck($sth,  563696, 'Ingenieurbüro zur Planung, Projektierung, Devisierung, Beratung und Bauleitung im Hoch- und Tiefbau.');
+  cmp_zweck($sth,  601009, 'Design von, Handel mit und Reparatur von Fahrzeugen, Pneuhandel, Beratungsdienstleistungen auf diesem Gebiet sowie Handel mit Waren aller Art.');
   cmp_zweck($sth,  601097, 'Planung, Projektierung und Erstellung von Bauten aller Art, insbesondere Erbringen von Baudienstleistungen; kann sich an anderen Unternehmen beteiligen sowie Grundstücke erwerben, halten und veräussern.');
   cmp_zweck($sth,  712087, 'Vertrieb von elektronischen und technischen Einrichtungen aller Art und deren Bestandteile sowie Forschungs- und Entwicklungsarbeiten auf dem Gebiete elektronischer und technischer Einrichtungen im Medizinbereich, insbesondere im Bereich der Bildmanagement- und Behandlungsplanung Software; kann Patente, Handelsmarken, technische und industrielle Kenntnisse erwerben, verwalten und übertragen, sich an anderen Industrie- und Handelsunternehmen beteiligen, Zweigniederlassungen und Tochtergesellschaften errichten sowie Grundeigentum erwerben, belasten, veräussern und verwalten.');
   cmp_zweck($sth,  728139, 'Werbeberatung, Konzeption und Produktion von Ideen und Werbung, insbesondere Texte (Werbetexte, PR-Texte, Journalismus, Drehbücher, Ghostwriting und weitere Textsorten) und Grafik (Logodesign, Layouts für Broschüren, Inserate, Flyer, Plakate und weitere Werbeformen).');
@@ -321,7 +325,7 @@ function check_person_firma($dbh) { #_{
   $stang = 'Staatsangehörige';
   $stangr = 'Staatsangehöriger';
 
-  check_count($dbh, 'person_firma', 247);
+  check_count($dbh, 'person_firma', 249);
   $sth = db_prep_exec($dbh, "
     select
       pf.id_firma,
@@ -351,6 +355,8 @@ function check_person_firma($dbh) { #_{
     cmp_person_firma($sth,  $cnt++,  601097   , '2001-01-22'  , '+'  , 'Zimmermann'       , 'Gerhard'          , 'Wohlenschwil'                        , NULL                                        , 'Wohlenschwil'              ,  $gs_gf                                      ,  'mit Kollektivunterschrift zu zweien'                 ,  'mit einer Stammeinlage von CHF 1\'000'                );
     cmp_person_firma($sth,  $cnt++,  468163   , '2001-01-23'  , '-'  , 'Dettwiler'        , 'Werner'           , 'Reigoldswil'                         , NULL                                        , 'Eichberg'                  , 'socio e gerente'                            ,  'con firma individuale'                               ,  'con una quota da CHF 1\'000.--'                       ); 
     cmp_person_firma($sth,  $cnt++,  468163   , '2001-01-23'  , '+'  , 'Wüst'             , 'Günter'           , 'Oberriet SG'                         ,  null                                       , $luech_com_alt              , 'socio e gerente'                            ,  'con firma individuale'                               ,  'con una quota da CHF 1\'000.--'                       );
+    cmp_person_firma($sth,  $cnt++,  601009   , '2001-01-25'  , '+'  , 'Feurer'           , 'Rudolf'           , 'Schaffhausen'                        , NULL                                        , 'Taichung'                  ,  $gs_gf                                      ,   $eu                                                  ,  'mit einer Stammeinlage von CHF 10\'000.--'            );
+    cmp_person_firma($sth,  $cnt++,  601009   , '2001-01-25'  , '+'  , 'Schlumpf'         , 'Alfred'           , 'Steinhausen'                         , NULL                                        , 'Stetten SH'                ,  $gs_gf                                      ,   $eu                                                  ,  'mit einer Stammeinlage von CHF 10\'000.--'            );
     cmp_person_firma($sth,  $cnt++,  325321   , '2001-04-03'  , '+'  , 'Erhard'           , 'Daniel'           , 'Laufenburg AG'                       ,  null                                       , 'Düdingen'                  ,  null                                        , "$kp2, beschränkt auf den Hauptsitz"                   ,   null                                                  );
     cmp_person_firma($sth,  $cnt++,  325321   , '2001-05-31'  , '-'  ,  null              ,  null              ,  null                                 , 'Jäggi Peter, dipl. Bücherexperte'          , 'Frauenkappelen'            , 'Revisionsstelle'                            ,  null                                                  ,   null                                                  );
     cmp_person_firma($sth,  $cnt++,  325321   , '2001-05-31'  , '+'  ,  null              ,  null              ,  null                                 , 'PricewaterhouseCoopers AG'                 , 'Bern'                      , 'Revisionsstelle'                            ,  null                                                  ,   null                                                  );
@@ -632,7 +638,7 @@ function cmp_person_firma($sth, $cnt, $id_firma, $dt_journal, $add_rm, $nachname
 
 function check_gemeinde($dbh) { #_{
 
-  check_count($dbh, 'gemeinde', 22);
+  check_count($dbh, 'gemeinde', 23);
 
   $sth = db_prep_exec($dbh, 'select * from gemeinde order by id', array());
   cmp_gemeinde($sth,   56, 'Embrach'            );
@@ -646,6 +652,7 @@ function check_gemeinde($dbh) { #_{
   cmp_gemeinde($sth, 1403, 'Giswil'             );
   cmp_gemeinde($sth, 1630, 'Glarus Nord'        );
   cmp_gemeinde($sth, 2305, 'Schmitten (FR)'     );
+  cmp_gemeinde($sth, 2939, 'Schaffhausen'       );
   cmp_gemeinde($sth, 3251, 'Altstätten'         );
   cmp_gemeinde($sth, 4021, 'Baden'              );
   cmp_gemeinde($sth, 5097, 'Brissago'           );

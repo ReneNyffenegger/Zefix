@@ -574,7 +574,7 @@ sub find_persons_from_daily_summary_rec { #_{
         $person_rec->{in}       = $+{vonin};
 
 
-        print "\n\n$more\n\n";
+#       print "\n\nZefix.pm more - $more (name=$name, vonin = $+{vonin})\n\n";
 
 #       $name =~ /([^,]+), *(.*)/;
 
