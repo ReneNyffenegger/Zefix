@@ -335,7 +335,6 @@ sub find_persons_from_daily_summary_rec { #_{
         my $name     = $1;
         $person_rec->{funktion} = $2;
 
-#      (my $name, $person_rec->{von}, $person_rec->{in}) = text_to_name_in_von($person);
        ($person_rec->{nachname}, $person_rec->{vorname}) = name_ohne_komma_to_nachname_vorname($name);
 
        push @ret, $person_rec;
@@ -421,6 +420,7 @@ sub find_persons_from_daily_summary_rec { #_{
 
     } #_}
     while ($special_parsing =~ s/\. *(?<funktion>[^:.]+?): (?<name>[^,]+?), (?:von (?<von>[^.]+?)|(?<von>.*?Staatsangehörige.*?)), in (?<in>[^.]+?), zeichnet (?<zeichnung>mit [^.]+)//) { #_{
+
 
       my $name      = $+{name};
 #     my $zeichnung = ${zeichnung};
@@ -585,11 +585,20 @@ sub find_persons_from_daily_summary_rec { #_{
 #       $person_rec->{vorname } = $2;
 
       } #_}
-      elsif ($person_text =~ / *(.*?), (?:in|à) ([^,]+?), *(.*)/) { #_{
+#     elsif ($person_text =~ / *(.*?), (?:in|à) ([^,]+?), *(.*)/) { #_{
+      elsif ($person_text =~ / *(.*?), (?:in|à) ([^,]+?),( [^,]+##p_\w\w\w?##,)? *(.*)/) { #_{
 
         my $name = s_back($1);
-        my $more = $3;
-        $person_rec->{in} = s_back($2);
+        my $in   = s_back($2);
+        my $country_with_parans = $3;
+        my $more = $4;
+        $person_rec->{in} = s_back($in);
+
+        if ($country_with_parans) {
+          $country_with_parans = s_back($country_with_parans);
+          $country_with_parans =~ s/ *,$//;
+          $person_rec->{in} .= "," . s_back($country_with_parans);
+        }
 
 
         if ($name =~ / *(.*), (?:von|de|da) (.*)/) { #_{
@@ -839,8 +848,6 @@ sub parse_person_more { #_{
 
   $more =~ s/ *[[(](?:nicht|non): *([^\])]+)[\])]//;
   my $person_det_nicht = $1;
-
-
 
   my @parts = split ' *, *', $more;
 
