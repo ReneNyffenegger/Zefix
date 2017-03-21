@@ -330,7 +330,7 @@ function check_person_firma($dbh) { #_{
   $stang = 'Staatsangehörige';
   $stangr = 'Staatsangehöriger';
 
-  check_count($dbh, 'person_firma', 259);
+  check_count($dbh, 'person_firma', 260);
   $sth = db_prep_exec($dbh, "
     select
       pf.id_firma,
@@ -370,6 +370,7 @@ function check_person_firma($dbh) { #_{
     cmp_person_firma($sth,  $cnt++,  271150   , '2001-06-06'  , '-'  , 'Baratti'          , 'Laura'            , 'Astano'                              , null                                        , 'Zürich'                    , 'GM'                                         ,  $ku2                                                  ,   null                                                  );
     cmp_person_firma($sth,  $cnt++,  271150   , '2001-06-06'  , '-'  , 'Baratti'          , 'Ruth Klara'       , 'Astano'                              , null                                        , 'Langnau am Albis'          , 'Präsident'                                  ,  $ku2                                                  ,   null                                                  );
     cmp_person_firma($sth,  $cnt++,  271150   , '2001-06-06'  , '-'  , 'Yattara-Baratti'  , 'Claudia'          , 'Astano'                              , null                                        , 'Egg'                       , 'GM'                                         ,  $ku2                                                  ,   null                                                  );
+    cmp_person_firma($sth,  $cnt++,  275904   , '2001-06-06'  , '+'  ,  null              ,  null              ,  null                                 ,'Multifiduciaire Fribourg SA'                , 'Fribourg'                  , 'Réviseur'                                   ,   null                                                 ,   null                                                  );
     cmp_person_firma($sth,  $cnt++,  251792   , '2001-07-30'  , '-'  , 'Dettwiler'        , 'Werner'           , 'Reigoldswil'                         , NULL                                        , 'Eichberg'                  , $gs_gf                                       ,  'mit Einzelunterschrift'                              ,   NULL                                                  );
     cmp_person_firma($sth,  $cnt++,  251792   , '2001-07-30'  , '+'  , 'Wüst'             , 'Günter'           , 'Oberriet SG'                         , NULL                                        , 'Lüchingen (Altstätten)'    , $gs_gf                                       ,  'mit Einzelunterschrift'                              ,   NULL                                                  );
     cmp_person_firma($sth,  $cnt++,  325321   , '2001-08-28'  , '+'  , 'Brischoux'        , 'Michel'           , 'Goumois (JU)'                        ,  null                                       , 'Freiburg'                  ,  null                                        , 'mit Kollektivprokura zu zweien'                       ,   null                                                  );
