@@ -475,7 +475,6 @@ sub load_stichwoerter { #_{
 
 } #_}
 
-
 sub fill_stichwort_firma { #_{
   my $id_firma                   = shift;
   my $text                       = shift;
