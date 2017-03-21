@@ -331,7 +331,7 @@ function check_person_firma($dbh) { #_{
   $stang = 'Staatsangehörige';
   $stangr = 'Staatsangehöriger';
 
-  check_count($dbh, 'person_firma', 262);
+  check_count($dbh, 'person_firma', 263);
   $sth = db_prep_exec($dbh, "
     select
       pf.id_firma,
@@ -506,6 +506,7 @@ function check_person_firma($dbh) { #_{
     cmp_person_firma($sth,  $cnt++,  823465   , '2011-10-27'  , '+'  , 'Hagger'           , 'Joachim Andreas'  , 'Basel'                               , NULL                                        , 'Zürich'                    , $vr_mg                                       , $ku2                                                   ,   null                                                  );
     cmp_person_firma($sth,  $cnt++,  823465   , '2011-10-27'  , '+'  , 'Hefti'            , 'Simon'            , 'Thun'                                , NULL                                        , 'Zürich'                    , 'Präsident des Verwaltungsrates'             , $ku2                                                   ,   null                                                  );
     cmp_person_firma($sth,  $cnt++,  823465   , '2011-10-27'  , '+'  , 'Vckovski'         , 'Andrej'           , 'Zürich'                              , NULL                                        , 'Zürich'                    , $vr_mg                                       , $ku2                                                   ,   null                                                  );
+    cmp_person_firma($sth,  $cnt++,  198248   , '2012-03-01'  , '-'  ,  null              ,  null              ,  null                                 ,'Bermann & Partner'                          , 'Freienbach'                , 'Revisionsstelle'                            ,  null                                                  ,   null                                                  );
     cmp_person_firma($sth,  $cnt++,  150042   , '2012-04-27'  , '-'  , 'Bolliger'         , 'Walter'           , 'Basel'                               , null                                        , 'Magden'                    , 'Vizepräsident'                              , $ku2                                                   ,   null                                                  );
     cmp_person_firma($sth,  $cnt++,  150042   , '2012-04-27'  , '+'  , 'Martin-Metzger'   , 'Caroline'         , 'Möhlin und Pratteln'                 , null                                        , 'Uster'                     , 'Aktuarin'                                   ,  'ohne Zeichnungsberechtigung'                         ,   null                                                  );
     cmp_person_firma($sth,  $cnt++,  150042   , '2012-04-27'  , '+'  , 'Schmid'           , 'Thomas'           , 'Kaiseraugst'                         , null                                        , 'Sarnen'                    , 'Vizepräsident'                              , $ku2                                                   ,   null                                                  );
