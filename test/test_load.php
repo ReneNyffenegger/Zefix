@@ -330,11 +330,12 @@ function check_person_firma($dbh) { #_{
   $pwc = 'PricewaterhouseCoopers AG (<M>CHE106.839.438<E>)';
   $pwc_R = 'PricewaterhouseCoopers AG (<R>CH03590199172<E>)';
   $wistag_R = 'WISTAG Treuhand AG (<R>CH09230010507<E>)';
+  $amt_gem_beruf_vorsorg = 'Amt für Gemeinden und berufliche Vorsorge des Kantons Zürich';
 
   $stang = 'Staatsangehörige';
   $stangr = 'Staatsangehöriger';
 
-  check_count($dbh, 'person_firma', 263);
+  check_count($dbh, 'person_firma', 264);
   $sth = db_prep_exec($dbh, "
     select
       pf.id_firma,
@@ -368,6 +369,8 @@ function check_person_firma($dbh) { #_{
     cmp_person_firma($sth,  $cnt++,  601009   , '2001-01-25'  , '+'  , 'Schlumpf'         , 'Alfred'           , 'Steinhausen'                         , NULL                                        , 'Stetten SH'                ,  $gs_gf                                      ,   $eu                                                  ,  'mit einer Stammeinlage von CHF 10\'000.--'            );
     cmp_person_firma($sth,  $cnt++,  198248   , '2001-02-23'  , '-'  ,  null              ,  null              ,  null                                 ,'Vettiger Treuhand AG'                       , 'Lachen'                    , 'Revisionsstelle'                            ,  null                                                  ,   null                                                  );
     cmp_person_firma($sth,  $cnt++,  325321   , '2001-04-03'  , '+'  , 'Erhard'           , 'Daniel'           , 'Laufenburg AG'                       ,  null                                       , 'Düdingen'                  ,  null                                        , "$kp2, beschränkt auf den Hauptsitz"                   ,   null                                                  );
+
+    cmp_person_firma($sth,  $cnt++,  270248   , '2001-05-04'  , '+'  ,  null              ,  null              ,  null                                 , $amt_gem_beruf_vorsorg                      , ''                          , 'Aufsichtsbehörde'                           ,  null                                                  ,   null                                                  );
     cmp_person_firma($sth,  $cnt++,  198248   , '2001-05-31'  , '+'  ,  null              ,  null              ,  null                                 ,'Bermann & Partner'                          , 'Freienbach'                , 'Revisionsstelle'                            ,  null                                                  ,   null                                                  );
     cmp_person_firma($sth,  $cnt++,  325321   , '2001-05-31'  , '-'  ,  null              ,  null              ,  null                                 , 'Jäggi Peter, dipl. Bücherexperte'          , 'Frauenkappelen'            , 'Revisionsstelle'                            ,  null                                                  ,   null                                                  );
     cmp_person_firma($sth,  $cnt++,  325321   , '2001-05-31'  , '+'  ,  null              ,  null              ,  null                                 , 'PricewaterhouseCoopers AG'                 , 'Bern'                      , 'Revisionsstelle'                            ,  null                                                  ,   null                                                  );

@@ -555,6 +555,19 @@ sub find_persons_from_daily_summary_rec { #_{
 
       push @ret, $rec_person;
     } #_}
+    while ($special_parsing =~ s/Aufsichtsbehörde neu: ([^[.]+)//) { #_{
+
+      my $aufsichtsbehoerde = s_back($1);
+      $aufsichtsbehoerde =~ s/ *$//;
+      my $rec_person = {
+        add_rm      => '+',
+        bezeichnung =>  $aufsichtsbehoerde,
+        in          => '', # f 270248
+        funktion    => 'Aufsichtsbehörde'
+      };
+
+      push @ret, $rec_person;
+    } #_}
 
     while (@PARTS) { #_{
 
