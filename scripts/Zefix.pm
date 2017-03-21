@@ -957,7 +957,8 @@ sub parse_person_more { #_{
          /Rechnungsführer(in)?\b/       or
          /\bdipl\./                 or
          /\bGM\b/                  or
-         /Chef/          
+         /Chef/            or
+         /provisorischer SR/  # f270248
          
        ) {
 
