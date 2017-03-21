@@ -205,6 +205,7 @@ sub parse_next_daily_summary_line { #_{
 sub s_back { #_{
   my $text = shift;
 
+
   $text =~ s/##dipl_##/dipl./g;
   $text =~ s/##k beschr##/, beschränkt/g;
   $text =~ s/##(\d)d(\d)##/$1.$2/g;
@@ -214,10 +215,10 @@ sub s_back { #_{
   $text =~ s/##p_(.*?)##/ ($1)/g;
   $text =~ s/##(.)_(.)_##/$1.$2./g;
 
-# $text =~ s/##S_A_##/S.A./g;
 
-  $text =~ s/##([^#]+)##/$1./g;
+  # HIER.
   $text =~ s/##k_(.*?)##/, $1/g;
+  $text =~ s/##([^#]+)##/$1./g;
 
   return $text;
 
