@@ -23,7 +23,7 @@ my $dest_dir       = "q/";
 my @ids_firma;
 if ($ids) {
   die unless -d $dest_dir;
-  die if glob("$dest_dir*-*");
+  die if grep { $_ != '.gitignore' } glob ("$dest_dir*-*");
   @ids_firma = @ARGV or die;
 }
 elsif ($regexp) {
@@ -37,7 +37,6 @@ for my $file (Zefix::daily_summary_files) { #_{
 # glob"$downloaded_dir*-*"
 
 
-# open (my $f, '<', $file) or die;
   my $f = Zefix::open_daily_summary_file($file);
 # while (my $in = <$f>)
 
@@ -74,3 +73,28 @@ for my $file (Zefix::daily_summary_files) { #_{
   } #_}
 
 } #_}
+
+if (@ids_firma) {
+
+  extract_from_firmen_or_firmen_bezeichnung('firmen'            );
+  extract_from_firmen_or_firmen_bezeichnung('firmen_bezeichnung');
+
+}
+
+sub extract_from_firmen_or_firmen_bezeichnung {
+  my $firmen_or_firmen_bezeichnung = shift;
+
+  open (my $in , '<:encoding(latin-1)', "$Zefix::zefix_downloads_dir$firmen_or_firmen_bezeichnung") or die;
+  open (my $out, '>:encoding(latin-1)', "$dest_dir$firmen_or_firmen_bezeichnung"           ) or die;
+
+  while (my $line = <$in>) {
+    my $id = (split "\t", $line)[0];
+
+    if (grep { $_ == $id } @ids_firma) {
+       print $out $line;
+    }
+  }
+
+  close $in;
+  close $out;
+}
