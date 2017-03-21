@@ -533,7 +533,7 @@ sub find_persons_from_daily_summary_rec { #_{
 
 
     } #_}
-    while ($special_parsing =~ s/(Réviseur): (.*), à ([^.]+)\.//) { #_{
+    while ($special_parsing =~ s/(Revisionsstelle|Réviseur): (.*), (?:in|à) ([^.]+)\.//) { #_{
 
       my $rec_person = {
         add_rm      => '+',
