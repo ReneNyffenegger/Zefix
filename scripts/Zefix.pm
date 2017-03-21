@@ -533,7 +533,7 @@ sub find_persons_from_daily_summary_rec { #_{
 
 
     } #_}
-    while ($special_parsing =~ s/(Réviseur): (.*), à ([^.]+)\.//) {
+    while ($special_parsing =~ s/(Réviseur): (.*), à ([^.]+)\.//) { #_{
 
       my $rec_person = {
         add_rm      => '+',
@@ -543,7 +543,18 @@ sub find_persons_from_daily_summary_rec { #_{
       };
 
       push @ret, $rec_person;
-    }
+    } #_}
+    while ($special_parsing =~ s/Die bisherige Revisionsstelle (.*), in (.*), ist weggefallen//) { #_{
+
+      my $rec_person = {
+        add_rm      => '-',
+        bezeichnung =>  s_back($1),
+        in          =>  s_back($2),
+        funktion    =>  'Revisionsstelle'
+      };
+
+      push @ret, $rec_person;
+    } #_}
 
     while (@PARTS) { #_{
 
