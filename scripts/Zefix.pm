@@ -939,6 +939,7 @@ sub parse_person_more { #_{
          /Quästor(in)?\b/       or
          /Rechnungsführer(in)?\b/       or
          /\bdipl\./                 or
+         /\bGM\b/                  or
          /Chef/          
          
        ) {
