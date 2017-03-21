@@ -475,6 +475,7 @@ sub load_stichwoerter { #_{
 
 } #_}
 
+
 sub fill_stichwort_firma { #_{
   my $id_firma                   = shift;
   my $text                       = shift;
@@ -1085,10 +1086,13 @@ sub trunc_table_stichwort { #_{
   $dbh -> do("
 
 create table stichwort (
-  id             int  primary key,
-  stichwort      text not null
+  id             integer  primary key,
+  stichwort      text     not null
 )
 ") or die;
+
+  $dbh -> do ('create unique index stichwort_ix_stichwort on stichwort(stichwort)');
+
 } #_}
 
 sub trunc_table_stichwort_firma { #_{
