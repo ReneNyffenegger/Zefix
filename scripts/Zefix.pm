@@ -9,8 +9,6 @@ use utf8;
 
 use DBI;
 
-# our @ISA = 'Exporter';
-# our @EXPORT = qw( $dbh shorten_fqn t_2_date_string date_string_2_t t_now);
 
 our $zefix_root_dir;
 our $zefix_downloads_dir;
@@ -85,8 +83,6 @@ sub read_next_daily_summary_line { #_{
     close ($zefix_file->{fh});
     return;
   }
-# chomp $in;
-# $in =~ s/\x{a0}/ /g;
   return $in;
 
 } #_}
@@ -99,8 +95,6 @@ sub parse_daily_summary_line { #_{
   $line =~ s/\x{a0}/ /g;
 
   my @row = split "\t", $line;
-
-# my ($yr, $no) = $filename =~ m/(\d+)-(\d+)$/;
 
   my $rec = {};
 
@@ -131,7 +125,6 @@ sub parse_daily_summary_line { #_{
   $rec->{shab_page} = $row[$i];
 
   if ($zefix_file->{gt_01_164}) {
-# if ($yr gt '01' or $no gt '164') {
     $i ++;
     $rec->{shab_sequence} = $row[$i];
   }
@@ -205,16 +198,13 @@ sub parse_next_daily_summary_line { #_{
   my $in = read_next_daily_summary_line($zefix_file);
   return unless $in;
 
-
-# my @row = split("\t", $in);
-
-# return parse_daily_summary_row($zefix_file, @row);
   return parse_daily_summary_line($zefix_file, $in);
 
 } #_}
 
 sub s_back { #_{
   my $text = shift;
+
 
   $text =~ s/##dipl_##/dipl./g;
   $text =~ s/##k beschr##/, beschränkt/g;
@@ -225,10 +215,10 @@ sub s_back { #_{
   $text =~ s/##p_(.*?)##/ ($1)/g;
   $text =~ s/##(.)_(.)_##/$1.$2./g;
 
-# $text =~ s/##S_A_##/S.A./g;
 
-  $text =~ s/##([^#]+)##/$1./g;
+  # HIER.
   $text =~ s/##k_(.*?)##/, $1/g;
+  $text =~ s/##([^#]+)##/$1./g;
 
   return $text;
 
@@ -277,6 +267,7 @@ sub find_persons_from_daily_summary_rec { #_{
     my @PARTS = split /(Ausgeschiedene Personen(?: und|,) erloschene Unterschriften|Eingetragene Personen(?: neu oder mutierend)?|Personne et signature radiée|Inscription ou modification de personne(?:\(s\))?|Persone dimissionarie e firme cancellate|Persone iscritte|Nuove persone iscritte o modifiche|Personne\(s\) inscrite\(s\)|Personen neu oder mutierend|Ausgeschiedene Personen): */, $text;
 
     my $special_parsing = shift @PARTS;
+
 
     while ($special_parsing =~ s/\. *(?<name>[^.]+?),? (?:ist nicht mehr) (?<funktion>[^,]+), (seine|ihre) Unterschrift ist erloschen//) { #_{
 
@@ -396,7 +387,6 @@ sub find_persons_from_daily_summary_rec { #_{
       my $whom      = $2;
 
 
-#     print "unexpected registeramt $rec->{registeramt} for special_parsing\n" unless $rec->{registeramt} == 217;
       if ($zeichnung =~ /Kollektivprokura|zu zweien/) {
 
         $zeichnung =~ s/^Die //;
@@ -544,8 +534,44 @@ sub find_persons_from_daily_summary_rec { #_{
 
 
     } #_}
+    while ($special_parsing =~ s/(Revisionsstelle|Réviseur): (.*), (?:in|à) ([^.]+)\.//) { #_{
+
+      my $rec_person = {
+        add_rm      => '+',
+        bezeichnung =>  s_back($2),
+        in          =>  s_back($3),
+        funktion    =>  $1
+      };
+
+      push @ret, $rec_person;
+    } #_}
+    while ($special_parsing =~ s/Die bisherige Revisionsstelle (.*), in (.*), ist weggefallen//) { #_{
+
+      my $rec_person = {
+        add_rm      => '-',
+        bezeichnung =>  s_back($1),
+        in          =>  s_back($2),
+        funktion    =>  'Revisionsstelle'
+      };
+
+      push @ret, $rec_person;
+    } #_}
+    while ($special_parsing =~ s/Aufsichtsbehörde neu: ([^[.]+)//) { #_{
+
+      my $aufsichtsbehoerde = s_back($1);
+      $aufsichtsbehoerde =~ s/ *$//;
+      my $rec_person = {
+        add_rm      => '+',
+        bezeichnung =>  $aufsichtsbehoerde,
+        in          => '', # f 270248
+        funktion    => 'Aufsichtsbehörde'
+      };
+
+      push @ret, $rec_person;
+    } #_}
 
     while (@PARTS) { #_{
+
 
       my $intro_text    = shift @PARTS;
       my $personen_text = shift @PARTS;
@@ -555,92 +581,84 @@ sub find_persons_from_daily_summary_rec { #_{
 
       for my $person_text (@person_parts) { #_{
 
-      my $person_rec = {};
-
-      if ($intro_text =~ /^Eingetragene Personen/ or $intro_text =~ /[iI]nscrip?t/ or $intro_text =~ /[Pp]ersone iscritte/ or $intro_text =~ /^Personen neu/) { #_{
-         $person_rec = {'add_rm' => '+'};
-      }
-      else {
-         $person_rec = {'add_rm' => '-'};
-      } #_}
-
-      if ($person_text =~ s! *[([]?<R>([^<]+)<E>[)\]]?!!g)  { #_{
-        $person_rec->{firma} = s_back($1);
-      } #_}
-      if ($person_text =~ / *(?<name>.*?), (?:von und in) (?<vonin>[^,]+?), *(?<more>.*)/) { #_{
-        my $name = $+{name};
-        my $more = $+{more};
-        $person_rec->{von}      = $+{vonin};
-        $person_rec->{in}       = $+{vonin};
-
-
-#       print "\n\nZefix.pm more - $more (name=$name, vonin = $+{vonin})\n\n";
-
-#       $name =~ /([^,]+), *(.*)/;
-
-        name_to_nachname_vorname($rec, $person_rec, $name);
-        parse_person_more       ($rec, $person_rec, $more);
-
-#       $person_rec->{nachname} = $1;
-#       $person_rec->{vorname } = $2;
-
-      } #_}
-#     elsif ($person_text =~ / *(.*?), (?:in|à) ([^,]+?), *(.*)/) { #_{
-      elsif ($person_text =~ / *(.*?), (?:in|à) ([^,]+?),( [^,]+##p_\w\w\w?##,)? *(.*)/) { #_{
-
-        my $name = s_back($1);
-        my $in   = s_back($2);
-        my $country_with_parans = $3;
-        my $more = $4;
-        $person_rec->{in} = s_back($in);
-
-        if ($country_with_parans) {
-          $country_with_parans = s_back($country_with_parans);
-          $country_with_parans =~ s/ *,$//;
-          $person_rec->{in} .= "," . s_back($country_with_parans);
+        my $person_rec = {};
+  
+        if ($intro_text =~ /^Eingetragene Personen/ or $intro_text =~ /[iI]nscrip?t/ or $intro_text =~ /[Pp]ersone iscritte/ or $intro_text =~ /^Personen neu/) { #_{
+           $person_rec = {'add_rm' => '+'};
         }
-
-
-        if ($name =~ / *(.*), (?:von|de|da) (.*)/) { #_{
-
-          my $naturliche_person = $1;
-          $person_rec->{von} = $2;
-          name_to_nachname_vorname($rec, $person_rec, $naturliche_person);
-
-
+        else {
+           $person_rec = {'add_rm' => '-'};
         } #_}
-        elsif ($name =~ / *(.*), *([^,]*(?:Staatsangehöriger?|ressortissant|cittadino|\bcitoyen)[^]]*)/) { #_{
-
-          my $naturliche_person = $1;
-          $person_rec->{von} = $2;
-
-          $naturliche_person =~ /([^,]+), *(.*)/;
-
-          $person_rec->{nachname} = $1;
-          $person_rec->{vorname } = $2;
-
+  
+        if ($person_text =~ s! *[([]?<R>([^<]+)<E>[)\]]?!!g)  { #_{
+          $person_rec->{firma} = s_back($1);
+        } #_}
+        if ($person_text =~ / *(?<name>.*?), (?:von und in) (?<vonin>[^,]+?), *(?<more>.*)/) { #_{
+          my $name = $+{name};
+          my $more = $+{more};
+          $person_rec->{von}      = $+{vonin};
+          $person_rec->{in}       = $+{vonin};
+  
+  
+          name_to_nachname_vorname($rec, $person_rec, $name);
+          parse_person_more       ($rec, $person_rec, $more);
+  
+        } #_}
+        elsif ($person_text =~ / *(.*?), (?:in|à) ([^,]+?),( [^,]+##p_\w\w\w?##,)? *(.*)/) { #_{
+  
+          my $name = s_back($1);
+          my $in   = s_back($2);
+          my $country_with_parans = $3;
+          my $more = $4;
+          $person_rec->{in} = s_back($in);
+  
+          if ($country_with_parans) {
+            $country_with_parans = s_back($country_with_parans);
+            $country_with_parans =~ s/ *,$//;
+            $person_rec->{in} .= "," . s_back($country_with_parans);
+          }
+  
+  
+          if ($name =~ / *(.*), (?:von|de|da) (.*)/) { #_{
+  
+            my $naturliche_person = $1;
+            $person_rec->{von} = $2;
+            name_to_nachname_vorname($rec, $person_rec, $naturliche_person);
+  
+  
+          } #_}
+          elsif ($name =~ / *(.*), *([^,]*(?:Staatsangehöriger?|ressortissant|cittadino|\bcitoyen)[^]]*)/) { #_{
+  
+            my $naturliche_person = $1;
+            $person_rec->{von} = $2;
+  
+            $naturliche_person =~ /([^,]+), *(.*)/;
+  
+            $person_rec->{nachname} = $1;
+            $person_rec->{vorname } = $2;
+  
+          } #_}
+          else { #_{
+  
+            $person_rec->{bezeichnung} = $name;
+  
+          } #_}
+  
+          parse_person_more($rec, $person_rec, $more);
+  
+  
         } #_}
         else { #_{
-
-          $person_rec->{bezeichnung} = $name;
-
+  #q        print "**** $rec->{id_firma} $person_text\n";
         } #_}
-
-        parse_person_more($rec, $person_rec, $more);
-
-
+  
+  
+        if ($person_rec->{bezeichnung} or $person_rec->{vorname} or $person_rec->{nachname}) {
+          push @ret, $person_rec;
+        }
       } #_}
-      else { #_{
-#q        print "**** $rec->{id_firma} $person_text\n";
-      } #_}
-
-
-      if ($person_rec->{bezeichnung} or $person_rec->{vorname} or $person_rec->{nachname}) {
-        push @ret, $person_rec;
-      }
+  
     } #_}
-
-  } #_}
 
   } #_}
   else { #_{ 550, 660
@@ -939,7 +957,9 @@ sub parse_person_more { #_{
          /Quästor(in)?\b/       or
          /Rechnungsführer(in)?\b/       or
          /\bdipl\./                 or
-         /Chef/          
+         /\bGM\b/                  or
+         /Chef/            or
+         /provisorischer SR/  # f270248
          
        ) {
 
@@ -950,7 +970,6 @@ sub parse_person_more { #_{
           $rec_person->{funktion} .= s_back($_);
           $rec_person->{funktion} =~ s/^ *//;
         }
-#       print "Already exists $rec->{id_firma}, $rec_person->{nachname}: $rec_person->{funktion}, _ = $_\n" if exists $rec_person->{funktion};
         0;
 
       }

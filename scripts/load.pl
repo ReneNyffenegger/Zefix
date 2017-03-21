@@ -818,7 +818,7 @@ sub init_stichwoerter { #_{
    'Mineralien'                 => {qrs => [ qr/minerali?en/             ] },
    'Mineralöl'                  => {qrs => [ qr/mineralol/               ] },
    'Möbel'                      => {qrs => [ qr/mobel/                   ] },
-   'Mode'                       => {qrs => [ qr/\bmode/                  ] },
+   'Mode'                       => {qrs => [ qr/\bmode/                  ] },  # Exclude Modell ! (f271150)
    'Montage'                    => {qrs => [ qr/montage/, qr/monteur/    ] }, 
    'Motorrad'                   => {qrs => [ qr/motorrad/                ] }, 
    'Multimedia'                 => {qrs => [ qr/musik/, qr/film/, qr/foto/, qr/kamera/, qr/video/, qr/fernseh/         ] },  # Spielfilm, Fernsehfilm, Dokumentarfilm, Serien, Dokusoaps â€¦ f534794
