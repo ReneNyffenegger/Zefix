@@ -1,4 +1,6 @@
 
+Gelöschte Firmen (zB f 835064) besser kennzeichnen.
+
 select * from person where von like '% ist nach Massgabe %' or von like 'vertreten durch %';
 
 select pf.id_firma, substr(p.von, 0, 100) from person p join person_firma pf on p.id = pf.id_person order by length(p.von) desc limit 100;
@@ -24,6 +26,9 @@ http://renenyffenegger.ch/Firmen/f879122
 
 select pf.id_firma, p.vorname from person p join person_firma pf on p.id = pf.id_person where p.nachname = 'Für';
 
+select * from person where von like '%ist nicht mehr%wird aber%';
+
+
 
 http://renenyffenegger.ch/Firmen/f393746
   -> War ein UTF8 Problem? Insbesondere Journal 2015-05-12
@@ -33,6 +38,8 @@ http://renenyffenegger.ch/Firmen/f393746
 f 718052: einmal »mit Einzelunterschrift«, einmal einfach »Einzelunterschrift«.
 
 Ein Häufiger Name scheint Heiniger Daniel zu sein (vgl f844659)
+
+http://renenyffenegger.ch/Firmen/f1204062: Karte wird nicht angezeigt
 
 f844659 :
   1x Daniel, dann wieder Dhani
