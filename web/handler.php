@@ -101,7 +101,7 @@ function print_firma($db, $id_firma) { #_{
     $firma_bezeichnung .= ' (in Auflösung)';
   }
 
-  print_html_start($firma_bezeichnung);
+  print_html_start($firma_bezeichnung, $firma['strasse'] . ' ' . $firma['hausnummer'] . ', ' . $firma['plz'] . ' ' . $firma['ort'] . ', Schweiz');
 
   print $firma['rechtsform_bezeichnung']. "<p>";
 
@@ -202,6 +202,12 @@ function print_firma($db, $id_firma) { #_{
 
   print "\n<hr>";
 
+  print '<div id="map_canvas" style="width:100%;height:300px;"></div>
+';
+
+  print "\n<hr>";
+
+
   $stichwort_shown = 0;
   $res = db_prep_exec_fetchall($db, 
     'select
@@ -237,7 +243,7 @@ function print_firma($db, $id_firma) { #_{
 
 function print_person($db, $nachname, $vorname, $in) { #_{
 
-  print_html_start("$vorname $nachname");
+  print_html_start("$vorname $nachname", 0);
  
   print "$vorname $nachname erscheint im Zusammenhang mit folgenden Firmen:";
 
@@ -272,7 +278,7 @@ function print_person($db, $nachname, $vorname, $in) { #_{
 
 function print_gemeinde($db, $id_gemeinde) { #_{
 
-  print_html_start("Firmen in " . gemeinde_name($db, $id_gemeinde));
+  print_html_start("Firmen in " . gemeinde_name($db, $id_gemeinde), 0);
 
   info("id_gemeinde: $id_gemeinde");
 
@@ -318,7 +324,7 @@ function print_gemeinde($db, $id_gemeinde) { #_{
 
 function print_gemeinden($db) { #_{
 
-  print_html_start("Gemeinden der Schweiz");
+  print_html_start("Gemeinden der Schweiz", 0);
 
   $res = db_prep_exec_fetchall($db, 'select id, name from gemeinde order by name');
 
@@ -332,7 +338,7 @@ function print_gemeinden($db) { #_{
 
 function print_stichwort($db, $stichwort_name) { #_{
 
-  print_html_start("Stichwort: $stichwort_name"); #  . stichwort_name($db, $id_stichwort));
+  print_html_start("Stichwort: $stichwort_name", 0);
 
   if (is_tq84()) {
     print 'id_stichwort: ' . db_sel_1_row_1_col($db, 'select id from stichwort where stichwort = ?', array($stichwort_name));
@@ -365,7 +371,7 @@ function print_stichwort($db, $stichwort_name) { #_{
 } #_}
 
 function print_index($db) { #_{
-  print_html_start("Firmen der Schweiz");
+  print_html_start("Firmen der Schweiz", 0);
 
   print "<h1 id='stichwoerter'>Stichwörter</h1>\n";
 
@@ -397,7 +403,7 @@ function info($text) { #_{
 
 } #_}
 
-function print_html_start($title) { #_{
+function print_html_start($title, $google_map_address) { #_{
 
 print "<!DOCTYPE html>
 <html>
@@ -408,6 +414,102 @@ print "<!DOCTYPE html>
 
   tr.rm {text-decoration: line-through; color: #777;}
 </style>
+";
+
+if ($google_map_address) {
+
+  print "<script src='http://www.openlayers.org/api/OpenLayers.js'></script>\n";
+
+
+  print '
+    <script>
+      window.onload= function() {
+
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+//        alert (this.responseText);
+         
+          var json=JSON.parse(this.responseText)[0];
+
+          map = new OpenLayers.Map("map_canvas");
+          var mapnik = new OpenLayers.Layer.OSM();
+          map.addLayer(mapnik);
+
+//        alert(json.lon);
+//        alert(json.lat);
+
+
+          var lon_lat = new OpenLayers.LonLat(json.lon, json.lat) // Center of the map
+            .transform(
+              new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
+              new OpenLayers.Projection("EPSG:900913") // to Spherical Mercator Projection
+            ); // , 15 // Zoom level
+          
+
+          var zoom = 15;
+          map.setCenter(lon_lat, zoom);
+
+          var markers = new OpenLayers.Layer.Markers( "Markers" );
+
+          map.addLayer(markers);
+          markers.addMarker(new OpenLayers.Marker(lon_lat));
+
+
+        }
+      };
+      xhttp.open("GET", "http://nominatim.openstreetmap.org/search?format=json&limit=5&q=' . $google_map_address . '", true);
+      xhttp.send();
+
+
+      }
+     </script>
+   ';
+
+}
+
+# if ($google_map_address) {
+# print '
+#   <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+# 
+#     <script type="text/javascript">
+#         google.load("maps", "3", { other_params: "sensor=false&language=de" });
+#     </script>
+# 
+#     <script type="text/javascript">
+#         var geocoder;
+#         var map;
+# 
+#         window.onload = function () {
+# 
+#             geocoder = new google.maps.Geocoder();
+#             map = new google.maps.Map(document.getElementById("map_canvas"), {zoom: 15}/*myOptions*/);
+# 
+# ';
+# 
+# print '         geocoder.geocode({ "address": "'. $google_map_address . '"}, function (results, status) {
+# 
+#                     if (status == google.maps.GeocoderStatus.OK) {
+# 
+#                         map.setCenter(results[0].geometry.location);
+#                         var marker = new google.maps.Marker({
+#                             map: map,
+#      //                     title: "TITLE",
+#                             clickable: false,
+#                             icon: "http://mt.googleapis.com/vt/icon/name=icons/spotlight/spotlight-poi.png",
+#                             position: results[0].geometry.location
+#                         });
+#                     } else {
+# //                      alert("Adresse konnte nicht gefunden werden.");
+#                     }
+#                 })
+#         }
+#   </script>
+# ';
+# 
+# }
+
+print "
 </head>
 <body>
   <h1>$title</h1>
