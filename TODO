@@ -25,12 +25,12 @@ http://renenyffenegger.ch/Firmen/f879122
 select pf.id_firma, p.vorname from person p join person_firma pf on p.id = pf.id_person where p.nachname = 'Für';
 
 
-
 http://renenyffenegger.ch/Firmen/f393746
   -> War ein UTF8 Problem? Insbesondere Journal 2015-05-12
   -> Viele Einträge scheinen sowohl in 15-092 wie auch 15-093 vorhanden zu sein.
   -> Mit 15-092+15-093 werden neu 12 Einträge am 2015-05-12 erwartet (u.a. Somaglia Peter von Thalwil)
   
+f 718052: einmal »mit Einzelunterschrift«, einmal einfach »Einzelunterschrift«.
 
 Ein Häufiger Name scheint Heiniger Daniel zu sein (vgl f844659)
 

@@ -269,8 +269,10 @@ sub find_persons_from_daily_summary_rec { #_{
     my $special_parsing = shift @PARTS;
 
 
-#   print "special_parsing: $special_parsing\n";
-#   while ($special_parsing =~ s/Für die Zweigniederlassung zeichne. (mit (?:Einzelprokura|Einzelunterschrift)) ([^.]+)\.//) {
+#   print "special_parsing: $special_parsing:\n";
+    while ($special_parsing =~ s/Die Zweigniederlassung von [^.]+ ist erloschen\.?//) {
+#     print "yepp\n";
+    }
     while ($special_parsing =~ s/Für die Zweigniederlassung zeichne. (mit \w+) ([^.]+)\.//) {
       my $zeichnung = $1;
       my $who = $2;
@@ -389,13 +391,14 @@ sub find_persons_from_daily_summary_rec { #_{
       push @ret, $person_rec;
 
     } #_}
-    while ($special_parsing =~ s/\. *([^.]+?) von ([^.]+) ist erloschen//) { #_{
+#   while ($special_parsing =~ s/\. *([^.]+?) von ([^.]+) ist erloschen//) {
+    while ($special_parsing =~ s/\. D.. (\w+(?: zu zweien)?) von ([^.]+) ist erloschen//) { #_{
 
       my $zeichnung = $1;
       my $whom      = $2;
 
 
-      if ($zeichnung =~ /Kollektivprokura|zu zweien/) {
+#     if ($zeichnung =~ /Kollektivprokura|zu zweien/) {
 
         $zeichnung =~ s/^Die //;
 
@@ -411,10 +414,10 @@ sub find_persons_from_daily_summary_rec { #_{
 
         }
          
-      }
-      else {
-        print "unexpected Zeichnung $zeichnung\n";
-      }
+#     }
+#     else {
+#       print "unexpected Zeichnung $zeichnung\n";
+#     }
 
     } #_}
     while ($special_parsing =~ s/\. *(?<funktion>[^:.]+?): (?<name>[^,]+?), (?:von (?<von>[^.]+?)|(?<von>.*?Staatsangehörige.*?)), in (?<in>[^.]+?), zeichnet (?<zeichnung>mit [^.]+)//) { #_{
