@@ -312,6 +312,7 @@ function check_person_firma($dbh) { #_{
   $inhin='Inhaberin';
 
   $eu='mit Einzelunterschrift';
+  $ep='mit Einzelprokura';
   $ku2='mit Kollektivunterschrift zu zweien';
   $kp2='mit Kollektivprokura zu zweien';
   $sig_inv='avec signature individuelle';
@@ -337,7 +338,7 @@ function check_person_firma($dbh) { #_{
   $stang = 'Staatsangehörige';
   $stangr = 'Staatsangehöriger';
 
-  check_count($dbh, 'person_firma', 271);
+  check_count($dbh, 'person_firma', 274);
   $sth = db_prep_exec($dbh, "
     select
       pf.id_firma,
@@ -407,6 +408,11 @@ function check_person_firma($dbh) { #_{
     cmp_person_firma($sth,  $cnt++,  712087   , '2003-06-30'  , '+'  ,  null              ,  null              ,  null                                 , 'PricewaterhouseCoopers AG'                 , 'Zürich'                    , 'Revisionsstelle'                            ,   null                                                 ,   null                                                  );
     cmp_person_firma($sth,  $cnt++,  712087   , '2003-06-30'  , '+'  ,  null              ,  null              ,  null                                 , $varian                                     , 'Zug'                       , 'Gesellschafterin'                           ,  'ohne Zeichnungsberechtigung'                         ,  'mit einer Stammeinlage von CHF 1\'999\'000.--'        );
     cmp_person_firma($sth,  $cnt++,  270248   , '2003-07-09'  , '+'  ,  null              ,  null              ,  null                                 , $amt_beruf_vorsor_stift                     , ''                          , 'Aufsichtsbehörde'                           ,  null                                                  ,   null                                                  );
+
+    cmp_person_firma($sth,  $cnt++,  718052   , '2003-09-05'  , '+'  , 'Hauser'           , 'Matthias'         , 'Zürich'                              , null                                        , 'Ponthaux'                  ,  null                                        ,  $ep                                                   ,   null                                                  );
+    cmp_person_firma($sth,  $cnt++,  718052   , '2003-09-05'  , '+'  , 'Held'             , 'Werner'           , 'Eschenz'                             , null                                        , 'Seon'                      ,  null                                        ,  $eu                                                   ,   null                                                  );
+    cmp_person_firma($sth,  $cnt++,  718052   , '2003-09-05'  , '+'  , 'Reutimann'        , 'Werner'           , 'Zürich und Waltalingen'              , null                                        , 'Schönenwerd'               ,  null                                        ,  $eu                                                   ,   null                                                  );
+
     cmp_person_firma($sth,  $cnt++,  728139   , '2003-11-20'  , '+'  , 'Lienert'          , 'Joachim Georg'    , 'Einsiedeln'                          ,  null                                       , 'Elsau'                     , $inh                                         ,  'mit Einzelunterschrift'                              ,   null                                                  );
     cmp_person_firma($sth,  $cnt++,  325321   , '2004-05-04'  , '-'  , 'Hügli'            , 'Jürg'             ,  null                                 ,  null                                       ,  null                       ,  null                                        , 'Kollektivprokura zu zweien'                           ,   null                                                  );
     cmp_person_firma($sth,  $cnt++,  325321   , '2004-05-04'  , '-'  , 'von Burg'         , 'René'             ,  null                                 ,  null                                       ,  null                       ,  null                                        , 'Kollektivprokura zu zweien'                           ,   null                                                  );

@@ -269,6 +269,14 @@ sub find_persons_from_daily_summary_rec { #_{
     my $special_parsing = shift @PARTS;
 
 
+#   print "special_parsing: $special_parsing\n";
+#   while ($special_parsing =~ s/Für die Zweigniederlassung zeichne. (mit (?:Einzelprokura|Einzelunterschrift)) ([^.]+)\.//) {
+    while ($special_parsing =~ s/Für die Zweigniederlassung zeichne. (mit \w+) ([^.]+)\.//) {
+      my $zeichnung = $1;
+      my $who = $2;
+      print "\n\n\nxxx: zeichnung = $zeichnung\n  who = $who\n";
+      who_and_zeichnung(\@ret, $who, $zeichnung);
+    }
     while ($special_parsing =~ s/\. *(?<name>[^.]+?),? (?:ist nicht mehr) (?<funktion>[^,]+), (seine|ihre) Unterschrift ist erloschen//) { #_{
 
        my $name = $+{name};
@@ -489,19 +497,21 @@ sub find_persons_from_daily_summary_rec { #_{
       my $who = $1;
       my $zeichnung = $2;
 
-      for my $person (split /,? und /, $who ) {
+      who_and_zeichnung(\@ret, $who, $zeichnung);
 
-        my $person_rec = {add_rm=>'+'};
-        $person_rec->{zeichnung} = $zeichnung;
+#     for my $person (split /,? und /, $who ) {
 
-       (my $name, $person_rec->{von}, $person_rec->{in}) = text_to_name_von_in($person);
+#       my $person_rec = {add_rm=>'+'};
+#       $person_rec->{zeichnung} = $zeichnung;
+
+#      (my $name, $person_rec->{von}, $person_rec->{in}) = text_to_name_von_in($person);
 
 
-       ($person_rec->{nachname}, $person_rec->{vorname}) = name_ohne_komma_to_nachname_vorname($name);
+#      ($person_rec->{nachname}, $person_rec->{vorname}) = name_ohne_komma_to_nachname_vorname($name);
 
-        push @ret, $person_rec;
+#       push @ret, $person_rec;
 
-      }
+#     }
 
     } #_}
     while ($special_parsing =~ s/\. Gelöschte Personen:*(?<name>[^.]+?), (?<funktion>[^.]*)//) { #_{
@@ -1013,6 +1023,30 @@ sub text_to_name_von_in { #_{
   my $in   = $3;
 
   return (s_back($name), s_back($von), s_back($in));
+} #_}
+
+sub who_and_zeichnung { #_{
+  my $ret_ref   = shift;
+  my $who       = shift;
+  my $zeichnung = shift;
+
+  $who =~ s/(von \w+ )und( \w+)/$1##UND##$2/g; # f718052 (Test) Reutimann Werner, von Zürich und Waltalingen
+
+  for my $person (split /,? und /, $who ) {
+
+    $person =~ s/##UND##/und/;
+    my $person_rec = {add_rm=>'+'};
+    $person_rec->{zeichnung} = $zeichnung;
+
+   (my $name, $person_rec->{von}, $person_rec->{in}) = text_to_name_von_in($person);
+
+
+   ($person_rec->{nachname}, $person_rec->{vorname}) = name_ohne_komma_to_nachname_vorname($name);
+
+    push @$ret_ref, $person_rec;
+
+  }
+
 } #_}
 
 1;
