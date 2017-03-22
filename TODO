@@ -1,6 +1,34 @@
 
+select * from person where von like '% ist nach Massgabe %' or von like 'vertreten durch %';
+
+select pf.id_firma, substr(p.von, 0, 100) from person p join person_firma pf on p.id = pf.id_person order by length(p.von) desc limit 100;
+
+http://renenyffenegger.ch/Firmen/f871329
+  -> unbekannten Aufenthaltes
+
+http://renenyffenegger.ch/Firmen/f704024
+  -> Totales Chrüsimüsi
+
+http://renenyffenegger.ch/Firmen/f844441
+  -> heisst mit vollem Namen
+
+http://renenyffenegger.ch/Firmen/f921755
+  -> ...
+
+http://renenyffenegger.ch/Firmen/f415516
+
+http://renenyffenegger.ch/Firmen/f879122
+  -> Sitzverlegung nach
+
+
+
+
+
 http://renenyffenegger.ch/Firmen/f393746
-  -> UTF8 Problem? Insbesondere Journal 2015-05-12
+  -> War ein UTF8 Problem? Insbesondere Journal 2015-05-12
+  -> Viele Einträge scheinen sowohl in 15-092 wie auch 15-093 vorhanden zu sein.
+  -> Mit 15-092+15-093 werden neu 12 Einträge am 2015-05-12 erwartet (u.a. Somaglia Peter von Thalwil)
+  
 
 Ein Häufiger Name scheint Heiniger Daniel zu sein (vgl f844659)
 
@@ -16,12 +44,7 @@ http://localhost/Firmen/f153474
 
 
 
-http://renenyffenegger.ch/Firmen/f451407
-  Der Titel könnte auch separat ausgewiesen werden.
-  
-
-
-
+ADP: http://renenyffenegger.ch/Firmen/f451407
 
 f711482 : Erich von Däniken
 
@@ -46,14 +69,8 @@ http://localhost/Firmen/f1271529
 
 
 
-http://localhost/Firmen/f601009 hat Taiwan (ROC)
-
-
-http://localhost/Firmen/f343775
 
   
-http://localhost/Firmen/f409522 :
-  o mit langer Liste
 
 http://localhost/Firmen/f468828
   hat «Basel und französiche Staatsangehörige» (Tirelli Caroline)
@@ -114,3 +131,21 @@ http://renenyffenegger.ch/Firmen/f388851  CS
  Gibt es weitere SR (Stitfungsrat, analog f270248)?
 
  Was machen mit den (CHE  Einträgen) z.B. f 270248 (Auch im Test)?
+
+ftp://ftp.zefix.ch/hrdata/NEWS-2013-03-11.txt
+  Die Bereitstellung der Daten erfolgt neu unter ftp://178.212.254.161/ bzw.
+  ftp://ftp.zefix.ch/ im Ordner HRDATA.
+
+ftp://ftp.zefix.ch/hrdata/NEWS-2016-08-18.txt
+   Bitte beachten Sie, dass der FTP-Zugang, wie bereits in den News vom 11.03.2013
+   angekündigt, per Ende 2016 endgültig aufgehoben wird.
+
+{ Spezielles
+
+  Genossenschaft Anenhütte,  http://renenyffenegger.ch/Firmen/f343775 ohne Eintrag in Tagesfiles
+
+  Lange liste: 
+    BNP Paribas: http://renenyffenegger.ch/Firmen/f655277
+                 http://renenyffenegger.ch/Firmen/f409522
+
+}

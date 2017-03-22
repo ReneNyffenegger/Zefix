@@ -14,7 +14,7 @@ echo "Ok\n";
 
 function check_firma($dbh) { #_{
 
-  check_count($dbh, 'firma', 36);
+  check_count($dbh, 'firma', 37);
 
   $zuffrey = 'Zufferey Aurélie et Tânia Margarida da Mota Cardoso Kiosque Liberté';
   $fiduc_crans = 'Fiduciaire de Crans-Montana (FCM) SA';
@@ -40,6 +40,7 @@ function check_firma($dbh) { #_{
   cmp_firma($sth,  601009, 'Abaco Design GmbH'                             , 'CH29040137240',    null,  2939,   20000, 'CHF',  2, null         , 5254450, null                                ,'Stadthausgasse'           ,  '1'  ,null,      null, '8200', 'Schaffhausen'   ,  4);
   cmp_firma($sth,  601097, 'Kälin & Partner Bauingenieure/Planer GmbH'     , 'CH13000119169',    null,  1349 ,  50000, 'CHF',  2, null         , 6209698, null                                ,'Sonnenriedstrasse'        ,  '9'  ,null,      null, '8855', 'Wangen'         , 4);
   cmp_firma($sth,  712087, 'Varian Medical Systems Imaging Laboratory GmbH', 'CH40040245074',    null,  4021, 2000000, 'CHF',  2, null         , 2185269, null                                ,'Täfernstrasse'            ,  '7'  ,null,      null, '5405', 'Baden-Dättwil'  , 4);
+  cmp_firma($sth,  718052, 'Schenker Stores SA'                            , 'CH21710024815',  461976,  2197,    null, null ,  2, null         , 7171080, null                                ,'Route Henri-Stephan'      , '12'  ,null,      null, '1762', 'Givisiez'       , 9);
   cmp_firma($sth,  728139, 'Volltext Lienert'                              , 'CH02010440290',    null,   155,    null, null ,  2, null         , 6180656, null                                ,'Bahnhofstrasse'           , '14'  ,null,      null, '8708', 'Männedorf'      , 1);
   cmp_firma($sth,  790603, 'Presenti, Genuss-Hofladen, Ritler'             , 'CH60010123481',    null,  6192,    null, null ,  2, null         , 1091615, null                                ,'Ried'                     , '38'  ,null,      null, '3919', 'Blatten'        , 1);
   cmp_firma($sth,  823465, 'D1 Solutions AG'                               , 'CH02030293815',    null,   261,  100000, 'CHF',  2, null         , 1667155, null                                ,'Zypressenstrasse'         , '71'  ,null,      null, '8004', 'Zürich'         , 3);
@@ -122,7 +123,7 @@ function check_firma_bez($dbh) { #_{
 
   $en_liq = 'en liquidation';
 
-  check_count($dbh, 'firma_bez', 56);
+  check_count($dbh, 'firma_bez', 57);
 
   $sth = db_prep_exec($dbh, 'select * from firma_bez order by id_firma, dt_ab', array());
   cmp_firma_bez($sth,   60442, '940', 1, 'DE',  3, 'Fluggruppe Mollis'                                                         , '1996-01-01', '9999-12-31');
@@ -149,6 +150,7 @@ function check_firma_bez($dbh) { #_{
   cmp_firma_bez($sth,  601009, '990', 1, 'DE',  3, 'Abaco Design GmbH'                                                         , '2001-01-31', '9999-12-31');
   cmp_firma_bez($sth,  601097, '990', 1, 'DE',  3, 'Kälin & Partner Bauingenieure/Planer GmbH'                                 , '2001-01-31', '9999-12-31');
   cmp_firma_bez($sth,  712087, '990', 1, 'DE',  3, 'Varian Medical Systems Imaging Laboratory GmbH'                            , '2003-07-03', '9999-12-31');
+  cmp_firma_bez($sth,  718052, '990', 1, 'DE',  3, 'Schenker Stores SA'                                                        , '2003-09-10', '9999-12-31');
   cmp_firma_bez($sth,  728139, '990', 1, 'DE',  3, 'Volltext Lienert'                                                          , '2003-11-26', '9999-12-31');
   cmp_firma_bez($sth,  790603, '990', 1, 'DE', -1, 'Presenti, Blumen und Geschenke, Karin Ritler'                              , '2005-05-04', '2011-06-23');
   cmp_firma_bez($sth,  790603, '980', 1, 'DE', -1, 'Presenti, Hofladen, Karin Ritler'                                          , '2011-06-24', '2013-09-23');
@@ -159,7 +161,6 @@ function check_firma_bez($dbh) { #_{
   cmp_firma_bez($sth,  934296, '980', 1, 'DE',  3, 'Akyon AG'                                                                  , '2009-11-12', '9999-12-31');
   cmp_firma_bez($sth,  934296, '980', 2, 'EN',  3, 'Akyon Ltd.'                                                                , '2009-11-12', '9999-12-31');
   cmp_firma_bez($sth,  934296, '980', 2, 'FR',  3, 'Akyon SA'                                                                  , '2009-11-12', '9999-12-31');
-
   cmp_firma_bez($sth, 1022680, '990', 1, 'DE', 3, 'Erasols Sàrl'                                                               , '2011-06-10', '9999-12-31');
   cmp_firma_bez($sth, 1043245, '990', 1, 'DE', 3, 'Leo MGE Transports Sàrl'                                                    , '2011-12-21', '9999-12-31');
   cmp_firma_bez($sth, 1050881, '990', 1, 'DE', 3, 'Zufferey Aurélie et Tânia Margarida da Mota Cardoso Kiosque Liberté'        , '2012-02-28', '9999-12-31');
@@ -180,8 +181,6 @@ function check_firma_bez($dbh) { #_{
   cmp_firma_bez($sth, 1289682, '990', 1, 'DE', 3, 'MRX CH GmbH'                                                                , '2017-01-06', '9999-12-31');
   cmp_firma_bez($sth, 1289682, '990', 2, 'EN', 3, 'MRX CH LLC'                                                                 , '2017-01-06', '9999-12-31');
   cmp_firma_bez($sth, 1289682, '990', 2, 'FR', 3, 'MRX CH Sàrl'                                                                , '2017-01-06', '9999-12-31');
-
-
   cmp_firma_bez($sth, 1290391, '990', 1, 'DE',  3, 'PUR Luftservice GmbH'                                                      , '2017-01-12', '9999-12-31');
   cmp_firma_bez($sth, 1292466, '990', 1, 'DE',  3, 'PUR Luftservice GmbH'                                                      , '2017-01-30', '9999-12-31');
 
@@ -231,7 +230,7 @@ function cmp_firma_bez($sth, $id_firma, $seq, $typ, $sprachcode, $status, $bezei
 
 function check_zweck($dbh) { #_{
 
-  check_count($dbh, 'zweck', 36);
+  check_count($dbh, 'zweck', 37);
 
   $sth = db_prep_exec($dbh, 'select * from zweck order by id_firma', array());
   cmp_zweck($sth,   60442, 'Die Fluggruppe Mollis vereinigt die am Motorflug auf dem Flugplatz Mollis interessierten Personen des Kantons Glarus und Umgebung mit dem Zweck der Förderung der Luftfahrt im allgemeinen und der Schulung und des Trainings der Mitglieder im besonderen. Sie stellt die notwendige Infrastruktur für die Sicherstellung des Motorflugbetriebes.');
@@ -251,6 +250,7 @@ function check_zweck($dbh) { #_{
   cmp_zweck($sth,  601009, 'Design von, Handel mit und Reparatur von Fahrzeugen, Pneuhandel, Beratungsdienstleistungen auf diesem Gebiet sowie Handel mit Waren aller Art.');
   cmp_zweck($sth,  601097, 'Planung, Projektierung und Erstellung von Bauten aller Art, insbesondere Erbringen von Baudienstleistungen; kann sich an anderen Unternehmen beteiligen sowie Grundstücke erwerben, halten und veräussern.');
   cmp_zweck($sth,  712087, 'Vertrieb von elektronischen und technischen Einrichtungen aller Art und deren Bestandteile sowie Forschungs- und Entwicklungsarbeiten auf dem Gebiete elektronischer und technischer Einrichtungen im Medizinbereich, insbesondere im Bereich der Bildmanagement- und Behandlungsplanung Software; kann Patente, Handelsmarken, technische und industrielle Kenntnisse erwerben, verwalten und übertragen, sich an anderen Industrie- und Handelsunternehmen beteiligen, Zweigniederlassungen und Tochtergesellschaften errichten sowie Grundeigentum erwerben, belasten, veräussern und verwalten.');
+  cmp_zweck($sth,  718052, '');
   cmp_zweck($sth,  728139, 'Werbeberatung, Konzeption und Produktion von Ideen und Werbung, insbesondere Texte (Werbetexte, PR-Texte, Journalismus, Drehbücher, Ghostwriting und weitere Textsorten) und Grafik (Logodesign, Layouts für Broschüren, Inserate, Flyer, Plakate und weitere Werbeformen).');
   cmp_zweck($sth,  790603, 'Handel mit und Verkauf von Blumen, Geschenken und landwirtschaftlichen Produkten aus der Region und damit zusammenhängende Tätigkeiten sowie Catering.');
   cmp_zweck($sth,  823465, 'Zweck der Gesellschaft ist die Erbringung von Dienstleistungen in den Bereichen Unternehmensberatung, Organisation und Coaching. Die Gesellschaft kann Tochtergesellschaften und Zweigniederlassungen im In- und Ausland errichten, Vertretungen übernehmen und alle Geschäfte eingehen, die den Gesellschaftszweck direkt oder indirekt fördern. Sie kann sich auch an anderen Unternehmungen beteiligen, Darlehen aufnehmen sowie Grundstücke erwerben, verwalten und veräussern.');
@@ -672,7 +672,7 @@ function cmp_person_firma($sth, $cnt, $id_firma, $dt_journal, $add_rm, $nachname
 
 function check_gemeinde($dbh) { #_{
 
-  check_count($dbh, 'gemeinde', 26);
+  check_count($dbh, 'gemeinde', 27);
 
   $sth = db_prep_exec($dbh, 'select * from gemeinde order by id', array());
   cmp_gemeinde($sth,   56, 'Embrach'            );
@@ -688,6 +688,7 @@ function check_gemeinde($dbh) { #_{
   cmp_gemeinde($sth, 1403, 'Giswil'             );
   cmp_gemeinde($sth, 1630, 'Glarus Nord'        );
   cmp_gemeinde($sth, 2196, 'Fribourg'           );
+  cmp_gemeinde($sth, 2197, 'Givisiez'           );
   cmp_gemeinde($sth, 2305, 'Schmitten (FR)'     );
   cmp_gemeinde($sth, 2939, 'Schaffhausen'       );
   cmp_gemeinde($sth, 3251, 'Altstätten'         );

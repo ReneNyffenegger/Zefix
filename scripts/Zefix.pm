@@ -48,7 +48,7 @@ sub init { #_{
 } #_}
 
 sub daily_summary_files { #_{
-  return sort glob "${zefix_downloads_dir}*-*";
+  return sort grep { $_ !~ /\.old$/ } glob "${zefix_downloads_dir}*-*";
 } #_}
 
 sub open_daily_summary_file { #_{
