@@ -243,6 +243,10 @@ sub load_firmen { #_{
  my $fi_Ort           ;
  my $fi_Zweck         ; #_}
 
+ # 2017-03-22: Fix Typos:
+  $fi_Zweck =~s/ m Rahmender/m Rahmen der/g;
+  $fi_Zweck =~s/\blm/Im/g;
+
   print "load_firmen\n";
   my $cnt = 0;
 
