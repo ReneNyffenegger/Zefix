@@ -582,6 +582,21 @@ sub find_persons_from_daily_summary_rec { #_{
 
       push @ret, $rec_person;
     } #_}
+    while ($special_parsing =~ s/\. ([^,]+), eingetragen mit (\w+(?: zu zweien)?), ist neu wohnhaft in ([^.]+)//) { #_{
+
+      my $name       = $1;
+      my $zeichnung =  $2;
+      my $in = s_back($3);
+
+      my $rec_person = {
+        add_rm      => '+',
+        zeichnung   => $zeichnung,
+        in          => $in,
+      };
+     ($rec_person->{nachname}, $rec_person->{vorname}) = name_ohne_komma_to_nachname_vorname($name);
+
+      push @ret, $rec_person;
+    } #_}
 
     while (@PARTS) { #_{
 
