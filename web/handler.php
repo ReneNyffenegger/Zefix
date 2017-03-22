@@ -111,6 +111,10 @@ function print_firma($db, $id_firma) { #_{
   if ($firma['postfach'])       { printf("  %s<br>\n"   , tq84_enc($firma['postfach'      ])); }
   printf("  %s %s<br>\n", $firma['plz'], tq84_enc($firma['ort']));
 
+  print "<div id='display_name'></div>\n";
+  print "<div id='map_canvas' style='width:90%;height:500px;'></div>\n";
+
+
   if ($firma['kapital']) { #_{
     $kapital = $firma['kapital'];
 
@@ -201,9 +205,6 @@ function print_firma($db, $id_firma) { #_{
 
 
   print "\n<hr>";
-
-  print '<div id="map_canvas" style="width:100%;height:300px;"></div>
-';
 
   print "\n<hr>";
 
@@ -421,6 +422,7 @@ if ($google_map_address) {
   print "<script src='http://www.openlayers.org/api/OpenLayers.js'></script>\n";
 
 
+
   print '
     <script>
       window.onload= function() {
@@ -429,8 +431,10 @@ if ($google_map_address) {
       xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
 //        alert (this.responseText);
+//        alert("' . $google_map_address . '");
          
           var json=JSON.parse(this.responseText)[0];
+          document.getElementById("display_name").innerHTML = json.display_name + " (OSM ID: " + json.osm_id + ")";
 
           map = new OpenLayers.Map("map_canvas");
           var mapnik = new OpenLayers.Layer.OSM();
