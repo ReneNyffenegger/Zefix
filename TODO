@@ -153,6 +153,57 @@ ftp://ftp.zefix.ch/hrdata/NEWS-2016-08-18.txt
    Bitte beachten Sie, dass der FTP-Zugang, wie bereits in den News vom 11.03.2013
    angekündigt, per Ende 2016 endgültig aufgehoben wird.
 
+{ Interessante Firmen
+
+  All die Firmen, die mit Tivona beginnen
+    z.B http://renenyffenegger.ch/Firmen/f460850
+
+    select bezeichnung from firma where bezeichnung like 'Tivona%';
+
+
+}
+{ Cervelat Prominenz
+
+  https://de.wikipedia.org/wiki/Kategorie:Schweizer
+
+.mode column
+.width 8 30 30 30 70 8
+  select
+    p.id,
+    p.nachname,
+    p.vorname,
+    p.von,
+    f.bezeichnung,
+    f.id
+--  p.in_
+  from
+    person       p                          join
+    person_firma pf on p.id = pf.id_person  join
+    firma        f  on f.id = pf.id_firma
+  where
+    (p.nachname  like '%Leuthard%'           and  p.vorname like '%Doris%'                               ) or
+    (p.nachname  like '%Maurer%'             and  p.vorname like '%Ueli%'                                ) or
+    (p.nachname  like '%Burkhalter%'         and  p.vorname like '%Didier%'                              ) or
+    (p.nachname  like '%Schneider%Ammann%'   and  p.vorname like '%Johann%'                              ) or
+    (p.nachname  like '%Parmelin%'           and  p.vorname like '%Guy%'                                 ) or
+    (p.nachname  like '%Sommaruga%'          and  p.vorname like '%Simonetta%'                           ) or
+    (p.nachname  like '%Berset%'             and  p.vorname like '%Alain%'                               ) or
+    (p.nachname  like '%Thurnherr%'          and  p.vorname like '%Walter%                               ) or -- Bundeskanzer
+     --
+    (p.nachname  like '%von%Däniken%'        and  p.vorname like '%Erich%'                               ) or
+    (p.nachname  like '%Thurnheer%'          and (p.vorname like '%Bernhard%' or p.vorname like '%Beni%')) or
+    (p.nachname  like '%Schawinski%'         and  p.vorname like '%Roger%'                               ) or
+    (p.nachname  like '%Giacobbo%'           and  p.vorname like '%Viktor%'                              ) or
+    (p.nachname  like '%Thiel%'              and  p.vorname like '%Andres%'                              ) or
+    (p.nachname  like '%Russi%'              and  p.vorname like '%Bernhard%'                            ) or
+    (p.nachname  like '%Federer%'            and  p.vorname like '%Roger%'                               )
+  order by
+    p.nachname,
+    p.vorname
+  ;
+  
+
+}
 { Spezielles
 
   Genossenschaft Anenhütte,  http://renenyffenegger.ch/Firmen/f343775 ohne Eintrag in Tagesfiles
@@ -160,5 +211,6 @@ ftp://ftp.zefix.ch/hrdata/NEWS-2016-08-18.txt
   Lange liste: 
     BNP Paribas: http://renenyffenegger.ch/Firmen/f655277
                  http://renenyffenegger.ch/Firmen/f409522
+
 
 }
