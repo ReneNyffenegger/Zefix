@@ -101,7 +101,7 @@ function print_firma($db, $id_firma) { #_{
     $firma_bezeichnung .= ' (in Auflösung)';
   }
 
-  print_html_start($firma_bezeichnung, $firma['strasse'] . ' ' . $firma['hausnummer'] . ', ' . $firma['plz'] . ' ' . $firma['ort'] . ', Schweiz');
+  print_html_start($firma_bezeichnung, "$firma_bezeichnung (Mit Karte und Zuordnung zu Stichworten)", $firma['strasse'] . ' ' . $firma['hausnummer'] . ', ' . $firma['plz'] . ' ' . $firma['ort'] . ', Schweiz');
 
   print $firma['rechtsform_bezeichnung']. "<p>";
 
@@ -112,8 +112,6 @@ function print_firma($db, $id_firma) { #_{
   printf("  %s %s<br>\n", $firma['plz'], tq84_enc($firma['ort']));
 
   print "<div id='display_name'></div>\n";
-  print "<div id='map_canvas' style='width:90%;height:500px;'></div>\n";
-
 
   if ($firma['kapital']) { #_{
     $kapital = $firma['kapital'];
@@ -235,16 +233,18 @@ function print_firma($db, $id_firma) { #_{
     print "</ul><hr>\n";
   }
 
-  printf ("Weitere Firmen in <a href='g%d'>%s</a>", $firma['id_gemeinde'], gemeinde_name($db, $firma['id_gemeinde']));
+  print "<div id='map_canvas' style='width:90%;height:500px;'></div>\n";
 
   printf("<p><a href='.'>Hauptseite</a>");
+
+  printf ("Weitere Firmen in <a href='g%d'>%s</a>", $firma['id_gemeinde'], gemeinde_name($db, $firma['id_gemeinde']));
 
 
 } #_}
 
 function print_person($db, $nachname, $vorname, $in) { #_{
 
-  print_html_start("$vorname $nachname", 0);
+  print_html_start("$vorname $nachname", "$vorname $nachame: Zuordnung zu verschiedenen Firmen", 0);
  
   print "$vorname $nachname erscheint im Zusammenhang mit folgenden Firmen:";
 
@@ -279,7 +279,8 @@ function print_person($db, $nachname, $vorname, $in) { #_{
 
 function print_gemeinde($db, $id_gemeinde) { #_{
 
-  print_html_start("Firmen in " . gemeinde_name($db, $id_gemeinde), 0);
+  $gemeinde_name = gemeinde_name($db, $id_gemeinde);
+  print_html_start("Firmen in $gemeinde_name", "Firmen in $gemeinde_name mit Zuordnung zu Stichworten" , 0);
 
   info("id_gemeinde: $id_gemeinde");
 
@@ -325,7 +326,7 @@ function print_gemeinde($db, $id_gemeinde) { #_{
 
 function print_gemeinden($db) { #_{
 
-  print_html_start("Gemeinden der Schweiz", 0);
+  print_html_start("Gemeinden der Schweiz", "Gemeinde der Schweiz - Einstiegsseite zur Suche nach Firmen", 0);
 
   $res = db_prep_exec_fetchall($db, 'select id, name from gemeinde order by name');
 
@@ -339,7 +340,7 @@ function print_gemeinden($db) { #_{
 
 function print_stichwort($db, $stichwort_name) { #_{
 
-  print_html_start("Stichwort: $stichwort_name", 0);
+  print_html_start("Stichwort: $stichwort_name", "Liste von Firmen zum Stichwort $stichwort_name", 0);
 
   if (is_tq84()) {
     print 'id_stichwort: ' . db_sel_1_row_1_col($db, 'select id from stichwort where stichwort = ?', array($stichwort_name));
@@ -372,7 +373,7 @@ function print_stichwort($db, $stichwort_name) { #_{
 } #_}
 
 function print_index($db) { #_{
-  print_html_start("Firmen der Schweiz", 0);
+  print_html_start("Firmen der Schweiz", "Firmen der Schweiz, im zusammenhang stehende Personen und Stichworte", 0);
 
   print "<h1 id='stichwoerter'>Stichwörter</h1>\n";
 
@@ -404,12 +405,13 @@ function info($text) { #_{
 
 } #_}
 
-function print_html_start($title, $google_map_address) { #_{
+function print_html_start($title, $meta_description, $google_map_address) { #_{
 
 print "<!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+<meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+<meta name='description' content='$meta_description' />
 <title>$title</title>
 <style>
 
