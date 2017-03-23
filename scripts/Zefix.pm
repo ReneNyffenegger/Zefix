@@ -38,13 +38,6 @@ sub init { #_{
   }
 
 
-# 
-# my $db = "${zefix_root_dir}zefix.db";
-# 
-# my $dbh = DBI->connect("dbi:SQLite:dbname=$db") or die "Could not open/create $db";
-# $dbh->{AutoCommit} = 0;
-
-# return $dbh;
 } #_}
 
 sub daily_summary_files { #_{
