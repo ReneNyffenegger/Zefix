@@ -3,6 +3,7 @@ use warnings;
 use strict;
 use File::Basename;
 use Getopt::Long;
+use IO::Socket;
 
 use lib "$ENV{github_top_root}lib/tq84-PerlModules";
 use tq84_ftp;
@@ -112,7 +113,7 @@ sub put_db { #_{
       $file_to_put = ${zefix_part};
     } #_}
 
-    if ($ftp_db_restart) {
+    if ($ftp_db_restart) { #_{
 
       my ($num) = $file_to_put =~ /(\d+)/;
 
@@ -121,11 +122,11 @@ sub put_db { #_{
          put($file_to_put, force => 1);
       }
 
-    }
-    else { 
+    } #_}
+    else {  #_{
       print "  putting $file_to_put\n";
       put($file_to_put);
-    }
+    } #_}
   }
 
 } #_}
@@ -159,9 +160,27 @@ sub put { #_{
 
 } #_}
 
-sub ftp_cwd {
+sub ftp_cwd { #_{
   my $path = shift;
   $ftp -> cwd($path) or die;
   print "ftp: changed working directory to $path\n";
   $ftp_last_cwd = $path;
-}
+} #_}
+
+# TODO...
+# sub cgi_bin_merge { #_{
+# # my $url = "http://renenyffenegger.ch/cgi-bin/merge-zefix-db.pl?env=$env";
+#   my $url = "http://renenyffenegger.ch/cgi-bin/merge-zefix-db.pl?env=env";
+# 
+#   print "$url\n";
+# 
+#   my $socket = IO::Socket::INET->new(
+#     PeerAddr    => $host,
+#     PeerPort    =>  80,
+#     Proto       => 'tcp',
+#     Timeout     =>  1
+#   )
+#   or die "Could not connect";
+# 
+# 
+# }  #_}
