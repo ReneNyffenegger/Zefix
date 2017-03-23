@@ -29,6 +29,9 @@ select pf.id_firma, p.vorname from person p join person_firma pf on p.id = pf.id
 select * from person where von like '%ist nicht mehr%wird aber%';
 
 
+Martin Scholl
+  Einmal aus Zofingen: http://renenyffenegger.ch/Firmen/p%E2%80%A2Scholl%E2%80%A2Martin%E2%80%A2Zofingen
+  Einmal aus Mühletal: http://renenyffenegger.ch/Firmen/f135432
 
 http://renenyffenegger.ch/Firmen/f393746
   -> War ein UTF8 Problem? Insbesondere Journal 2015-05-12
