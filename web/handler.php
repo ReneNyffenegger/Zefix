@@ -105,7 +105,11 @@ function print_firma($db, $id_firma) { #_{
   $nominatim_address = $firma['strasse'] . ' ' . $firma['hausnummer'] . ', '                       . $firma['ort'] . ', Schweiz';
   print_html_start($firma_bezeichnung, "$firma_bezeichnung (Mit Karte und Zuordnung zu Stichworten)", $nominatim_address);
 
-  print $firma['rechtsform_bezeichnung']. "<p>";
+  if ($firma['loesch_dat']) {
+    print "Diese Firma wurde " . $firma['loesch_dat']  . " gelöscht.</p>";
+  }
+
+  print "<i>" . $firma['rechtsform_bezeichnung']. "</i><p>";
 
   if ($firma['care_of'       ]) { printf("  %s<br>\n"   , tq84_enc($firma['care_of'])); }
   printf("%s %s<br>\n", tq84_enc($firma['strasse']), tq84_enc($firma['hausnummer']));
@@ -170,12 +174,6 @@ function print_firma($db, $id_firma) { #_{
     order by
       pf.dt_journal
     '
-#   'select
-#     pf.*
-#   from
-#     person_firma pf
-#   where
-#     pf.id_firma = ?
     , array($id_firma));
 
   foreach ($res as $row) {
@@ -286,11 +284,9 @@ function print_gemeinde($db, $id_gemeinde) { #_{
 
   info("id_gemeinde: $id_gemeinde");
 
-# $db->exec('analyze sqlite_master');
 
   $res = db_prep_exec_fetchall($db, 
 
-    #  'explain query plan 
    "select
       f.id                 id_firma,
       f.bezeichnung,
@@ -304,7 +300,7 @@ function print_gemeinde($db, $id_gemeinde) { #_{
       f.id_hauptsitz is null and
       f.id_gemeinde = $id_gemeinde
     order
-      by s.stichwort is null, s.stichwort", array() # $id_gemeinde)
+      by s.stichwort is null, s.stichwort", array() # $id_gemeinde
 
   );
 
