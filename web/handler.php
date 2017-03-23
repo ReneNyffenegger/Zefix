@@ -106,7 +106,7 @@ function print_firma($db, $id_firma) { #_{
   print_html_start($firma_bezeichnung, "$firma_bezeichnung (Mit Karte und Zuordnung zu Stichworten)", $nominatim_address);
 
   if ($firma['loesch_dat']) {
-    print "Diese Firma wurde " . $firma['loesch_dat']  . " gelöscht.</p>";
+    print "Diese Firma wurde " . $firma['loesch_dat']  . " gelöscht.<p>";
   }
 
   print "<i>" . $firma['rechtsform_bezeichnung']. "</i><p>";
