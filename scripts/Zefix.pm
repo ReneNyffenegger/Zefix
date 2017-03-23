@@ -263,14 +263,36 @@ sub find_persons_from_daily_summary_rec { #_{
 
 
 #   print "special_parsing: $special_parsing:\n";
+#   if ($special_parsing =~ /Für die Zweigniederlassung zeichne. (mit \w+) ([^.]+)\./) {
+#     print "\n\nMatches\n\n";
+#   }
     while ($special_parsing =~ s/Die Zweigniederlassung von [^.]+ ist erloschen\.?//) {
 #     print "yepp\n";
     }
-    while ($special_parsing =~ s/Für die Zweigniederlassung zeichne. (mit \w+) ([^.]+)\.//) {
-      my $zeichnung = $1;
-      my $who = $2;
-      print "\n\n\nxxx: zeichnung = $zeichnung\n  who = $who\n";
-      who_and_zeichnung(\@ret, $who, $zeichnung);
+#   while ($special_parsing =~ s/Für die Zweigniederlassung zeichne. (mit \w+) ([^.]+)//) {
+    while ($special_parsing =~ s/Für die Zweigniederlassung zeichne. ([^.]+)//) {
+    #
+    # f 738038
+    #
+    
+      my $zeichnungen_text = $1;
+
+      my @zeichnungsarten = split '; *', $zeichnungen_text;
+
+      for my $zeichnungsart_text (@zeichnungsarten) {
+
+        $zeichnungsart_text =~ m/(mit \w+(?: zu zweien)?) (.*)/;
+
+        my $zeichnung = $1;
+        my $who = $2;
+
+#       print "\n\n\nxxx: zeichnung = $zeichnung\n  who = $who\n";
+        who_and_zeichnung(\@ret, $who, $zeichnung);
+
+      }
+
+
+   
     }
     while ($special_parsing =~ s/\. *(?<name>[^.]+?),? (?:ist nicht mehr) (?<funktion>[^,]+), (seine|ihre) Unterschrift ist erloschen//) { #_{
 
@@ -384,7 +406,6 @@ sub find_persons_from_daily_summary_rec { #_{
       push @ret, $person_rec;
 
     } #_}
-#   while ($special_parsing =~ s/\. *([^.]+?) von ([^.]+) ist erloschen//) {
     while ($special_parsing =~ s/\. D.. (\w+(?: zu zweien)?) von ([^.]+) ist erloschen//) { #_{
 
       my $zeichnung = $1;
