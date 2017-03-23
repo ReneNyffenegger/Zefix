@@ -86,6 +86,10 @@ load_firmen_bez();
 
 $dbh -> commit;
 
+# Without AutoCommit: »cannot VACUUM from within a transaction«
+$dbh->{AutoCommit} = 1;
+$dbh -> do('vacuum');
+
 if ($env eq 'test') {
   chdir '../test';
   print readpipe 'php test_load.php';
