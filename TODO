@@ -23,6 +23,7 @@ http://renenyffenegger.ch/Firmen/f879122
   -> Sitzverlegung nach
      Zeilinga Susan, ist nicht mehr Mitglied des Verwaltungsrates, wird aber Direktorin mit Kollektivunterschrift zu zweien.
 
+f 738038 (test) : Triner wird fälschlicherweise dem Vornamen zugeordnet!
 
 select pf.id_firma, p.vorname from person p join person_firma pf on p.id = pf.id_person where p.nachname = 'Für';
 

@@ -503,8 +503,6 @@ sub find_persons_from_daily_summary_rec { #_{
          $person_rec->{in } = s_back($in);
          $person_rec->{funktion } = $funktion if $funktion;
  
-#       (my $name, $person_rec->{von}, $person_rec->{in}) = text_to_name_von_in($person);
- 
          push @ret, $person_rec;
  
       }
@@ -516,19 +514,6 @@ sub find_persons_from_daily_summary_rec { #_{
 
       who_and_zeichnung(\@ret, $who, $zeichnung);
 
-#     for my $person (split /,? und /, $who ) {
-
-#       my $person_rec = {add_rm=>'+'};
-#       $person_rec->{zeichnung} = $zeichnung;
-
-#      (my $name, $person_rec->{von}, $person_rec->{in}) = text_to_name_von_in($person);
-
-
-#      ($person_rec->{nachname}, $person_rec->{vorname}) = name_ohne_komma_to_nachname_vorname($name);
-
-#       push @ret, $person_rec;
-
-#     }
 
     } #_}
     while ($special_parsing =~ s/\. Gelöschte Personen:*(?<name>[^.]+?), (?<funktion>[^.]*)//) { #_{
@@ -1048,13 +1033,18 @@ sub parse_person_more { #_{
 
 sub text_to_name_von_in { #_{
   my $text = shift;
-  $text =~ /(.*?), von (.*?), in (.*?)(,|$)/;
+# $text =~ /(.*?), von (.*?), in (.*?)(,|$)(.*)/;
+  $text =~ /(.*?), von (.*?), in (.*?)(,|$)(.*)/;
 
-  my $name = $1;
-  my $von  = $2;
-  my $in   = $3;
+  my $name      = $1;
+  my $von       = $2;
+  my $in        = $3;
 
-  return (s_back($name), s_back($von), s_back($in));
+  my $funktion  = $5;
+
+# print "\n\n text_to_name_von_in, funktion = $funktion\n\n";
+
+  return (s_back($name), s_back($von), s_back($in), $funktion);
 } #_}
 
 sub who_and_zeichnung { #_{
@@ -1064,20 +1054,35 @@ sub who_and_zeichnung { #_{
 
   $who =~ s/(von \w+ )und( \w+)/$1##UND##$2/g; # f718052 (Test) Reutimann Werner, von Zürich und Waltalingen
 
-  for my $person (split /,? und /, $who ) {
+  my $funktion;
+
+  my @persons_recs;
+
+  my @persons = split /,? und /, $who;
+  for my $person (@persons ) {
 
     $person =~ s/##UND##/und/;
     my $person_rec = {add_rm=>'+'};
     $person_rec->{zeichnung} = $zeichnung;
 
-   (my $name, $person_rec->{von}, $person_rec->{in}) = text_to_name_von_in($person);
+   (my $name, $person_rec->{von}, $person_rec->{in}, $funktion) = text_to_name_von_in($person);
 
 
    ($person_rec->{nachname}, $person_rec->{vorname}) = name_ohne_komma_to_nachname_vorname($name);
 
-    push @$ret_ref, $person_rec;
+    push @$ret_ref    , $person_rec;
+    push @persons_recs, $person_rec;
 
   }
+
+  if ($funktion) {
+    $funktion =~ s/^ *//;
+    $funktion =~ s/ *$//;
+    $funktion =~ s/^beide *//;
+    $funktion =~ s/glieder$/glied/;
+    map {$_->{funktion} = $funktion} @persons_recs;
+  }
+
 
 } #_}
 
