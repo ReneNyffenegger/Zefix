@@ -14,7 +14,7 @@ echo "Ok\n";
 
 function check_firma($dbh) { #_{
 
-  check_count($dbh, 'firma', 37);
+  check_count($dbh, 'firma', 38);
 
   $zuffrey = 'Zufferey Aurélie et Tânia Margarida da Mota Cardoso Kiosque Liberté';
   $fiduc_crans = 'Fiduciaire de Crans-Montana (FCM) SA';
@@ -22,44 +22,45 @@ function check_firma($dbh) { #_{
   $in_Liq      = "in Liquidation";
 
   $sth = db_prep_exec($dbh, 'select * from firma order by id', array());
-  #                    id,                                                           code13 ,    hpts,  gem, k apital,   cur, st,  del         ,   shab#,                                     ,                           ,       ,zus.,        pf, plz ,   ort                Rf
-  cmp_firma($sth,   60442, 'Fluggruppe Mollis'                             , 'CH16060033075',    null,  1630,    null,  null,  2, null         , 2789387, null                                ,'Flugplatzareal'           ,  '4'  ,null,      null,  8753 ,'Mollis'          , 6);
-  cmp_firma($sth,   74461, 'Guamo SA'                                      , 'CH52430026861',    null,  5250,  200000, 'CHF',  2, null         , 3258589, null                                ,'Via Bossi'                , '50'  ,null,      null,  6830 ,'Chiasso'         , 3);
-  cmp_firma($sth,   76284, 'Frédéric Hänni S.A., installations électriques', 'CH67730001455',    null,  6800,  210000, 'CHF',  2, null         , 5320100, null                                ,'rue du Temple'            ,  '3'  ,null,      null,  2900 ,'Porrentruy'      , 3);
-  cmp_firma($sth,  150042, 'Genossenschaft christkatholisches Jugendhaus'  , 'CH14050020797',    null,  1403,    null,  null,  2, null         , 3259371,'c/o Peter von Moos'                 ,'Melchaaweg'               ,  '2'  ,null,      null,  6074 ,'Giswil'          , 5);
-  cmp_firma($sth,  186673, 'Storella AG'                                   , 'CH50930004966',    null,  5097,   50000, 'CHF',  0,'2001-05-09'  ,    null, null                                ,''                         , null  ,null,      null,  null , null             , 3);
-  cmp_firma($sth,  198248, 'Umbau AG'                                      , 'CH13000029012',    null,  1341,   50000, 'CHF',  2, null         , 6581506, null                                ,'Hinterfeld'               , '3b'  ,null,      null, '8852', 'Altendorf'      , 3);
-  cmp_firma($sth,  251792, 'Storella GmbH'                                 , 'CH32090204910',  468163,  3251,    null,  null,  2, null         , 5723906, null                                ,'Tiefenackerstrasse'       , '49'  ,null,      null, '9450', 'Altstätten'     , 9);
-  cmp_firma($sth,  270248, 'Dr. Hans Duttweiler-Hug-Stiftung'              , 'CH02079010266',    null,   261,    null, 'CHF',  2, null         , 6797676,'c/o Dr. René Schwarzmann'           ,'Theaterstrasse'           ,  '2'  ,null,      null, '8001', 'Zürich'         , 7);
-  cmp_firma($sth,  271150, "Stiftung Entropia Promotion (Europe) $in_Liq"  , 'CH02079041799',    null,   132,    null,  null,  0,'2004-12-20'  , 2599344,'c/o Ruth Baratti, Villa Schiffli'   ,'Sihlbrugg'                , null  ,null,      null, '8816', 'Hirzel'         , 7);
-  cmp_firma($sth,  275904, $biomedac                                       , 'CH21701370321',    null,  2196,  102000, 'CHF',  0,'2005-06-20'  , 2888910, null                                ,''                         , null  ,null,      null,  null ,  null            , 3);
-  cmp_firma($sth,  325321, 'Schumacher AG'                                 , 'CH21706302639',    null,  2305, 3000000, 'CHF',  2, null         , 3276097, null                                ,'Industriestrasse'         ,'1-3'  ,null,      null, '3185', 'Schmitten'      , 3);
-  cmp_firma($sth,  451407, 'ADP Analyse Design Planung AG'                 , 'CH02040197464',    null,   261,  100000, 'CHF',  2, null         , 3242819, null                                ,'Glatttalstrasse'          ,'104 h',null,      null, '8052', 'Zürich'         , 3);
-  cmp_firma($sth,  468163, 'Storella Sagl'                                 , 'CH50940068681',    null,  5097,   50000, 'CHF',  2, null         , 2942553, null                                ,'Via Gabbietta'            ,  '3'  ,null,      null, '6614', 'Brissago'       , 4);
-  cmp_firma($sth,  563696, 'Federer & Partner Kommanditgesellschaft'       , 'CH02020015631',    null,  '141',   null, null ,  2, null         , 3194841, null                                ,'Zehntenhofweg'            ,  '6'  ,null,      null, '8800', 'Thalwil'        ,10);
-  cmp_firma($sth,  601009, 'Abaco Design GmbH'                             , 'CH29040137240',    null,  2939,   20000, 'CHF',  2, null         , 5254450, null                                ,'Stadthausgasse'           ,  '1'  ,null,      null, '8200', 'Schaffhausen'   ,  4);
-  cmp_firma($sth,  601097, 'Kälin & Partner Bauingenieure/Planer GmbH'     , 'CH13000119169',    null,  1349 ,  50000, 'CHF',  2, null         , 6209698, null                                ,'Sonnenriedstrasse'        ,  '9'  ,null,      null, '8855', 'Wangen'         , 4);
-  cmp_firma($sth,  712087, 'Varian Medical Systems Imaging Laboratory GmbH', 'CH40040245074',    null,  4021, 2000000, 'CHF',  2, null         , 2185269, null                                ,'Täfernstrasse'            ,  '7'  ,null,      null, '5405', 'Baden-Dättwil'  , 4);
-  cmp_firma($sth,  718052, 'Schenker Stores SA'                            , 'CH21710024815',  461976,  2197,    null, null ,  2, null         , 7171080, null                                ,'Route Henri-Stephan'      , '12'  ,null,      null, '1762', 'Givisiez'       , 9);
-  cmp_firma($sth,  728139, 'Volltext Lienert'                              , 'CH02010440290',    null,   155,    null, null ,  2, null         , 6180656, null                                ,'Bahnhofstrasse'           , '14'  ,null,      null, '8708', 'Männedorf'      , 1);
-  cmp_firma($sth,  790603, 'Presenti, Genuss-Hofladen, Ritler'             , 'CH60010123481',    null,  6192,    null, null ,  2, null         , 1091615, null                                ,'Ried'                     , '38'  ,null,      null, '3919', 'Blatten'        , 1);
-  cmp_firma($sth,  823465, 'D1 Solutions AG'                               , 'CH02030293815',    null,   261,  100000, 'CHF',  2, null         , 1667155, null                                ,'Zypressenstrasse'         , '71'  ,null,      null, '8004', 'Zürich'         , 3);
-  cmp_firma($sth,  934296, 'Akyon AG'                                      , 'CH02030334394',    null,   261,  100000, 'CHF',  2, null         , 3232871,'c/o ADP Analyse Design Planung GmbH','Glatttalstrasse'          ,'104f' ,null,      null, '8052', 'Zürich'         , 3);
-  cmp_firma($sth, 1022680, 'Erasols Sàrl'                                  , 'CH64541067320' ,   null,  5749,   20000, 'CHF',  2, null         , 3269925,  null                               ,'Rue de la Cité'           , '21'  , null,     null, '1373', 'Chavornay'      , 4); 
-  cmp_firma($sth, 1043245, 'Leo MGE Transports Sàrl'                       , 'CH64541075065' ,   null,  5601,   20000, 'CHF',  2, null         , 3291443,  null                               ,'Chemin de Fleur de Lys'   ,  '1'  , null,     null, '1071', 'Chexbres'       , 4); 
-  cmp_firma($sth, 1050881, $zuffrey                                        , 'CH62620141168' ,   null,  6253,    null, null ,  2, null         , 3270557,  null                               ,'Avenue de la Gare'        , '24'  , null, 'CP 433', '3963', 'Crans-Montana'  , 2); 
-  cmp_firma($sth, 1263109, 'Grégorio Maïka, SUISSE SABLAGE'                , 'CH62610171082' ,   null,  6253,    null, null ,  2, null         , 3270283, 'c/o Grégorio Maïka'                ,'Rue de la Pavia'          , '46'  , null,     null, '3963', 'Montana Village', 1); 
-  cmp_firma($sth, 1268712, 'Pompes Funèbres Daniel Rey et Fils Sàrl'       , 'CH62640171965' ,   null,  6253,   20000, 'CHF',  2, null         , 3270279,  null                               ,'Route de Crans-Montana'   , '24'  , null,     null, '3963', 'Montana'        , 4); 
-  cmp_firma($sth, 1271188, 'NOVA LANDO Sagl'                               , 'CH50140213081' ,   null,  5192,   20000, 'CHF',  2, null         , 3269757,  null                               ,'via Francesco Somaini no.',  '5'  , null,     null, '6900', 'Lugano'         , 4); 
-  cmp_firma($sth, 1271352, 'Café Restaurant Oliveto Muntoni'               , 'CH62610172445' ,   null,  6253,    null, null ,  2, null         , 3270277,  null                               ,'Place du Marché'          ,  '1'  , null,     null, '3963', 'Crans-Montana'  , 1); 
-  cmp_firma($sth, 1271529, 'Jérémie Rey et Fils SA'                        , 'CH62630172077' ,   null,  6253,  200000, 'CHF',  2, null         , 3270275,  null                               ,'Route de Crans-Montana'   , '36'  , null,     null, '3963', 'Crans-Montana'  , 3); 
-  cmp_firma($sth, 1279490, 'MetSol AG'                                     , 'CH02030438126' ,   null,    66,  100000, 'CHF',  2, null         , 3268453,  null                               ,'Europa-Strasse'           , '19a' , null,     null, '8152', 'Glattbrugg'     , 3); 
-  cmp_firma($sth, 1280835, 'Café de l\'Ouest SA'                           , 'CH62630174341' ,   null,  6253,  100000, 'CHF',  2, null         , 3270271, "c/o $fiduc_crans"                  ,'Rue du Clovelli'          ,  '2'  , null,     null, '3963', 'Crans-Montana'  , 3); 
-  cmp_firma($sth, 1282712, 'JUSTIS Sàrl'                                   , 'CH55011703743' ,   null,  5636,   20000, 'CHF',  2, null         , 3269961,  null                               ,'Route de Pallatex'        ,'7 B'  , null,     null, '1163', 'Etoy'           , 4); 
-  cmp_firma($sth, 1286613, 'Carcò and Costantino & Co. SNC'                , 'CH03620689137' ,   null,   371,    null, null ,  2, null         , 3268597,  null                               ,'Rue de Büren'             , '82'  , null,     null, '2504', 'Biel/Bienne'    , 2);
-  cmp_firma($sth, 1289682, 'MRX CH GmbH'                                   , 'CH02040604036' ,   null,   261,   20000, 'CHF',  2, null         , 3268227, 'c/o Dacuda AG'                     ,'Zollstrasse'              , '62'  , null,     null, '8005', 'Zürich'         , 4);
-  cmp_firma($sth, 1290391, 'PUR Luftservice GmbH'                          , 'CH13040238566',    null,  1301,   20000, 'CHF',  2, null         , 3281571, null                                ,'Kornhausstrasse'          , '86'  , null,     null, '8840', 'Einsiedeln'     , 4);
-  cmp_firma($sth, 1292466, 'PUR Luftservice GmbH'                          , 'CH02090047847', 1290391,    56,    null, null ,  2, null         , 3315327, null                                ,'Dorfstrasse'              ,'115'  , null,     null, '8424', 'Embrach'        , 9);
+  #                    id,                                                           code13 ,    hpts,  gem, k apital,   cur, st,  del         ,   shab#,                                     ,                           ,       ,zus.          ,       pf, plz ,   ort                  Rf
+  cmp_firma($sth,   60442, 'Fluggruppe Mollis'                             , 'CH16060033075',    null,  1630,    null,  null,  2, null         , 2789387,''                                   ,'Flugplatzareal'           ,  '4'  ,''            ,     null,  8753 ,'Mollis'            , 6);
+  cmp_firma($sth,   74461, 'Guamo SA'                                      , 'CH52430026861',    null,  5250,  200000, 'CHF',  2, null         , 3258589,''                                   ,'Via Bossi'                , '50'  ,''            ,     null,  6830 ,'Chiasso'           , 3);
+  cmp_firma($sth,   76284, 'Frédéric Hänni S.A., installations électriques', 'CH67730001455',    null,  6800,  210000, 'CHF',  2, null         , 5320100,''                                   ,'rue du Temple'            ,  '3'  ,''            ,     null,  2900 ,'Porrentruy'        , 3);
+  cmp_firma($sth,  150042, 'Genossenschaft christkatholisches Jugendhaus'  , 'CH14050020797',    null,  1403,    null,  null,  2, null         , 3259371,'c/o Peter von Moos'                 ,'Melchaaweg'               ,  '2'  ,''            ,     null,  6074 ,'Giswil'            , 5);
+  cmp_firma($sth,  186673, 'Storella AG'                                   , 'CH50930004966',    null,  5097,   50000, 'CHF',  0,'2001-05-09'  ,    null,''                                   ,''                         ,   ''  ,''            ,     null, ''    ,''                  , 3);
+  cmp_firma($sth,  198248, 'Umbau AG'                                      , 'CH13000029012',    null,  1341,   50000, 'CHF',  2, null         , 6581506,''                                   ,'Hinterfeld'               , '3b'  ,''            ,     null, '8852', 'Altendorf'        , 3);
+  cmp_firma($sth,  251792, 'Storella GmbH'                                 , 'CH32090204910',  468163,  3251,    null,  null,  2, null         , 5723906,''                                   ,'Tiefenackerstrasse'       , '49'  ,''            ,     null, '9450', 'Altstätten'       , 9);
+  cmp_firma($sth,  270248, 'Dr. Hans Duttweiler-Hug-Stiftung'              , 'CH02079010266',    null,   261,    null, 'CHF',  2, null         , 6797676,'c/o Dr. René Schwarzmann'           ,'Theaterstrasse'           ,  '2'  ,''            ,     null, '8001', 'Zürich'           , 7);
+  cmp_firma($sth,  271150, "Stiftung Entropia Promotion (Europe) $in_Liq"  , 'CH02079041799',    null,   132,    null,  null,  0,'2004-12-20'  , 2599344,'c/o Ruth Baratti, Villa Schiffli'   ,'Sihlbrugg'                ,   ''  ,''            ,     null, '8816', 'Hirzel'           , 7);
+  cmp_firma($sth,  275904, $biomedac                                       , 'CH21701370321',    null,  2196,  102000, 'CHF',  0,'2005-06-20'  , 2888910,''                                   ,''                         ,   ''  ,''            ,     null, ''    , ''                 , 3);
+  cmp_firma($sth,  325321, 'Schumacher AG'                                 , 'CH21706302639',    null,  2305, 3000000, 'CHF',  2, null         , 3276097,''                                   ,'Industriestrasse'         ,'1-3'  ,''            ,     null, '3185', 'Schmitten'        , 3);
+  cmp_firma($sth,  451407, 'ADP Analyse Design Planung AG'                 , 'CH02040197464',    null,   261,  100000, 'CHF',  2, null         , 3242819,''                                   ,'Glatttalstrasse'          ,'104 h',''            ,     null, '8052', 'Zürich'           , 3);
+  cmp_firma($sth,  468163, 'Storella Sagl'                                 , 'CH50940068681',    null,  5097,   50000, 'CHF',  2, null         , 2942553,''                                   ,'Via Gabbietta'            ,  '3'  ,''            ,     null, '6614', 'Brissago'         , 4);
+  cmp_firma($sth,  563696, 'Federer & Partner Kommanditgesellschaft'       , 'CH02020015631',    null,  '141',   null, null ,  2, null         , 3194841,''                                   ,'Zehntenhofweg'            ,  '6'  ,''            ,     null, '8800', 'Thalwil'          ,10);
+  cmp_firma($sth,  601009, 'Abaco Design GmbH'                             , 'CH29040137240',    null,  2939,   20000, 'CHF',  2, null         , 5254450,''                                   ,'Stadthausgasse'           ,  '1'  ,''            ,     null, '8200', 'Schaffhausen'     , 4);
+  cmp_firma($sth,  601097, 'Kälin & Partner Bauingenieure/Planer GmbH'     , 'CH13000119169',    null,  1349 ,  50000, 'CHF',  2, null         , 6209698,''                                   ,'Sonnenriedstrasse'        ,  '9'  ,''            ,     null, '8855', 'Wangen'           , 4);
+  cmp_firma($sth,  712087, 'Varian Medical Systems Imaging Laboratory GmbH', 'CH40040245074',    null,  4021, 2000000, 'CHF',  2, null         , 2185269,''                                   ,'Täfernstrasse'            ,  '7'  ,''            ,     null, '5405', 'Baden-Dättwil'    , 4);
+  cmp_firma($sth,  718052, 'Schenker Stores SA'                            , 'CH21710024815',  461976,  2197,    null, null ,  2, null         , 7171080,''                                   ,'Route Henri-Stephan'      , '12'  ,''            ,     null, '1762', 'Givisiez'         , 9);
+  cmp_firma($sth,  728139, 'Volltext Lienert'                              , 'CH02010440290',    null,   155,    null, null ,  2, null         , 6180656,''                                   ,'Bahnhofstrasse'           , '14'  ,''            ,     null, '8708', 'Männedorf'        , 1);
+  cmp_firma($sth,  738038, 'Telelan AG'                                    , 'CH21735309828',  241462,  2309,    null, null ,  0,'2009-03-13'  , 4924584,''                                   ,'Bernstrasse'              , '41'  ,'Flamatt'     ,     null, '3184', 'Wünnewil-Flamatt' , 9);
+  cmp_firma($sth,  790603, 'Presenti, Genuss-Hofladen, Ritler'             , 'CH60010123481',    null,  6192,    null, null ,  2, null         , 1091615,''                                   ,'Ried'                     , '38'  ,''            ,     null, '3919', 'Blatten'          , 1);
+  cmp_firma($sth,  823465, 'D1 Solutions AG'                               , 'CH02030293815',    null,   261,  100000, 'CHF',  2, null         , 1667155,''                                   ,'Zypressenstrasse'         , '71'  ,''            ,     null, '8004', 'Zürich'           , 3);
+  cmp_firma($sth,  934296, 'Akyon AG'                                      , 'CH02030334394',    null,   261,  100000, 'CHF',  2, null         , 3232871,'c/o ADP Analyse Design Planung GmbH','Glatttalstrasse'          ,'104f' ,''            ,     null, '8052', 'Zürich'           , 3);
+  cmp_firma($sth, 1022680, 'Erasols Sàrl'                                  , 'CH64541067320' ,   null,  5749,   20000, 'CHF',  2, null         , 3269925,''                                   ,'Rue de la Cité'           , '21'  ,''            ,     null, '1373', 'Chavornay'        , 4); 
+  cmp_firma($sth, 1043245, 'Leo MGE Transports Sàrl'                       , 'CH64541075065' ,   null,  5601,   20000, 'CHF',  2, null         , 3291443,''                                   ,'Chemin de Fleur de Lys'   ,  '1'  ,''            ,     null, '1071', 'Chexbres'         , 4); 
+  cmp_firma($sth, 1050881, $zuffrey                                        , 'CH62620141168' ,   null,  6253,    null, null ,  2, null         , 3270557,''                                   ,'Avenue de la Gare'        , '24'  ,''            , 'CP 433', '3963', 'Crans-Montana'    , 2); 
+  cmp_firma($sth, 1263109, 'Grégorio Maïka, SUISSE SABLAGE'                , 'CH62610171082' ,   null,  6253,    null, null ,  2, null         , 3270283,'c/o Grégorio Maïka'                 ,'Rue de la Pavia'          , '46'  ,''            ,     null, '3963', 'Montana Village'  , 1); 
+  cmp_firma($sth, 1268712, 'Pompes Funèbres Daniel Rey et Fils Sàrl'       , 'CH62640171965' ,   null,  6253,   20000, 'CHF',  2, null         , 3270279,''                                   ,'Route de Crans-Montana'   , '24'  ,''            ,     null, '3963', 'Montana'          , 4); 
+  cmp_firma($sth, 1271188, 'NOVA LANDO Sagl'                               , 'CH50140213081' ,   null,  5192,   20000, 'CHF',  2, null         , 3269757,''                                   ,'via Francesco Somaini no.',  '5'  ,''            ,     null, '6900', 'Lugano'           , 4); 
+  cmp_firma($sth, 1271352, 'Café Restaurant Oliveto Muntoni'               , 'CH62610172445' ,   null,  6253,    null, null ,  2, null         , 3270277,''                                   ,'Place du Marché'          ,  '1'  ,''            ,     null, '3963', 'Crans-Montana'    , 1); 
+  cmp_firma($sth, 1271529, 'Jérémie Rey et Fils SA'                        , 'CH62630172077' ,   null,  6253,  200000, 'CHF',  2, null         , 3270275,''                                   ,'Route de Crans-Montana'   , '36'  ,''            ,     null, '3963', 'Crans-Montana'    , 3); 
+  cmp_firma($sth, 1279490, 'MetSol AG'                                     , 'CH02030438126' ,   null,    66,  100000, 'CHF',  2, null         , 3268453,''                                   ,'Europa-Strasse'           , '19a' ,''            ,     null, '8152', 'Glattbrugg'       , 3); 
+  cmp_firma($sth, 1280835, 'Café de l\'Ouest SA'                           , 'CH62630174341' ,   null,  6253,  100000, 'CHF',  2, null         , 3270271,"c/o $fiduc_crans"                   ,'Rue du Clovelli'          ,  '2'  ,''            ,     null, '3963', 'Crans-Montana'    , 3); 
+  cmp_firma($sth, 1282712, 'JUSTIS Sàrl'                                   , 'CH55011703743' ,   null,  5636,   20000, 'CHF',  2, null         , 3269961,''                                   ,'Route de Pallatex'        ,'7 B'  ,''            ,     null, '1163', 'Etoy'             , 4); 
+  cmp_firma($sth, 1286613, 'Carcò and Costantino & Co. SNC'                , 'CH03620689137' ,   null,   371,    null, null ,  2, null         , 3268597,''                                   ,'Rue de Büren'             , '82'  ,''            ,     null, '2504', 'Biel/Bienne'      , 2);
+  cmp_firma($sth, 1289682, 'MRX CH GmbH'                                   , 'CH02040604036' ,   null,   261,   20000, 'CHF',  2, null         , 3268227,'c/o Dacuda AG'                      ,'Zollstrasse'              , '62'  ,''            ,     null, '8005', 'Zürich'           , 4);
+  cmp_firma($sth, 1290391, 'PUR Luftservice GmbH'                          , 'CH13040238566',    null,  1301,   20000, 'CHF',  2, null         , 3281571,''                                   ,'Kornhausstrasse'          , '86'  ,''            ,     null, '8840', 'Einsiedeln'       , 4);
+  cmp_firma($sth, 1292466, 'PUR Luftservice GmbH'                          , 'CH02090047847', 1290391,    56,    null, null ,  2, null         , 3315327,''                                   ,'Dorfstrasse'              ,'115'  ,''            ,     null, '8424', 'Embrach'          , 9);
 
   echo "firma ok\n";
 
@@ -99,16 +100,28 @@ function cmp_firma($sth, $id, $bezeichnung, $code13, $id_hauptsitz, $id_gemeinde
   if ( ! eq($row[9], $shab_seq)) {
     throw new Exception("cmp_firma $id: shab_seq $row[9] != $shab_seq");
   }
+  if ( ! eq($row[10], $care_of)) {
+    throw new Exception("cmp_firma $id: care_of >$row[10]< != >$care_of<");
+  }
   if ( ! eq($row[11], $strasse)) {
     throw new Exception("cmp_firma $id: strasse $row[11] != $strasse");
   }
+  if ( ! eq($row[12], $hausnummer)) {
+    throw new Exception("cmp_firma $id: hausnummer $row[12] != $hausnummer");
+  }
+  if ( ! eq($row[13], $address_zusatz)) {
+    throw new Exception("cmp_firma $id: address_zusatz $row[13] != $address_zusatz");
+  }
+  if ( ! eq($row[15], $plz)) {
+    throw new Exception("cmp_firma $id: plz $row[15] != $plz");
+  }
 
-  if (# $row[ 0] != $id             or
-      $row[10] != $care_of        or
-      $row[12] != $hausnummer     or
-      $row[13] != $address_zusatz or
+  if (
+#     $row[10] != $care_of        or
+#     $row[12] != $hausnummer     or
+#     $row[13] != $address_zusatz or
       $row[14] != $postfach       or
-      $row[15] != $plz            or
+#     $row[15] != $plz            or
       $row[16] != $ort          ) {
     throw new Exception("cmp_firma $id");
   }
@@ -123,7 +136,7 @@ function check_firma_bez($dbh) { #_{
 
   $en_liq = 'en liquidation';
 
-  check_count($dbh, 'firma_bez', 57);
+  check_count($dbh, 'firma_bez', 59);
 
   $sth = db_prep_exec($dbh, 'select * from firma_bez order by id_firma, dt_ab', array());
   cmp_firma_bez($sth,   60442, '940', 1, 'DE',  3, 'Fluggruppe Mollis'                                                         , '1996-01-01', '9999-12-31');
@@ -152,6 +165,8 @@ function check_firma_bez($dbh) { #_{
   cmp_firma_bez($sth,  712087, '990', 1, 'DE',  3, 'Varian Medical Systems Imaging Laboratory GmbH'                            , '2003-07-03', '9999-12-31');
   cmp_firma_bez($sth,  718052, '990', 1, 'DE',  3, 'Schenker Stores SA'                                                        , '2003-09-10', '9999-12-31');
   cmp_firma_bez($sth,  728139, '990', 1, 'DE',  3, 'Volltext Lienert'                                                          , '2003-11-26', '9999-12-31');
+  cmp_firma_bez($sth,  738038, '990', 1, 'DE',  3, 'Telelan AG'                                                                , '2004-02-25', '9999-12-31');
+  cmp_firma_bez($sth,  738038, '990', 2, 'FR',  3, 'Telelan SA'                                                                , '2004-02-25', '9999-12-31');
   cmp_firma_bez($sth,  790603, '990', 1, 'DE', -1, 'Presenti, Blumen und Geschenke, Karin Ritler'                              , '2005-05-04', '2011-06-23');
   cmp_firma_bez($sth,  790603, '980', 1, 'DE', -1, 'Presenti, Hofladen, Karin Ritler'                                          , '2011-06-24', '2013-09-23');
   cmp_firma_bez($sth,  790603, '970', 1, 'DE',  3, 'Presenti, Genuss-Hofladen, Ritler'                                         , '2013-09-24', '9999-12-31');
@@ -230,7 +245,7 @@ function cmp_firma_bez($sth, $id_firma, $seq, $typ, $sprachcode, $status, $bezei
 
 function check_zweck($dbh) { #_{
 
-  check_count($dbh, 'zweck', 37);
+  check_count($dbh, 'zweck', 38);
 
   $sth = db_prep_exec($dbh, 'select * from zweck order by id_firma', array());
   cmp_zweck($sth,   60442, 'Die Fluggruppe Mollis vereinigt die am Motorflug auf dem Flugplatz Mollis interessierten Personen des Kantons Glarus und Umgebung mit dem Zweck der Förderung der Luftfahrt im allgemeinen und der Schulung und des Trainings der Mitglieder im besonderen. Sie stellt die notwendige Infrastruktur für die Sicherstellung des Motorflugbetriebes.');
@@ -252,6 +267,7 @@ function check_zweck($dbh) { #_{
   cmp_zweck($sth,  712087, 'Vertrieb von elektronischen und technischen Einrichtungen aller Art und deren Bestandteile sowie Forschungs- und Entwicklungsarbeiten auf dem Gebiete elektronischer und technischer Einrichtungen im Medizinbereich, insbesondere im Bereich der Bildmanagement- und Behandlungsplanung Software; kann Patente, Handelsmarken, technische und industrielle Kenntnisse erwerben, verwalten und übertragen, sich an anderen Industrie- und Handelsunternehmen beteiligen, Zweigniederlassungen und Tochtergesellschaften errichten sowie Grundeigentum erwerben, belasten, veräussern und verwalten.');
   cmp_zweck($sth,  718052, '');
   cmp_zweck($sth,  728139, 'Werbeberatung, Konzeption und Produktion von Ideen und Werbung, insbesondere Texte (Werbetexte, PR-Texte, Journalismus, Drehbücher, Ghostwriting und weitere Textsorten) und Grafik (Logodesign, Layouts für Broschüren, Inserate, Flyer, Plakate und weitere Werbeformen).');
+  cmp_zweck($sth,  738038, '');
   cmp_zweck($sth,  790603, 'Handel mit und Verkauf von Blumen, Geschenken und landwirtschaftlichen Produkten aus der Region und damit zusammenhängende Tätigkeiten sowie Catering.');
   cmp_zweck($sth,  823465, 'Zweck der Gesellschaft ist die Erbringung von Dienstleistungen in den Bereichen Unternehmensberatung, Organisation und Coaching. Die Gesellschaft kann Tochtergesellschaften und Zweigniederlassungen im In- und Ausland errichten, Vertretungen übernehmen und alle Geschäfte eingehen, die den Gesellschaftszweck direkt oder indirekt fördern. Sie kann sich auch an anderen Unternehmungen beteiligen, Darlehen aufnehmen sowie Grundstücke erwerben, verwalten und veräussern.');
   cmp_zweck($sth,  934296, 'Die Gesellschaft bezweckt die Beratung und Schulung von Unternehmen in allen wirtschaftlichen, organisatorischen und technischen Belangen, insbesondere der Analyse, Konzeption, Planung und Projektierung sowie Entwicklung, Lieferung und Unterhalt von IT-Software und Infrastruktur. Die Gesellschaft kann Zweigniederlassungen und Tochtergesellschaften im In- und Ausland errichten und sich an anderen Unternehmen im In- und Ausland beteiligen sowie alle Geschäfte tätigen, die direkt oder indirekt mit ihrem Zweck in Zusammenhang stehen. Die Gesellschaft kann im In- und Ausland Grundeigentum erwerben, belasten, veräussern und verwalten. Sie kann auch Finanzierungen für eigene oder fremde Rechnung vornehmen sowie Garantien und Bürgschaften für Tochtergesellschaften und Dritte eingehen.');
@@ -679,7 +695,7 @@ function cmp_person_firma($sth, $cnt, $id_firma, $dt_journal, $add_rm, $nachname
 
 function check_gemeinde($dbh) { #_{
 
-  check_count($dbh, 'gemeinde', 27);
+  check_count($dbh, 'gemeinde', 28);
 
   $sth = db_prep_exec($dbh, 'select * from gemeinde order by id', array());
   cmp_gemeinde($sth,   56, 'Embrach'            );
@@ -697,6 +713,7 @@ function check_gemeinde($dbh) { #_{
   cmp_gemeinde($sth, 2196, 'Fribourg'           );
   cmp_gemeinde($sth, 2197, 'Givisiez'           );
   cmp_gemeinde($sth, 2305, 'Schmitten (FR)'     );
+  cmp_gemeinde($sth, 2309, 'Wünnewil-Flamatt'   );
   cmp_gemeinde($sth, 2939, 'Schaffhausen'       );
   cmp_gemeinde($sth, 3251, 'Altstätten'         );
   cmp_gemeinde($sth, 4021, 'Baden'              );
