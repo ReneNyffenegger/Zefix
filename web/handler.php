@@ -101,7 +101,9 @@ function print_firma($db, $id_firma) { #_{
     $firma_bezeichnung .= ' (in Auflösung)';
   }
 
-  print_html_start($firma_bezeichnung, "$firma_bezeichnung (Mit Karte und Zuordnung zu Stichworten)", $firma['strasse'] . ' ' . $firma['hausnummer'] . ', ' . $firma['plz'] . ' ' . $firma['ort'] . ', Schweiz');
+# $nominatim_address = $firma['strasse'] . ' ' . $firma['hausnummer'] . ', ' . $firma['plz'] . ' ' . $firma['ort'] . ', Schweiz';
+  $nominatim_address = $firma['strasse'] . ' ' . $firma['hausnummer'] . ', '                       . $firma['ort'] . ', Schweiz';
+  print_html_start($firma_bezeichnung, "$firma_bezeichnung (Mit Karte und Zuordnung zu Stichworten)", $nominatim_address);
 
   print $firma['rechtsform_bezeichnung']. "<p>";
 
@@ -111,7 +113,6 @@ function print_firma($db, $id_firma) { #_{
   if ($firma['postfach'])       { printf("  %s<br>\n"   , tq84_enc($firma['postfach'      ])); }
   printf("  %s %s<br>\n", $firma['plz'], tq84_enc($firma['ort']));
 
-  print "<div id='display_name'></div>\n";
 
   if ($firma['kapital']) { #_{
     $kapital = $firma['kapital'];
@@ -234,6 +235,7 @@ function print_firma($db, $id_firma) { #_{
   }
 
   print "<div id='map_canvas' style='width:90%;height:500px;'></div>\n";
+  print "<div id='display_name'></div>\n";
 
   printf("<p><a href='.'>Hauptseite</a>");
 
