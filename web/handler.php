@@ -149,7 +149,7 @@ function print_firma($db, $id_firma) { #_{
 
   print "\n<hr>";
 
-  print "<table border=1><tr><td>J</td><td>N</td><td>V</td><td>v</td><td>B</td><td>i</td><td>F</td><td>Z</td><td></td></tr>";
+  print "<table border=1><tr><td>J</td><td>T</td><td>N</td><td>V</td><td>v</td><td>B</td><td>i</td><td>F</td><td>Z</td><td></td></tr>";
 
   $res = db_prep_exec_fetchall($db, 
    '
@@ -157,6 +157,7 @@ function print_firma($db, $id_firma) { #_{
 --    pf.id_firma,
       pf.dt_journal,
       pf.add_rm,
+      pf.titel,
       p.nachname,
       p.vorname,
       p.von,
@@ -186,11 +187,11 @@ function print_firma($db, $id_firma) { #_{
        $nachname = sprintf("<a href='p•%s•%s•%s'>%s</a>", $row['nachname'], $row['vorname'], $row['von'], $row['nachname']);
     }
 
-    printf ("<tr class='%s'><td>%s</td></td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>\n",
+    printf ("<tr class='%s'><td>%s</td></td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>\n",
       $row['add_rm'] == '+' ? 'add' : 'rm', 
       $row['dt_journal'],
  #    $row['nachname'], $row['vorname'], $row['von'],
-      $nachname       , $row['vorname'], $row['von'],
+      $row['titel'], $nachname       , $row['vorname'], $row['von'],
       $row['bezeichnung'],
       $row['in_'],
       $row['funktion'], $row['zeichnung'],
