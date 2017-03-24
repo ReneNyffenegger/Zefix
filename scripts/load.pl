@@ -99,7 +99,8 @@ sub load_daily_summaries { #_{ Basically loads person_firma_stg
 
   trunc_table_person_firma_stg();
 
-  my $sth_ins_person_firma_stg = $dbh->prepare('insert into person_firma_stg values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+  my $sth_ins_person_firma_stg = $dbh->prepare('insert into person_firma_stg values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?               )') or die;
+# my $sth_ins_person_firma_stg = $dbh->prepare('insert into person_firma_stg values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
 
   my $file_cnt = 0;
   for my $file (Zefix::daily_summary_files()) { #_{
@@ -117,10 +118,16 @@ sub load_daily_summaries { #_{ Basically loads person_firma_stg
                  $rec         ->{id_firma},
                  $rec         ->{dt_journal},
                  $personen_rec->{add_rm},
-
+                 $personen_rec->{titel},
                  $personen_rec->{nachname},
                  $personen_rec->{vorname},
                  $personen_rec->{von},
+#              ${$personen_rec->{von}}[0],
+#              ${$personen_rec->{von}}[1],
+#              ${$personen_rec->{von}}[2],
+#              ${$personen_rec->{von}}[3],
+#              ${$personen_rec->{von}}[4],
+#              ${$personen_rec->{von}}[5],
                  $personen_rec->{bezeichnung},
                  $personen_rec->{in},
 
@@ -194,6 +201,7 @@ sub load_person { #_{
       s.dt_journal,
       s.add_rm,
       s.in_,
+      s.titel,
       s.funktion,
       s.zeichnung,
       s.stammeinlage   einlage
@@ -1121,9 +1129,18 @@ create table person_firma_stg (
   id_firma          int  not null,
   dt_journal        text not null,
   add_rm            text not null,
+  titel             text,
   nachname          text,
   vorname           text,
+  --
   von               text,
+--von1              text,
+--von2              text,
+--von3              text,
+--von4              text,
+--von5              text,
+--von6              text,
+  --
   bezeichnung       text,
   in_               text,
   --

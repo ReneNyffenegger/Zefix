@@ -86,6 +86,8 @@ f 718052: einmal »mit Einzelunterschrift«, einmal einfach »Einzelunterschrift
 
 Ein Häufiger Name scheint Heiniger Daniel zu sein (vgl f844659)
 
+»Paul Dr., genannt Dr. PI«
+
 http://renenyffenegger.ch/Firmen/f1204062: Karte wird nicht angezeigt
 
 f844659 :
@@ -165,41 +167,6 @@ Heimat:
 
   http://renenyffenegger.ch/Firmen/f719457 -> Hereth, Hannjörg, Heimat: Ingenbohl
 
-Cervelat Prominenz
-  Jens Alder
-    http://renenyffenegger.ch/Firmen/p%E2%80%A2Alder%E2%80%A2Jens%E2%80%A2Gais
-
-  Remo Stoffel
-    http://renenyffenegger.ch/Firmen/p%E2%80%A2Stoffel%E2%80%A2Remo%E2%80%A2Vals
-  Urs P. Gasche
-    http://renenyffenegger.ch/Firmen/p%E2%80%A2Gasche%E2%80%A2Urs%20P.%E2%80%A2Basel
-  Hans Räz
-    http://renenyffenegger.ch/Firmen/p%E2%80%A2R%C3%A4z%E2%80%A2Hans%E2%80%A2Rapperswil%20BE
-  Philipp Hildebrand
-    http://renenyffenegger.ch/Firmen/p%E2%80%A2Hildebrand%E2%80%A2Philipp%20Michael%20Dr.%E2%80%A2Horw
-    http://renenyffenegger.ch/Firmen/p%E2%80%A2Hildebrand%E2%80%A2Philipp%20M.%E2%80%A2Horw
-    Ist offenbar auch in http://renenyffenegger.ch/Firmen/f716417 dabei …
-  Thomas Jordan
-    http://renenyffenegger.ch/Firmen/p%E2%80%A2Jordan%E2%80%A2Thomas%20Jakob%20Ulrich%20Prof.%20Dr.%E2%80%A2Bern
-  Ernst Sieber
-    http://renenyffenegger.ch/Firmen/p%E2%80%A2Sieber%E2%80%A2Pfarrer%20Ernst%E2%80%A2Z%C3%BCrich
-  Carsten Schloter
-
-  Annemarie Huber-Hotz
-    http://renenyffenegger.ch/Firmen/p%E2%80%A2Huber-Hotz%E2%80%A2Annemarie%E2%80%A2Baar
-
-  Adolf Ogi
-    http://renenyffenegger.ch/Firmen/p%E2%80%A2Ogi%E2%80%A2Adolf%E2%80%A2Kandersteg
-
-  Wetterpropheten:
-    Wick?
-    Kachelmann
-
-  Toni Brunner
-    http://renenyffenegger.ch/Firmen/p%E2%80%A2Brunner%E2%80%A2Toni%E2%80%A2Hemberg
-
-  Gustav Furrer
-    http://renenyffenegger.ch/Firmen/p%E2%80%A2Furrer%E2%80%A2Dr.%20Gustav%E2%80%A2Z%C3%BCrich
 
 
 f270248, 03-133: »Aufsichtsbehörde neu«
@@ -236,6 +203,8 @@ ftp://ftp.zefix.ch/hrdata/NEWS-2016-08-18.txt
    Bitte beachten Sie, dass der FTP-Zugang, wie bereits in den News vom 11.03.2013
    angekündigt, per Ende 2016 endgültig aufgehoben wird.
 
+
+
 { Interessante Firmen
 
   All die Firmen, die mit Tivona beginnen
@@ -251,7 +220,7 @@ ftp://ftp.zefix.ch/hrdata/NEWS-2016-08-18.txt
 
 .mode column
 .width 8 30 30 30 70 8
-  select
+  select distinct
     p.id,
     p.nachname,
     p.vorname,
@@ -271,19 +240,77 @@ ftp://ftp.zefix.ch/hrdata/NEWS-2016-08-18.txt
     (p.nachname  like '%Parmelin%'           and  p.vorname like '%Guy%'                                 ) or
     (p.nachname  like '%Sommaruga%'          and  p.vorname like '%Simonetta%'                           ) or
     (p.nachname  like '%Berset%'             and  p.vorname like '%Alain%'                               ) or
-    (p.nachname  like '%Thurnherr%'          and  p.vorname like '%Walter%                               ) or -- Bundeskanzer
+    (p.nachname  like '%Thurnherr%'          and  p.vorname like '%Walter%'                              ) or -- Bundeskanzer
+     --
+    (p.nachname  like '%Blocher%'            and  p.vorname like '%Christoph%'                           ) or
+    (p.nachname  like '%Stich%'              and  p.vorname like '%Otto%'                                ) or
      --
     (p.nachname  like '%von%Däniken%'        and  p.vorname like '%Erich%'                               ) or
     (p.nachname  like '%Thurnheer%'          and (p.vorname like '%Bernhard%' or p.vorname like '%Beni%')) or
     (p.nachname  like '%Schawinski%'         and  p.vorname like '%Roger%'                               ) or
     (p.nachname  like '%Giacobbo%'           and  p.vorname like '%Viktor%'                              ) or
     (p.nachname  like '%Thiel%'              and  p.vorname like '%Andres%'                              ) or
+    --
     (p.nachname  like '%Russi%'              and  p.vorname like '%Bernhard%'                            ) or
-    (p.nachname  like '%Federer%'            and  p.vorname like '%Roger%'                               )
+    (p.nachname  like '%Hess%'               and  p.vorname like '%Erika%'                               ) or
+    (p.nachname  like '%Cathomen%'           and  p.vorname like '%Conradin%'                            ) or
+    --
+    (p.nachname  like '%Zurbriggen%'         and  p.vorname like '%Pirmin%'                              ) or
+    (p.nachname  like '%Federer%'            and  p.vorname like '%Roger%'                               ) or
+    (p.nachname  like '%Hingis%'             and  p.vorname like '%Martina%'                             ) or
+     --
+    (p.nachname  like '%Alder%'              and  p.vorname like '%Jens%'                                ) or -- http://renenyffenegger.ch/Firmen/p%E2%80%A2Alder%E2%80%A2Jens%E2%80%A2Gais
+    (p.nachname  like '%Gasche%'             and  p.vorname like '%Urs%P%'                               ) or -- http://renenyffenegger.ch/Firmen/p%E2%80%A2Gasche%E2%80%A2Urs%20P.%E2%80%A2Basel
+    (p.nachname  like '%Stoffel%'            and  p.vorname like '%Remo%'                                ) or -- http://renenyffenegger.ch/Firmen/p%E2%80%A2Stoffel%E2%80%A2Remo%E2%80%A2Vals
+    (p.nachname  like '%Hildebrand%'         and  p.vorname like '%Philipp%'                             ) or -- http://renenyffenegger.ch/Firmen/p%E2%80%A2Hildebrand%E2%80%A2Philipp%20Michael%20Dr.%E2%80%A2Horw
+                                                                                                              -- http://renenyffenegger.ch/Firmen/p%E2%80%A2Hildebrand%E2%80%A2Philipp%20M.%E2%80%A2Horw
+                                                                                                              -- Ist offenbar auch in http://renenyffenegger.ch/Firmen/f716417 dabei …
+    (p.nachname  like '%Jordan%'             and  p.vorname like '%Thomas%'                              ) or
+    (p.nachname  like '%Sieber%'             and  p.vorname like '%Ernst%'                               ) or -- http://renenyffenegger.ch/Firmen/p%E2%80%A2Sieber%E2%80%A2Pfarrer%20Ernst%E2%80%A2Z%C3%BCrich
+    (p.nachname  like '%Huber%Hotz%'         and  p.vorname like '%Annemarie%'                           ) or
+    (p.nachname  like '%Ogi%'                and  p.vorname like '%Adolf%'                               ) or -- http://renenyffenegger.ch/Firmen/p%E2%80%A2Ogi%E2%80%A2Adolf%E2%80%A2Kandersteg
+    (p.nachname  like '%Brunner%'            and  p.vorname like '%Toni%'                                ) or
+    (p.nachname  like '%Furrer%'             and  p.vorname like '%Gustav%'                              ) or
+    --
+    (p.nachname  like '%Kachelmann%'         and  p.vorname like '%Jörg%'                                ) or
+    (p.nachname  like '%Wick%'               and  p.vorname like '%Peter%'                               ) or
+    (p.nachname  like '%Bucheli%'            and  p.vorname like '%Thomas%'                              ) or
+    --
+    (p.nachname  like '%Andress%'            and  p.vorname like '%Ursula%'                              ) or
+    (p.nachname  like '%Pulver%'             and  p.vorname like '%Liselotte%'                           ) or
+    (p.nachname  like '%Felix%'              and  p.vorname like '%Kurt%'                                ) or
+    (p.nachname  like '%Felix%'              and  p.vorname like '%Paola%'                               ) or
+    (p.nachname  like '%del Medico%'         and  p.vorname like '%Paola%'                               ) or
+    (p.nachname  like '%Hohler%'             and  p.vorname like '%Franz%'                               ) or
+    (p.nachname  like '%Niggli-Luder%'       and  p.vorname like '%Simone%'                              ) or
+    (p.nachname  like '%Baumann%'            and  p.vorname like '%René%'                                ) or -- DJ Bobo
+    (p.nachname  like '%Zumthor%'            and  p.vorname like '%Peter%'                               ) or
+    (p.nachname  like '%Karl%Alex%'          and  p.vorname like '%Müller%'                              ) or -- Nobelpreis
+    (p.nachname  like '%Cohn%'               and  p.vorname like '%Arthur%'                              ) or
+    (p.nachname  like '%Suter%'              and  p.vorname like '%Martin%'                              ) or
+    (p.nachname  like '%Bieri%'              and  p.vorname like '%Peter%'                               ) or
+    --
+    (p.nachname  like '%Gunzinger%'          and  p.vorname like '%Anton%'                               ) or
+    --
+    (p.nachname  like '%Schwarzer%'          and  p.vorname like '%Alice%'                               ) or
+     1=0
   order by
     p.nachname,
-    p.vorname
+    p.vorname,
+    p.von
   ;
+
+
+
+
+  Adolf Ogi
+
+  Wetterpropheten:
+    Wick?
+
+  Toni Brunner
+  Gustav Furrer
+    http://renenyffenegger.ch/Firmen/p%E2%80%A2Furrer%E2%80%A2Dr.%20Gustav%E2%80%A2Z%C3%BCrich
   
 
 }

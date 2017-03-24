@@ -29,9 +29,17 @@ while (my $rec = Zefix::parse_next_daily_summary_line($zefix_file)) {
 
 
   my $personen_trs = '<tr>
+    <td>Titel</td>
     <td>Nachname</td>
     <td>Vorname</td>
     <td>von</td>
+  <!--
+    <td>2</td>
+    <td>3</td>
+    <td>4</td>
+    <td>5</td>
+    <td>6</td>
+    -->
     <td>Bezeichung</td>
     <td>in</td>
 
@@ -57,6 +65,16 @@ while (my $rec = Zefix::parse_next_daily_summary_line($zefix_file)) {
         <td>%s</td>
         <td>%s</td>
         <td>%s</td>
+
+        <td>%s</td>
+        <!-- von 1 .. 6
+        <td> s</td>
+        <td> s</td>
+        <td> s</td>
+        <td> s</td>
+        <td> s</td>
+        -->
+
         <td>%s</td>
       <!-- ---------- -->
         <td>%s</td>
@@ -67,9 +85,16 @@ while (my $rec = Zefix::parse_next_daily_summary_line($zefix_file)) {
         </tr>\n",
 #     $personen_rec->{add_rm},
       $personen_rec->{add_rm} eq '-' ? 'del' : 'add',
+      $personen_rec->{titel}        // '',
       $personen_rec->{nachname}     // '',
       $personen_rec->{vorname}      // '',
       $personen_rec->{von}          // '',
+#   ${$personen_rec->{von}}[0]      // '',
+#   ${$personen_rec->{von}}[1]      // '',
+#   ${$personen_rec->{von}}[2]      // '',
+#   ${$personen_rec->{von}}[3]      // '',
+#   ${$personen_rec->{von}}[4]      // '',
+#   ${$personen_rec->{von}}[5]      // '',
       $personen_rec->{bezeichnung}  // '',
       $personen_rec->{in}           // '',
 

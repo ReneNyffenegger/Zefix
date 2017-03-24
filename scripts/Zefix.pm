@@ -762,9 +762,45 @@ sub find_persons_from_daily_summary_rec { #_{
 
   } #_}
 
+  for my $rec_ (@ret) {
+#   $rec_->{von} = split_von($rec_->{von});
+
+
+#   if ($rec->{vorname} and $rec->{vorname} =~ s/(( *Prof\. *)*( *Dr\. *)*( *\bh\. *c\. *)*)//) {
+    if ($rec_->{vorname}) {
+      my @titles;
+        
+      while ($rec_->{vorname} =~ s/^ *((Prof|Dr|h\. ?c)\.) *//) {
+        push @titles, $1;
+      } 
+#       and $rec->{vorname} =~ s/(( *Prof\. *)*( *Dr\. *)*( *\bh\. *c\. *)*)//) {
+
+      $rec_->{titel} = join " ", @titles;
+    }
+    else {
+      $rec_->{titel} = '';
+    }
+
+#   if ($rec->{vorname} =~ s/ *Prof\. *//g) {
+#     push @titles, 'Dr.';
+#   }
+#   if ($rec->{vorname} =~ s/ *Dr\. *//) {
+#     push @titles, 'Dr.';
+#   }
+
+  }
+
   return @ret;
 
 
+} #_}
+
+
+sub split_von { #_{
+
+  return [] unless $_[0];
+
+  return [sort (split ('(?:,| und | et | e )', $_[0]))];
 } #_}
 
 sub registeramt_with_special_wording { #_{
