@@ -1,7 +1,7 @@
 package Zefix;
 
 # use Exporter;
-use Encode qw(decode encode);
+# use Encode qw(decode encode);
 
 use warnings;
 use strict;
@@ -884,7 +884,13 @@ sub parse_person_more { #_{
   my $rec_person = shift;
   my $more       = shift;
 
-  $more =~ s/ *[[(](?:bisher|précédemment|finora):? *([^\])]+)[\])]//;
+
+# 2017-03-24 commented: version that tried to fix [ … ] and ( … ) in one match
+# $more =~ s/ *[[(](?:bisher|précédemment|finora):? *([^\])]+)[\])]//;
+#
+# Now: two matches. Hopefully a bit better...
+  $more =~ s/ *\[(?:bisher|précédemment|finora):? *([^\]]+)\]//;
+  $more =~ s/ *\((?:bisher|précédemment|finora):? *([^\)]+)\)//;
 
   my $person_det_bisher = $1;
 
@@ -892,11 +898,13 @@ sub parse_person_more { #_{
   $more =~ s/ *[[(]wie bisher[\])]//;
 
   $more =~ s/ *[[(](?:nicht|non): *([^\])]+)[\])]//;
+# $more =~ s/ *[\[]bisher:([^\])]+)[\]]//;
   my $person_det_nicht = $1;
 
   my @parts = split ' *, *', $more;
 
   @parts = grep { #_{ Zeichnung
+
 
      if (/[Uu]nterschrift/           or
          /[Pp]rokura/                or
@@ -909,7 +917,7 @@ sub parse_person_more { #_{
          /\bKU\b/
         ) {
 
-        print "Already exists $rec->{id_firma}: $rec_person->{zeichnung}, _ = $_\n" if exists $rec_person->{zeichnung} and $_ ne $rec_person->{zeichnung};
+        print "Already exists $rec->{id_firma}: $rec_person->{nachname} $rec_person->{vorname} $rec_person->{zeichnung}, _ = $_\n" if exists $rec_person->{zeichnung} and $_ ne $rec_person->{zeichnung};
         $rec_person->{zeichnung} = s_back($_);
         0;
 

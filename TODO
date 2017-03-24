@@ -30,9 +30,52 @@ select pf.id_firma, p.vorname from person p join person_firma pf on p.id = pf.id
 select * from person where von like '%ist nicht mehr%wird aber%';
 
 
+Titel:
+  sind nicht nur Dr. und Prof.(?) sondern auch Pfarrer (Siehe http://renenyffenegger.ch/Firmen/p%E2%80%A2Sieber%E2%80%A2Pfarrer%20Ernst%E2%80%A2Z%C3%BCrich)
+
+Interessante Zeichnungen
+  BIZ
+    http://renenyffenegger.ch/Firmen/f217714
+
+Interessaten Firmen
+  BIZ
+    http://renenyffenegger.ch/Firmen/f217714 (s.oben)
+
+  SWISSAID
+    http://renenyffenegger.ch/Firmen/f296939
+
+  Der Messias im Tempel
+    http://renenyffenegger.ch/Firmen/f928830
+    URL: http://www.dermessiasimtempel.com
+
+  Schw. Nationalbank
+    Bern:    http://renenyffenegger.ch/Firmen/f166201
+    Zürich:  http://renenyffenegger.ch/Firmen/f772850
+
+    TODO: Möglicherweise hat es im Text Abkürzungen mit III. und II. etc »Vizepräsident des Direktoriums und Vorsteher des II«
+
+  ETH Zürich Foundation
+    http://renenyffenegger.ch/Firmen/f716417
+
+  7132-\d-APP
+    http://renenyffenegger.ch/Firmen/p%E2%80%A2Stoffel%E2%80%A2Remo%E2%80%A2Vals
+
+person.von
+  http://renenyffenegger.ch/Firmen/f684974
+    Weber (Perregaux) Gabrielle 1x mit vier »und«, 1x mit 3 »,« und 1 »und«
+
+http://renenyffenegger.ch/Firmen/f1111024
+  Hat »Restaurant Lamm« im Firmen-Zusatz
+
+  select count(*), address_zusatz from firma where address_zusatz != '' group by address_zusatz order by count(*);
+
 Martin Scholl
   Einmal aus Zofingen: http://renenyffenegger.ch/Firmen/p%E2%80%A2Scholl%E2%80%A2Martin%E2%80%A2Zofingen
   Einmal aus Mühletal: http://renenyffenegger.ch/Firmen/f135432
+
+Hans Peter Gränicher
+  http://renenyffenegger.ch/Firmen/p%E2%80%A2Gr%C3%A4nicher%E2%80%A2Hans%20Peter%E2%80%A2Heimenhausen
+  http://renenyffenegger.ch/Firmen/p%E2%80%A2Gr%C3%A4nicher%E2%80%A2Hans%20Peter%E2%80%A2R%C3%B6thenbach%20bei%20Herzogenbuchsee
 
 http://renenyffenegger.ch/Firmen/f393746
   -> War ein UTF8 Problem? Insbesondere Journal 2015-05-12
@@ -117,7 +160,47 @@ f196355 03-234 hat "in Tempe, Arizona (USA)"
 
 f677433, 03-234 hat "in St. Helier, Jersey (Channel Islands/GB)"
 
-f729044, 03-234 hat "Heimat: Bundesrepublik Deutschland"
+Heimat:
+  f729044, 03-234 hat "Heimat: Bundesrepublik Deutschland"
+
+  http://renenyffenegger.ch/Firmen/f719457 -> Hereth, Hannjörg, Heimat: Ingenbohl
+
+Cervelat Prominenz
+  Jens Alder
+    http://renenyffenegger.ch/Firmen/p%E2%80%A2Alder%E2%80%A2Jens%E2%80%A2Gais
+
+  Remo Stoffel
+    http://renenyffenegger.ch/Firmen/p%E2%80%A2Stoffel%E2%80%A2Remo%E2%80%A2Vals
+  Urs P. Gasche
+    http://renenyffenegger.ch/Firmen/p%E2%80%A2Gasche%E2%80%A2Urs%20P.%E2%80%A2Basel
+  Hans Räz
+    http://renenyffenegger.ch/Firmen/p%E2%80%A2R%C3%A4z%E2%80%A2Hans%E2%80%A2Rapperswil%20BE
+  Philipp Hildebrand
+    http://renenyffenegger.ch/Firmen/p%E2%80%A2Hildebrand%E2%80%A2Philipp%20Michael%20Dr.%E2%80%A2Horw
+    http://renenyffenegger.ch/Firmen/p%E2%80%A2Hildebrand%E2%80%A2Philipp%20M.%E2%80%A2Horw
+    Ist offenbar auch in http://renenyffenegger.ch/Firmen/f716417 dabei …
+  Thomas Jordan
+    http://renenyffenegger.ch/Firmen/p%E2%80%A2Jordan%E2%80%A2Thomas%20Jakob%20Ulrich%20Prof.%20Dr.%E2%80%A2Bern
+  Ernst Sieber
+    http://renenyffenegger.ch/Firmen/p%E2%80%A2Sieber%E2%80%A2Pfarrer%20Ernst%E2%80%A2Z%C3%BCrich
+  Carsten Schloter
+
+  Annemarie Huber-Hotz
+    http://renenyffenegger.ch/Firmen/p%E2%80%A2Huber-Hotz%E2%80%A2Annemarie%E2%80%A2Baar
+
+  Adolf Ogi
+    http://renenyffenegger.ch/Firmen/p%E2%80%A2Ogi%E2%80%A2Adolf%E2%80%A2Kandersteg
+
+  Wetterpropheten:
+    Wick?
+    Kachelmann
+
+  Toni Brunner
+    http://renenyffenegger.ch/Firmen/p%E2%80%A2Brunner%E2%80%A2Toni%E2%80%A2Hemberg
+
+  Gustav Furrer
+    http://renenyffenegger.ch/Firmen/p%E2%80%A2Furrer%E2%80%A2Dr.%20Gustav%E2%80%A2Z%C3%BCrich
+
 
 f270248, 03-133: »Aufsichtsbehörde neu«
 
