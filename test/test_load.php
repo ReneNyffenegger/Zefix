@@ -354,10 +354,13 @@ function check_person_firma($dbh) { #_{
   $amt_beruf_vorsor_stift= 'Amt für berufliche Vorsorge und Stiftungen des Kantons Zürich';
   $bvg_aufsicht = 'BVG- und Stiftungsaufsicht des Kantons Zürich (BVS) (CHE-239.560.630)';
 
+  $riedo_st_von = 'Düdingen, Bösingen und Rechthalten';
+  $riedo_an_von = 'Düdingen, Bösingen, Rechthalten, Basel, Bern und Erlach';
+
   $stang = 'Staatsangehörige';
   $stangr = 'Staatsangehöriger';
 
-  check_count($dbh, 'person_firma', 282);
+  check_count($dbh, 'person_firma', 284);
   $sth = db_prep_exec($dbh, "
     select
       pf.id_firma,
@@ -557,6 +560,10 @@ function check_person_firma($dbh) { #_{
     cmp_person_firma($sth,  $cnt++,  325321   , '2012-04-30'  , '+'  , 'Philipona'        , 'Alexandra'        ,  null                                 ,  null                                       ,  null                       ,  null                                        ,  null                                                  ,  null                                                   );
     cmp_person_firma($sth,  $cnt++,  718052   , '2012-06-04'  , '+'  , 'Hauser'           , 'Matthias'         ,  null                                 , null                                        , 'Nierlet-les-Bois'          ,  null                                        , 'Einzelprokura'                                        ,   null                                                  );
     cmp_person_firma($sth,  $cnt++,  270248   , '2012-07-31'  , '+'  ,  null              ,  null              ,  null                                 ,$bvg_aufsicht                                , ''                          ,'Aufsichtsbehörde'                            ,  null                                                  ,   null                                                  );
+
+    cmp_person_firma($sth,  $cnt++, 1111024   , '2012-08-27'  , '+'  , 'Riedo'            , 'Andrea'           , $riedo_an_von                         , NULL                                        , 'Sursee'                    ,  null                                        , $eu                                                    ,   null                                                  );
+    cmp_person_firma($sth,  $cnt++, 1111024   , '2012-08-27'  , '+'  , 'Riedo'            , 'Stephan'          , $riedo_st_von                         , NULL                                        , 'Sursee'                    , 'Inhaber'                                    , $eu                                                    ,   null                                                  );
+
     cmp_person_firma($sth,  $cnt++,  823465   , '2012-12-05'  , '+'  , 'Brabec'           , 'Dr. Bernhard'     , 'österreichischer Staatsangehöriger'  , NULL                                        , 'Zollikon'                  ,  null                                        ,  'mit Kollektivprokura zu zweien'                      ,   null                                                  );
     cmp_person_firma($sth,  $cnt++,  823465   , '2012-12-05'  , '+'  , 'Hausmann'         , 'Alexander'        , 'Dietikon'                            , NULL                                        , 'Dietikon'                  ,  null                                        ,  'mit Kollektivprokura zu zweien'                      ,   null                                                  );
     cmp_person_firma($sth,  $cnt++,  823465   , '2012-12-05'  , '+'  , 'Rutz'             , 'Candid'           , 'Emmen'                               , NULL                                        , 'Zürich'                    ,  null                                        ,  'mit Kollektivprokura zu zweien'                      ,   null                                                  );
