@@ -14,7 +14,7 @@ echo "Ok\n";
 
 function check_firma($dbh) { #_{
 
-  check_count($dbh, 'firma', 39);
+  check_count($dbh, 'firma', 42);
 
   $zuffrey = 'Zufferey Aurélie et Tânia Margarida da Mota Cardoso Kiosque Liberté';
   $fiduc_crans = 'Fiduciaire de Crans-Montana (FCM) SA';
@@ -33,8 +33,10 @@ function check_firma($dbh) { #_{
   cmp_firma($sth,  270248, 'Dr. Hans Duttweiler-Hug-Stiftung'              , 'CH02079010266',    null,   261,    null, 'CHF',  2, null         , 6797676,'c/o Dr. René Schwarzmann'           ,'Theaterstrasse'           ,  '2'  ,''                ,     null, '8001', 'Zürich'           , 7);
   cmp_firma($sth,  271150, "Stiftung Entropia Promotion (Europe) $in_Liq"  , 'CH02079041799',    null,   132,    null,  null,  0,'2004-12-20'  , 2599344,'c/o Ruth Baratti, Villa Schiffli'   ,'Sihlbrugg'                ,   ''  ,''                ,     null, '8816', 'Hirzel'           , 7);
   cmp_firma($sth,  275904, $biomedac                                       , 'CH21701370321',    null,  2196,  102000, 'CHF',  0,'2005-06-20'  , 2888910,''                                   ,''                         ,   ''  ,''                ,     null, ''    , ''                 , 3);
+  cmp_firma($sth,  279826, 'Stiftung für Konsumentenschutz'                , 'CH03570159990',    null,   351,    null,  null,  2, null         , 3041575,''                                   ,'Monbijoustrasse'          , '61'  ,''                ,     null, '3007', 'Bern'             , 7);
   cmp_firma($sth,  325321, 'Schumacher AG'                                 , 'CH21706302639',    null,  2305, 3000000, 'CHF',  2, null         , 3276097,''                                   ,'Industriestrasse'         ,'1-3'  ,''                ,     null, '3185', 'Schmitten'        , 3);
   cmp_firma($sth,  451407, 'ADP Analyse Design Planung AG'                 , 'CH02040197464',    null,   261,  100000, 'CHF',  2, null         , 3242819,''                                   ,'Glatttalstrasse'          ,'104 h',''                ,     null, '8052', 'Zürich'           , 3);
+  cmp_firma($sth,  467455, 'EQUAM Stiftung'                                , 'CH02070006954',    null,   261,    null,  null,  2, null         , 2679977,'c/o Niklaus Lüchinger'              ,'Grossmünsterplatz'        ,  '8'  ,''                ,     null, '8001', 'Zürich'           , 7);
   cmp_firma($sth,  468163, 'Storella Sagl'                                 , 'CH50940068681',    null,  5097,   50000, 'CHF',  2, null         , 2942553,''                                   ,'Via Gabbietta'            ,  '3'  ,''                ,     null, '6614', 'Brissago'         , 4);
   cmp_firma($sth,  563696, 'Federer & Partner Kommanditgesellschaft'       , 'CH02020015631',    null,  '141',   null, null ,  2, null         , 3194841,''                                   ,'Zehntenhofweg'            ,  '6'  ,''                ,     null, '8800', 'Thalwil'          ,10);
   cmp_firma($sth,  601009, 'Abaco Design GmbH'                             , 'CH29040137240',    null,  2939,   20000, 'CHF',  2, null         , 5254450,''                                   ,'Stadthausgasse'           ,  '1'  ,''                ,     null, '8200', 'Schaffhausen'     , 4);
@@ -46,6 +48,7 @@ function check_firma($dbh) { #_{
   cmp_firma($sth,  790603, 'Presenti, Genuss-Hofladen, Ritler'             , 'CH60010123481',    null,  6192,    null, null ,  2, null         , 1091615,''                                   ,'Ried'                     , '38'  ,''                ,     null, '3919', 'Blatten'          , 1);
   cmp_firma($sth,  823465, 'D1 Solutions AG'                               , 'CH02030293815',    null,   261,  100000, 'CHF',  2, null         , 1667155,''                                   ,'Zypressenstrasse'         , '71'  ,''                ,     null, '8004', 'Zürich'           , 3);
   cmp_firma($sth,  934296, 'Akyon AG'                                      , 'CH02030334394',    null,   261,  100000, 'CHF',  2, null         , 3232871,'c/o ADP Analyse Design Planung GmbH','Glatttalstrasse'          ,'104f' ,''                ,     null, '8052', 'Zürich'           , 3);
+  cmp_firma($sth,  959835, 'Stiftung Bärenpark Bern'                       , 'CH03670458868',    null,   351,    null, null ,  2, null         , 6649346,'c/o Tierpark Dählhölzli'            ,'Tierparkweg'              ,  '1'  ,''                ,     null, '3005', 'Bern'             , 7);
   cmp_firma($sth, 1022680, 'Erasols Sàrl'                                  , 'CH64541067320' ,   null,  5749,   20000, 'CHF',  2, null         , 3269925,''                                   ,'Rue de la Cité'           , '21'  ,''                ,     null, '1373', 'Chavornay'        , 4); 
   cmp_firma($sth, 1043245, 'Leo MGE Transports Sàrl'                       , 'CH64541075065' ,   null,  5601,   20000, 'CHF',  2, null         , 3291443,''                                   ,'Chemin de Fleur de Lys'   ,  '1'  ,''                ,     null, '1071', 'Chexbres'         , 4); 
   cmp_firma($sth, 1050881, $zuffrey                                        , 'CH62620141168' ,   null,  6253,    null, null ,  2, null         , 3270557,''                                   ,'Avenue de la Gare'        , '24'  ,''                , 'CP 433', '3963', 'Crans-Montana'    , 2); 
@@ -137,7 +140,7 @@ function check_firma_bez($dbh) { #_{
 
   $en_liq = 'en liquidation';
 
-  check_count($dbh, 'firma_bez', 60);
+  check_count($dbh, 'firma_bez', 65);
 
   $sth = db_prep_exec($dbh, 'select * from firma_bez order by id_firma, dt_ab', array());
   cmp_firma_bez($sth,   60442, '940', 1, 'DE',  3, 'Fluggruppe Mollis'                                                         , '1996-01-01', '9999-12-31');
@@ -151,6 +154,9 @@ function check_firma_bez($dbh) { #_{
   cmp_firma_bez($sth,  271150, '940', 1, 'DE',  3, 'Stiftung Entropia Promotion (Europe) in Liquidation'                       , '1996-01-01', '9999-12-31');
   cmp_firma_bez($sth,  275904, '950', 1, 'FR', -1, 'Biomedac Drug Research SA'                                                 , '1996-01-01', '1999-12-03');
   cmp_firma_bez($sth,  275904, '940', 1, 'FR',  3, "International Academy for Biomedical and Drug Research, Biomedac $en_liq"  , '1999-12-04', '9999-12-31');
+  cmp_firma_bez($sth,  279826, '940', 1, 'DE',  3, 'Stiftung für Konsumentenschutz'                                            , '1999-12-04', '9999-12-31');
+  cmp_firma_bez($sth,  279826, '940', 2, 'FR',  3, 'Fondation pour la protection des consommateurs'                            , '1999-12-04', '9999-12-31');
+  cmp_firma_bez($sth,  279826, '940', 2, 'IT',  3, 'Fondazione per la protezione dei consumatori'                              , '1999-12-04', '9999-12-31');
   cmp_firma_bez($sth,  325321, '950', 1, 'DE', -1, 'H. & I. Schumacher AG'                                                     , '1996-01-01', '1999-12-03');
   cmp_firma_bez($sth,  325321, '950', 2, 'EN', -1, 'H. & I. Schumacher Ltd'                                                    , '1996-01-01', '1999-12-03');
   cmp_firma_bez($sth,  325321, '950', 2, 'FR', -1, 'H. & I. Schumacher SA'                                                     , '1996-01-01', '1999-12-03');
@@ -158,6 +164,7 @@ function check_firma_bez($dbh) { #_{
   cmp_firma_bez($sth,  451407, '940', 1, 'DE', -1, 'adp Analyse, Design & Programmierung GmbH'                                 , '1996-01-01', '2007-05-10');
   cmp_firma_bez($sth,  451407, '930', 1, 'DE', -1, 'ADP Analyse Design Planung GmbH'                                           , '2007-05-11', '2016-12-22');
   cmp_firma_bez($sth,  451407, '920', 1, 'DE',  3, 'ADP Analyse Design Planung AG'                                             , '2016-12-23', '9999-12-31');
+  cmp_firma_bez($sth,  467455, '940', 1, 'DE',  3, 'EQUAM Stiftung'                                                            , '1996-01-01', '9999-12-31');
   cmp_firma_bez($sth,  468163, '940', 1, 'IT',  3, 'Storella Sagl'                                                             , '1999-12-04', '9999-12-31');
   cmp_firma_bez($sth,  468163, '940', 2, 'FR',  3, 'Storella GmbH'                                                             , '1999-12-04', '9999-12-31');
   cmp_firma_bez($sth,  563696, '940', 1, 'DE',  3, 'Federer & Partner Kommanditgesellschaft'                                   , '2000-10-22', '9999-12-31');
@@ -177,6 +184,7 @@ function check_firma_bez($dbh) { #_{
   cmp_firma_bez($sth,  934296, '980', 1, 'DE',  3, 'Akyon AG'                                                                  , '2009-11-12', '9999-12-31');
   cmp_firma_bez($sth,  934296, '980', 2, 'EN',  3, 'Akyon Ltd.'                                                                , '2009-11-12', '9999-12-31');
   cmp_firma_bez($sth,  934296, '980', 2, 'FR',  3, 'Akyon SA'                                                                  , '2009-11-12', '9999-12-31');
+  cmp_firma_bez($sth,  959835, '990', 1, 'DE',  3, 'Stiftung Bärenpark Bern'                                                   , '2009-10-26', '9999-12-31');
   cmp_firma_bez($sth, 1022680, '990', 1, 'DE', 3, 'Erasols Sàrl'                                                               , '2011-06-10', '9999-12-31');
   cmp_firma_bez($sth, 1043245, '990', 1, 'DE', 3, 'Leo MGE Transports Sàrl'                                                    , '2011-12-21', '9999-12-31');
   cmp_firma_bez($sth, 1050881, '990', 1, 'DE', 3, 'Zufferey Aurélie et Tânia Margarida da Mota Cardoso Kiosque Liberté'        , '2012-02-28', '9999-12-31');
@@ -247,7 +255,7 @@ function cmp_firma_bez($sth, $id_firma, $seq, $typ, $sprachcode, $status, $bezei
 
 function check_zweck($dbh) { #_{
 
-  check_count($dbh, 'zweck', 39);
+  check_count($dbh, 'zweck', 42);
 
   $sth = db_prep_exec($dbh, 'select * from zweck order by id_firma', array());
   cmp_zweck($sth,   60442, 'Die Fluggruppe Mollis vereinigt die am Motorflug auf dem Flugplatz Mollis interessierten Personen des Kantons Glarus und Umgebung mit dem Zweck der Förderung der Luftfahrt im allgemeinen und der Schulung und des Trainings der Mitglieder im besonderen. Sie stellt die notwendige Infrastruktur für die Sicherstellung des Motorflugbetriebes.');
@@ -259,9 +267,11 @@ function check_zweck($dbh) { #_{
   cmp_zweck($sth,  251792, '');
   cmp_zweck($sth,  270248, 'Einmalige oder periodische Unterstützung gemeinnütziger Institutionen oder Einzelpersonen sowie Aussetzung eines Musikpreises für Studierende am Konservatorium und an der Musikakademie in Zürich, alles nach Massgabe näherer Bestimmungen der Stiftungsurkunde.');
   cmp_zweck($sth,  271150, 'Bekanntmachung, Bildung, Förderung und Entfaltung von Studien und Projekten bezüglich Alternativ-Entwicklungen und -Erscheinungen in Form von Projekt-Aufträgen und -Bearbeitung von Promotions- und Werbungstheorien mit dem Ziel, neuzeitliche und neuartige Medien, Modelle, Aktionen und Darstellungen einer humanen Promotion und Werbung zu entwickeln. Die Tätigkeit der Stiftung richtet sich im Geist und nach dem Geschehen sowie gebietsweise im Sinne der entstehenden europäischen Gemeinschaft und will dieser konkrete Formen der Veräusserung verleihen.');
-  cmp_zweck($sth,  275904,  '');
+  cmp_zweck($sth,  275904, '');
+  cmp_zweck($sth,  279826, 'Wahrung der Interessen der Konsumenten, insbesondere Schutz der Konsumenten vor Benachteiligung usw.');
   cmp_zweck($sth,  325321, 'Das Binden, Veredeln, Lagern und Verteilen von gedruckten Kommunikationsmitteln und von Dokumenten sowie die damit verbundene Beratung und koordinierte Abwicklung.');
   cmp_zweck($sth,  451407, 'Die Gesellschaft bezweckt die Beratung und Schulung von Unternehmen und Verwaltungen in allen wirtschaftlichen, organisatorischen und technischen Belangen, insbesondere der Analyse, Konzeption, Planung und Projektierung sowie Entwicklung, Lieferung und Unterhalt von IT-Software und -Infrastruktur.  Die Gesellschaft kann Zweigniederlassungen und Tochtergesellschaften im In- und Ausland errichten und sich an anderen Unternehmen im In- und Ausland beteiligen sowie alle Geschäfte tätigen, die direkt oder indirekt mit ihrem Zweck in Zusammenhang stehen. Die Gesellschaft kann im In- und Ausland Grundeigentum erwerben, belasten, veräussern und verwalten. Sie kann auch Finanzierungen für eigene oder fremde Rechnung vornehmen sowie Garantien und Bürgschaften für Tochtergesellschaften und Dritte eingehen.');
+  cmp_zweck($sth,  467455, 'Förderung der externen, unabhängigen Qualitätssicherung und -kontrolle in der medizinischen Versorgung, insbesondere in Managed Care-Modellen und -Organisationen; soll zur Schlichtung von Konflikten zwischen Leistungsträgern und Patienten beitragen.');
   cmp_zweck($sth,  468163, 'Il commercio di impianti solari e di case prefabbricate risparmianti energia, tecnica energetica, elementi edili di tutti i generi come pure il commercio all\'ingrosso di prodotti tessili per la protezione solare ed il tempo libero. La società può eseguire tutte le operazioni direttamente o indirettamente correlate allo scopo sociale o che ne favoriscano l\'attuazione, istituire succursali o stabilimenti sul territorio nazionale o all\'estero, partecipare direttamente o indirettamente ad altre società o istituzioni o erogare loro servizi finanziari. La società può acquistare, amministrare e vendere degli immobili.');
   cmp_zweck($sth,  563696, 'Ingenieurbüro zur Planung, Projektierung, Devisierung, Beratung und Bauleitung im Hoch- und Tiefbau.');
   cmp_zweck($sth,  601009, 'Design von, Handel mit und Reparatur von Fahrzeugen, Pneuhandel, Beratungsdienstleistungen auf diesem Gebiet sowie Handel mit Waren aller Art.');
@@ -273,6 +283,7 @@ function check_zweck($dbh) { #_{
   cmp_zweck($sth,  790603, 'Handel mit und Verkauf von Blumen, Geschenken und landwirtschaftlichen Produkten aus der Region und damit zusammenhängende Tätigkeiten sowie Catering.');
   cmp_zweck($sth,  823465, 'Zweck der Gesellschaft ist die Erbringung von Dienstleistungen in den Bereichen Unternehmensberatung, Organisation und Coaching. Die Gesellschaft kann Tochtergesellschaften und Zweigniederlassungen im In- und Ausland errichten, Vertretungen übernehmen und alle Geschäfte eingehen, die den Gesellschaftszweck direkt oder indirekt fördern. Sie kann sich auch an anderen Unternehmungen beteiligen, Darlehen aufnehmen sowie Grundstücke erwerben, verwalten und veräussern.');
   cmp_zweck($sth,  934296, 'Die Gesellschaft bezweckt die Beratung und Schulung von Unternehmen in allen wirtschaftlichen, organisatorischen und technischen Belangen, insbesondere der Analyse, Konzeption, Planung und Projektierung sowie Entwicklung, Lieferung und Unterhalt von IT-Software und Infrastruktur. Die Gesellschaft kann Zweigniederlassungen und Tochtergesellschaften im In- und Ausland errichten und sich an anderen Unternehmen im In- und Ausland beteiligen sowie alle Geschäfte tätigen, die direkt oder indirekt mit ihrem Zweck in Zusammenhang stehen. Die Gesellschaft kann im In- und Ausland Grundeigentum erwerben, belasten, veräussern und verwalten. Sie kann auch Finanzierungen für eigene oder fremde Rechnung vornehmen sowie Garantien und Bürgschaften für Tochtergesellschaften und Dritte eingehen.');
+  cmp_zweck($sth,  959835, 'Die Stiftung bezweckt die Unterstützung des Bärenparks der Stadt Bern, insbesondere bei der Realisierung von Projekten, die aus zoologischer, pädagogischer und touristischer Sicht oder anderswie mit dem Bärenpark Bern in Zusammenhang stehen, sowie bei allfälligen baulichen Erweiterungen. Die Stiftung kann einen Unterstützungsverein gründen. Zu diesem Zweck sammelt die Stiftung Spenden von natürlichen und juristischen Personen, die den Bärenpark unterstützen möchten. Gewinn und Kapital der Stiftung sind ausschliesslich dem vorstehend genannten Zweck gewidmet. Erwerbszwecke sind ausgeschlossen.');
   cmp_zweck($sth, 1022680, 'Commerce de parquets, revêtements de sols, lambris et accessoires pour l\'aménagement intérieur et extérieur (pour but complet, cf. statuts).');
   cmp_zweck($sth, 1043245, 'Transports suisses et internationaux; entreposage, conditionnement, manutention de tous objets et marchandises; logistique, dédouannement; et autres moyens et dispositifs de transport (pour but complet, cf. statuts).');
   cmp_zweck($sth, 1050881, 'L\'exploitation d\'un kiosque');
@@ -710,7 +721,7 @@ function cmp_person_firma($sth, $cnt, $id_firma, $dt_journal, $add_rm, $nachname
 
 function check_gemeinde($dbh) { #_{
 
-  check_count($dbh, 'gemeinde', 29);
+  check_count($dbh, 'gemeinde', 30);
 
   $sth = db_prep_exec($dbh, 'select * from gemeinde order by id', array());
   cmp_gemeinde($sth,   56, 'Embrach'            );
@@ -719,6 +730,7 @@ function check_gemeinde($dbh) { #_{
   cmp_gemeinde($sth,  141, 'Thalwil'            );
   cmp_gemeinde($sth,  155, 'Männedorf'          );
   cmp_gemeinde($sth,  261, 'Zürich'             );
+  cmp_gemeinde($sth,  351, 'Bern'               );
   cmp_gemeinde($sth,  371, 'Biel/Bienne'        );
   cmp_gemeinde($sth, 1098, 'Ruswil'             );
   cmp_gemeinde($sth, 1301, 'Einsiedeln'         );
