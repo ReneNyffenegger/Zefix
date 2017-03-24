@@ -29,10 +29,26 @@ select pf.id_firma, p.vorname from person p join person_firma pf on p.id = pf.id
 
 select * from person where von like '%ist nicht mehr%wird aber%';
 
+Interessante Zeichnungen
+  BIZ
+    http://renenyffenegger.ch/Firmen/f217714
+
+person.von
+  http://renenyffenegger.ch/Firmen/f684974
+    Weber (Perregaux) Gabrielle 1x mit vier »und«, 1x mit 3 »,« und 1 »und«
+
+http://renenyffenegger.ch/Firmen/f1111024
+  Hat »Restaurant Lamm« im Firmen-Zusatz
+
+  select count(*), address_zusatz from firma where address_zusatz != '' group by address_zusatz order by count(*);
 
 Martin Scholl
   Einmal aus Zofingen: http://renenyffenegger.ch/Firmen/p%E2%80%A2Scholl%E2%80%A2Martin%E2%80%A2Zofingen
   Einmal aus Mühletal: http://renenyffenegger.ch/Firmen/f135432
+
+Hans Peter Gränicher
+  http://renenyffenegger.ch/Firmen/p%E2%80%A2Gr%C3%A4nicher%E2%80%A2Hans%20Peter%E2%80%A2Heimenhausen
+  http://renenyffenegger.ch/Firmen/p%E2%80%A2Gr%C3%A4nicher%E2%80%A2Hans%20Peter%E2%80%A2R%C3%B6thenbach%20bei%20Herzogenbuchsee
 
 http://renenyffenegger.ch/Firmen/f393746
   -> War ein UTF8 Problem? Insbesondere Journal 2015-05-12
