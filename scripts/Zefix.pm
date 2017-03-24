@@ -770,7 +770,7 @@ sub find_persons_from_daily_summary_rec { #_{
     if ($rec_->{vorname}) {
       my @titles;
         
-      while ($rec_->{vorname} =~ s/^ *((Prof|Dr|h\. ?c)\.) *//) {
+      while ($rec_->{vorname} =~ s/ *((Prof|Dr|h\. ?c)\.) *//) { # Achtung: Da gibt's einen »genannt % Dr. PI«
         push @titles, $1;
       } 
 #       and $rec->{vorname} =~ s/(( *Prof\. *)*( *Dr\. *)*( *\bh\. *c\. *)*)//) {
