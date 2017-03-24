@@ -1,7 +1,7 @@
 package Zefix;
 
 # use Exporter;
-use Encode qw(decode encode);
+# use Encode qw(decode encode);
 
 use warnings;
 use strict;
