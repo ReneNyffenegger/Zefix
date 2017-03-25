@@ -12,7 +12,7 @@ use DBI;
 our $zefix_root_dir;
 our $zefix_downloads_dir;
 
-my $debug        = 0;
+my $debug        = 1;
 my $debug_indent = 0;
 
 sub init { #_{
@@ -402,12 +402,27 @@ sub find_persons_from_daily_summary_rec { #_{
       push @ret, $person_rec;
 
     } #_}
-    while ($special_parsing =~ s/\. *(?<name>[^.]+), bisher eingetragen, ist zum (?<funktion>[^.]+?) ernannt worden//) { #_{
+    while ($special_parsing =~ s/\. *(?<name>[^.]+), bisher eingetragen, ist zum (?<funktion>[^.]+?) ernannt worden//) { #_{ TODO Beachte Ähnlichkeit zum nächsten s
       my $person_rec = {add_rm => '+'};
 
 
       my $name     = $+{name};
       my $funktion = $+{funktion};
+      $funktion =~ s/räsidenten\b/räsident/;
+      $person_rec -> {funktion} = $funktion;
+     ($person_rec->{nachname}, $person_rec->{vorname}) = name_ohne_komma_to_nachname_vorname($name);
+
+      push @ret, $person_rec;
+
+    } #_}
+    while ($special_parsing =~ s/\. *(?<name>[^.]+),? bisher eingetragen, ist jetzt (?<funktion>[^.]+)//) { #_{ TODO Beachte Ähnlichkeit zum vorherigen s
+      my $person_rec = {add_rm => '+'};
+
+
+
+      my $name     = $+{name};
+      my $funktion = $+{funktion};
+      debug ("bisher eingetragen, ist jetzt...$funktion");
       $funktion =~ s/räsidenten\b/räsident/;
       $person_rec -> {funktion} = $funktion;
      ($person_rec->{nachname}, $person_rec->{vorname}) = name_ohne_komma_to_nachname_vorname($name);
