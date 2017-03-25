@@ -374,7 +374,7 @@ function check_person_firma($dbh) { #_{
   $stang = 'Staatsangehörige';
   $stangr = 'Staatsangehöriger';
 
-  check_count($dbh, 'person_firma', 391);
+  check_count($dbh, 'person_firma', 392);
   $sth = db_prep_exec($dbh, "
     select
       pf.id_firma,
@@ -608,6 +608,7 @@ function check_person_firma($dbh) { #_{
     cmp_person_firma($sth,  $cnt++,  467455, '2010-04-06', '-', 'Dr.'        ,'Roth'             , 'Felix'            , 'Solothurn und Herbetswil'            ,  null                                       , 'Basel'                     , 'Geschäftsführer (Nichtmitglied)'            , 'mit Kollektivunterschrift zu zweien'                  ,  null                                                   );
     cmp_person_firma($sth,  $cnt++,  279826, '2010-05-18', '-', ''           ,'Bruderer'         , 'Manuela'          , 'Trogen'                              ,  null                                       , 'Zürich'                    , 'Mitglied'                                   , 'ohne Zeichnungsberechtigung'                          ,  null                                                   );
     cmp_person_firma($sth,  $cnt++,  279826, '2010-05-18', '-', ''           ,'Hassenstein'      , 'Marianne'         , 'Riehen'                              ,  null                                       , 'Steffisburg'               , 'Mitglied'                                   , 'ohne Zeichnungsberechtigung'                          ,  null                                                   );
+    cmp_person_firma($sth,  $cnt++,  613438, '2010-05-27', '+', ''           ,'Rätz'             , 'Werner'           ,  null                                 , null                                        ,  null                       , 'vorsitzender Geschäftsführer'               ,  null                                                  ,  null                                                   );
     cmp_person_firma($sth,  $cnt++,  467455, '2010-07-02', '+', 'Dr.'        ,'Herren'           , 'Daniel B.'        , 'Lurtigen'                            ,  null                                       , 'Fällanden'                 , 'Mitglied des Stiftungsrates'                , 'ohne Zeichnungsberechtigung'                          ,  null                                                   );
     cmp_person_firma($sth,  $cnt++,  467455, '2010-07-02', '+', ''           ,'Hess'             , 'Sigrid'           , 'Engelberg'                           ,  null                                       , 'Seedorf BE'                , 'Geschäftsführerin'                          , 'mit Kollektivunterschrift zu zweien'                  ,  null                                                   );
     cmp_person_firma($sth,  $cnt++,  251792, '2010-07-07', '-', ''           ,'Riedmüller'       , 'Josef'            , 'deutscher Staatsangehöriger'         , NULL                                        , 'Biberach an der Riss (D)'  , $gs_gf                                       ,  'mit Einzelunterschrift'                              ,   null                                                  );
@@ -803,21 +804,21 @@ function cmp_person_firma($sth, $cnt, $id_firma, $dt_journal, $add_rm, $titel, $
 
   $row = $sth -> fetch();
 
-  if (! eq($row[ 0], $id_firma        )) {throw new Exception("cmp_person_firma (cnt = $cnt) id_firma differs row[0] = $row[0] but $id_firma expected row[1]=$row[1]  dtJournal=$dt_journal"); }
-  if (! eq($row[ 1], $dt_journal      )) {throw new Exception("cmp_person_firma (cnt = $cnt) dt_journal, gotten: $row[1], expected: $dt_journal id_firma=$id_firma"); }
-  if (! eq($row[ 2], $add_rm          )) {throw new Exception("cmp_person_firma (cnt = $cnt) 2 add_rm expected: $add_rm, found: $row[2]\nid_firma: $id_firma, $row[0]\nvorname exp: $vorname, got: $row[4]\n"); }
-  if (! eq($row[ 3], $titel           )) {throw new Exception("cmp_person_firma (cnt = $cnt) 3 titel expected: $titel, found: $row[3]\nid_firma: $id_firma, $row[0]\nvorname exp: $vorname, got: $row[4]\n"); }
-  if (! eq($row[ 4], $nachname        )) {throw new Exception("cmp_person_firma (cnt = $cnt) 4 Nachname found: $row[4], expected: $nachname, id_firma=$id_firma, dt_journal=$dt_journal"); }
-  if (! eq($row[ 5], $vorname         )) {throw new Exception("cmp_person_firma (cnt = $cnt) 5 Vorname found: $row[5], expected $vorname"); }
-  if (! eq($row[ 6], $von             )) {throw new Exception("cmp_person_firma (cnt = $cnt) 6 von found: $row[6], expected $von"); }
-  if (! eq($row[ 7], $bezeichnung     )) {throw new Exception("cmp_person_firma (cnt = $cnt) bezeichnung: " . $row[7] . ' != '  . $bezeichnung); }
+  if (! eq($row[ 0], $id_firma        )) {throw new Exception("\n\n    cmp_person_firma (cnt = $cnt) id_firma differs row[0] = $row[0] but $id_firma expected row[1]=$row[1]  dtJournal=$dt_journal"); }
+  if (! eq($row[ 1], $dt_journal      )) {throw new Exception("\n\n    cmp_person_firma (cnt = $cnt) dt_journal, gotten: $row[1], expected: $dt_journal id_firma=$id_firma"); }
+  if (! eq($row[ 2], $add_rm          )) {throw new Exception("\n\n    cmp_person_firma (cnt = $cnt) 2 add_rm expected: $add_rm, found: $row[2]\nid_firma: $id_firma, $row[0]\nvorname exp: $vorname, got: $row[4]\n"); }
+  if (! eq($row[ 3], $titel           )) {throw new Exception("\n\n    cmp_person_firma (cnt = $cnt) 3 titel expected: $titel, found: $row[3]\nid_firma: $id_firma, $row[0]\nvorname exp: $vorname, got: $row[4]\n"); }
+  if (! eq($row[ 4], $nachname        )) {throw new Exception("\n\n    cmp_person_firma (cnt = $cnt) 4 Nachname found: $row[4], expected: $nachname, id_firma=$id_firma, dt_journal=$dt_journal"); }
+  if (! eq($row[ 5], $vorname         )) {throw new Exception("\n\n    cmp_person_firma (cnt = $cnt) 5 Vorname found: $row[5], expected $vorname"); }
+  if (! eq($row[ 6], $von             )) {throw new Exception("\n\n    cmp_person_firma (cnt = $cnt) 6 von found: $row[6], expected $von"); }
+  if (! eq($row[ 7], $bezeichnung     )) {throw new Exception("\n\n    cmp_person_firma (cnt = $cnt) bezeichnung: " . $row[7] . ' != '  . $bezeichnung); }
 
-  if (! eq($row[ 8], $in_             )) {throw new Exception("\ncmp_person_firma (cnt = $cnt) 8(in) journal=$dt_journal\nid_firma=$id_firma\nin=$in_, row[7]=$row[7]\nvorname $vorname, $row[4]\n"); }
+  if (! eq($row[ 8], $in_             )) {throw new Exception("\n\n    cmp_person_firma (cnt = $cnt) 8(in) journal=$dt_journal\n   id_firma=$id_firma\n   in=$in_, row[7]=$row[7]\n   vorname $vorname, $row[4]\n\n\n"); }
 
   $c = 9;
 
-  if (! eq($row[$c], $funktion        )) {throw new Exception("cmp_person_firma (cnt = $cnt) $c dt_journal=$dt_journal, id_firma=$id_firma, funktion=$funktion, row[c]="          . $row[$c]); } $c++;
-  if (! eq($row[$c], $zeichnung       )) {throw new Exception("cmp_person_firma (cnt = $cnt) $c dt_journal=$dt_journal, id_firma=$id_firma, zeichnung expected:$zeichnung<     found: row[c]="         . $row[$c]); } $c++;
+  if (! eq($row[$c], $funktion        )) {throw new Exception("\n\n    cmp_person_firma (cnt = $cnt) $c dt_journal=$dt_journal, id_firma=$id_firma, funktion=$funktion, row[c]="          . $row[$c] . "\n\n"); } $c++;
+  if (! eq($row[$c], $zeichnung       )) {throw new Exception("\n\n    cmp_person_firma (cnt = $cnt) c=$c\n    dt_journal=$dt_journal\n    id_firma=$id_firma\n    zeichnung expected:$zeichnung<     found: row[c]="         . $row[$c] . "\n\n"); } $c++;
   if (! eq($row[$c], $stammeinlage    )) {
     
     print "\nMismatch Stammeinlage\n";
