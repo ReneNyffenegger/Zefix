@@ -624,6 +624,24 @@ sub find_persons_from_daily_summary_rec { #_{
         debug("person_text = $person_text");
         $debug_indent ++;
 
+
+        if ($person_text =~ /^ *beide (mit .*)/) {
+
+          my $zeichnung = $1;
+          debug("beide mit $zeichnung");
+
+          if (@ret < 2) {
+            print "! beide mit ... ret < 2\n";
+          }
+          else {
+            $ret[-1]->{zeichnung} = $zeichnung;
+            $ret[-2]->{zeichnung} = $zeichnung;
+          }
+
+          $debug_indent --;
+          next;
+        }
+
         my $person_rec = {};
   
         if ($intro_text =~ /^Eingetragene Personen/ or $intro_text =~ /[iI]nscrip?t/ or $intro_text =~ /[Pp]ersone iscritte/ or $intro_text =~ /^Personen neu/) { #_{
