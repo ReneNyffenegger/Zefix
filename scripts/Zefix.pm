@@ -12,7 +12,7 @@ use DBI;
 our $zefix_root_dir;
 our $zefix_downloads_dir;
 
-my $debug        = 1;
+my $debug        = 0;
 my $debug_indent = 0;
 
 sub init { #_{
@@ -1041,7 +1041,15 @@ sub parse_person_more { #_{
          /\bKU\b/
         ) {
 
-        print "Already exists $rec->{id_firma}: $rec_person->{nachname} $rec_person->{vorname} $rec_person->{zeichnung}, _ = $_\n" if exists $rec_person->{zeichnung} and $_ ne $rec_person->{zeichnung};
+        debug("Zeichnung: $_");
+
+        if (exists $rec_person->{zeichnung} and $_ ne $rec_person->{zeichnung}) {
+        
+        #
+        #  Zb f385488 / Test: 17-058
+        #
+          print "Already exists $rec->{id_firma}: $rec_person->{nachname} $rec_person->{vorname} $rec_person->{zeichnung}, _ = $_\n" ;
+        }
         $rec_person->{zeichnung} = s_back($_);
         0;
 
@@ -1055,7 +1063,7 @@ sub parse_person_more { #_{
   @parts = grep { #_{ Funktion
 
 
-     if (/Verwaltungsrat/           or
+     if (/Verwaltungsrat/           or #_{
          /[pP]räsident/             or
          /Geschäftsführer/          or
          /Revisionsstelle\b/        or
@@ -1118,15 +1126,16 @@ sub parse_person_more { #_{
          /\bdipl\./                 or
          /\bGM\b/                  or
          /Chef/            or
-         /provisorischer SR/  # f270248
+         /provisorischer SR/  # f270248 #_}
          
        ) {
 
-        if (exists $rec_person->{function}) {
+        debug ("Funktion: $_");
+        if (exists $rec_person->{funktion}) {
           $rec_person->{funktion} .= ', '. $_;
         }
         else {
-          $rec_person->{funktion} .= s_back($_);
+          $rec_person->{funktion} = s_back($_);
           $rec_person->{funktion} =~ s/^ *//;
         }
         0;

@@ -30,6 +30,9 @@ select pf.id_firma, p.vorname from person p join person_firma pf on p.id = pf.id
 select * from person where von like '%ist nicht mehr%wird aber%';
 
 
+»Gesellschafter, ohne Zeichnungsberechtigung, Geschäftsführer, mit Einzelunterschrift«
+  -> Test 17-058
+
 Titel:
   sind nicht nur Dr. und Prof.(?) sondern auch Pfarrer (Siehe http://renenyffenegger.ch/Firmen/p%E2%80%A2Sieber%E2%80%A2Pfarrer%20Ernst%E2%80%A2Z%C3%BCrich)
 

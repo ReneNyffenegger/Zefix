@@ -380,7 +380,7 @@ function check_person_firma($dbh) { #_{
   $stangr = 'Staatsangehöriger';
   #_}
 
-  check_count($dbh, 'person_firma', 394);
+  check_count($dbh, 'person_firma', 395);
   $sth = db_prep_exec($dbh, "
     select
       pf.id_firma,
@@ -802,6 +802,7 @@ function check_person_firma($dbh) { #_{
     cmp_person_firma($sth,  $cnt++,  325321, '2017-01-06', '+', ''           ,'Strahm'           , 'Roger'            , 'Oberthal'                            ,  null                                       , 'Steffisburg'               ,  null                                        ,  $ku2                                                  ,  null                                                   );
     cmp_person_firma($sth,  $cnt++, 1290391, '2017-01-10', '+', ''           ,'Grätzer'          , 'Adrian Willy'     , 'Einsiedeln'                          , NULL                                        , 'Einsiedeln'                , "$gs und Vorsitzender der $gf"               , $ku2                                                   ,  'mit 10 Stammanteilen zu je CHF 1\'000.00'             );
     cmp_person_firma($sth,  $cnt++, 1290391, '2017-01-10', '+', ''           ,'Oesch'            , 'Severin'          , 'Embrach'                             , NULL                                        , 'Kloten'                    , $gs_gf                                       , $ku2                                                   ,  'mit 10 Stammanteilen zu je CHF 1\'000.00'             ); #_}
+    cmp_person_firma($sth,  $cnt++,  385488, '2017-03-20', '+', ''           ,'Köcher'           , 'Roland'           , 'Steinhausen'                         ,  null                                       , 'Freienbach'                , 'Gesellschafter, Geschäftsführer'            , 'mit Einzelunterschrift'                               ,  'mit einem Stammanteil von CHF 10\'000.00'             );
 
 
   echo "person_firma ok\n";
