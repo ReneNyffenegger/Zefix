@@ -278,8 +278,10 @@ ftp://ftp.zefix.ch/hrdata/NEWS-2016-08-18.txt
     --
     (p.nachname  like '%Andress%'            and  p.vorname like '%Ursula%'                              ) or
     (p.nachname  like '%Pulver%'             and  p.vorname like '%Liselotte%'                           ) or
+    (p.nachname  like '%Berger%'             and  p.vorname like '%Stéphanie%'                           ) or
     (p.nachname  like '%Felix%'              and  p.vorname like '%Kurt%'                                ) or
     (p.nachname  like '%Felix%'              and  p.vorname like '%Paola%'                               ) or
+    (p.nachname  like '%Knie%'               and  p.vorname like '%Rolf%'                                ) or
     (p.nachname  like '%del Medico%'         and  p.vorname like '%Paola%'                               ) or
     (p.nachname  like '%Hohler%'             and  p.vorname like '%Franz%'                               ) or
     (p.nachname  like '%Niggli-Luder%'       and  p.vorname like '%Simone%'                              ) or
@@ -289,6 +291,11 @@ ftp://ftp.zefix.ch/hrdata/NEWS-2016-08-18.txt
     (p.nachname  like '%Cohn%'               and  p.vorname like '%Arthur%'                              ) or
     (p.nachname  like '%Suter%'              and  p.vorname like '%Martin%'                              ) or
     (p.nachname  like '%Bieri%'              and  p.vorname like '%Peter%'                               ) or
+    --
+    (p.nachname  like '%Ineichen%'           and  p.vorname like '%Otto%'                                ) or  -- Otto's Warenposten http://renenyffenegger.ch/Firmen/p%E2%80%A2Ineichen%E2%80%A2Otto%E2%80%A2Sursee
+    (p.nachname  like '%Widrig%'             and  p.vorname like '%Stephan%'                             ) or  -- Chef Zürcher Flughafen
+    (p.nachname  like '%Dörig%'              and  p.vorname like '%Rolf%'                                ) or  -- VR Präsident Swiss Life
+    (p.nachname  like '%Schmid%'             and  p.vorname like '%Andreas%'                             ) or  -- VR Präsident Flughafen AG
     --
     (p.nachname  like '%Gunzinger%'          and  p.vorname like '%Anton%'                               ) or
     --
