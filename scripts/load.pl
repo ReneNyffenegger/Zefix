@@ -669,7 +669,7 @@ sub init_stichwoerter { #_{
    'Catering'                   => {qrs => [ qr/catering/                ] },
    'Chrom'                      => {qrs => [ qr/chrom/                   ] },
    'Cafe'                       => {qrs => [ qr/\bcafe\b/                ] },
-   'Coiffeur'                   => {qrs => [ qr/coiffeur/                ] },
+   'Coiffeur'                   => {qrs => [ qr/coiffe?ur/               ] },
    'Container'                  => {qrs => [ qr/container/               ] },
    'Crêpes'                     => {qrs => [ qr/crepes/                  ] },
    'Dach'                       => {qrs => [ qr/\b(be)?dach/             ] },
