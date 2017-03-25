@@ -290,6 +290,8 @@ ftp://ftp.zefix.ch/hrdata/NEWS-2016-08-18.txt
     (p.nachname  like '%Suter%'              and  p.vorname like '%Martin%'                              ) or
     (p.nachname  like '%Bieri%'              and  p.vorname like '%Peter%'                               ) or
     --
+    (p.nachname  like '%Ineichen%'           and  p.vorname like '%Otto%'                                ) or  -- Otto's Warenposten http://renenyffenegger.ch/Firmen/p%E2%80%A2Ineichen%E2%80%A2Otto%E2%80%A2Sursee
+    --
     (p.nachname  like '%Gunzinger%'          and  p.vorname like '%Anton%'                               ) or
     --
     (p.nachname  like '%Schwarzer%'          and  p.vorname like '%Alice%'                               ) or
