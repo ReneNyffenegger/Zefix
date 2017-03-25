@@ -12,7 +12,7 @@ use DBI;
 our $zefix_root_dir;
 our $zefix_downloads_dir;
 
-my $debug        = 0;
+my $debug        = 1;
 my $debug_indent = 0;
 
 sub init { #_{
@@ -266,7 +266,7 @@ sub find_persons_from_daily_summary_rec { #_{
 
     $debug_indent++;
 
-    my @PARTS = split /(Ausgeschiedene Personen(?: und|,) erloschene Unterschriften|Eingetragene Personen(?: neu oder mutierend)?|Personne et signature radiée|Inscription ou modification de personne(?:\(s\))?|Persone dimissionarie e firme cancellate|Persone iscritte|Nuove persone iscritte o modifiche|Personne\(s\) inscrite\(s\)|Personen neu oder mutierend|Ausgeschiedene Personen): */, $text;
+    my @PARTS = split /(Ausgeschiedene Personen(?: und|,) erloschene Unterschriften|Eingetragene Personen(?: (?:neu oder mutierend|Geändert))?|Personne et signature radiée|Inscription ou modification de personne(?:\(s\))?|Persone dimissionarie e firme cancellate|Persone iscritte|Nuove persone iscritte o modifiche|Personne\(s\) inscrite\(s\)|Personen neu oder mutierend|Ausgeschiedene Personen): */, $text;
 
     my $special_parsing = shift @PARTS;
 
@@ -706,7 +706,7 @@ sub find_persons_from_daily_summary_rec { #_{
             $person_rec->{in} .= "," . s_back($country_with_parans);
           } #_}
   
-          if ($name =~ / *(.*), (?:von|de|da) (.*)/) { #_{
+          if ($name =~ / *(.*), (?:Heimat:|von|de|da) (.*)/) { #_{
   
             my $naturliche_person = $1;
             $person_rec->{von} = $2;

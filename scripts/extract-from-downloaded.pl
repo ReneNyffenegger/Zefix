@@ -15,10 +15,7 @@ GetOptions (
 
 Zefix::init('dev');
 
-# my $downloaded_dir = "$ENV{digitales_backup}Zefix/downloaded/";
 my $dest_dir       = "q/";
-# 
-# die unless -d $downloaded_dir;
 
 my @ids_firma;
 if ($ids) {
@@ -34,11 +31,8 @@ else {
 }
 
 for my $file (Zefix::daily_summary_files) { #_{
-# glob"$downloaded_dir*-*"
-
 
   my $f = Zefix::open_daily_summary_file($file);
-# while (my $in = <$f>)
 
   while(my $in = Zefix::read_next_daily_summary_line($f)) { #_{
 

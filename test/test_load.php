@@ -333,6 +333,8 @@ function cmp_zweck($sth, $id_firma, $zweck) { #_{
 
 function check_person_firma($dbh) { #_{
 
+#_{
+  #_{
   $gs='Gesellschafter';
   $vors='Vorsitzender';
   $praes='Präsident';
@@ -376,8 +378,9 @@ function check_person_firma($dbh) { #_{
 
   $stang = 'Staatsangehörige';
   $stangr = 'Staatsangehöriger';
+  #_}
 
-  check_count($dbh, 'person_firma', 392);
+  check_count($dbh, 'person_firma', 394);
   $sth = db_prep_exec($dbh, "
     select
       pf.id_firma,
@@ -402,6 +405,7 @@ function check_person_firma($dbh) { #_{
       ifnull(vorname    , 'ZZ'),
       ifnull(bezeichnung, 'ZZ')");
 
+#_}
   $cnt=1;
 
     cmp_person_firma($sth,  $cnt++,  601097, '2001-01-22', '+', ''           ,'Kälin'            , 'Angelo'           , 'Einsiedeln'                          , NULL                                        , 'Wangen'                    ,  $gs_gf                                      ,   $eu                                                  ,  'mit einer Stammeinlage von CHF 49\'000'               ); #_{
@@ -459,6 +463,8 @@ function check_person_firma($dbh) { #_{
     cmp_person_firma($sth,  $cnt++,  467455, '2002-12-11', '+', 'Dr.'        ,'Grüninger'        , 'Thomas'           , 'Basel'                               ,  null                                       , 'Riehen'                    , 'Vizepräsident'                              , 'mit Kollektivunterschrift zu zweien'                  ,  null                                                   );
     cmp_person_firma($sth,  $cnt++,  467455, '2002-12-11', '-', 'Dr.'        ,'Schriber Meier'   , 'Adelheid'         , 'Uster und Emmen'                     ,  null                                       , 'Zürich'                    , 'Mitglied'                                   , 'ohne Zeichnungsberechtigung'                          ,  null                                                   );
     cmp_person_firma($sth,  $cnt++,  467455, '2002-12-11', '+', ''           ,'Ziltener'         , 'Erika'            , 'Schübelbach'                         ,  null                                       , 'Zürich'                    , 'Mitglied'                                   , 'ohne Zeichnungsberechtigung'                          ,  null                                                   );
+    cmp_person_firma($sth,  $cnt++,  385488, '2003-04-03', '+', ''           ,'Hostettler'       , 'Bendicht'         , 'Guggisberg'                          ,  null                                       , 'Schindellegi'              , 'Gesellschafter'                             , 'Geschäftsführer mit Einzelunterschrift'               ,  'Stammanteil: CHF 10\'000'                             );
+    cmp_person_firma($sth,  $cnt++,  385488, '2003-04-03', '+', ''           ,'Köcher'           , 'Roland'           , 'Steinhausen'                         ,  null                                       , 'Bäch SZ'                   , 'Gesellschafter'                             , 'Geschäftsführer mit Einzelunterschrift'               ,  'Stammanteil: CHF 10\'000'                             );
     cmp_person_firma($sth,  $cnt++,  712087, '2003-06-30', '+', ''           ,'Oderbolz'         , 'Fritz'            , 'Tübach'                              ,  null                                       , 'Hünenberg'                 , 'Gesellschafter'                             ,  'ohne Zeichnungsberechtigung'                         ,  'mit einer Stammeinlage von CHF 1\'000.--'             );
     cmp_person_firma($sth,  $cnt++,  712087, '2003-06-30', '+', ''           ,'Vogt'             , 'Heinz'            , 'Lauwil'                              ,  null                                       , 'Baldingen'                 , 'Geschäftsführer'                            ,  'mit Einzelunterschrift'                              ,   null                                                  );
     cmp_person_firma($sth,  $cnt++,  712087, '2003-06-30', '+', ''           , null              ,  null              ,  null                                 , 'PricewaterhouseCoopers AG'                 , 'Zürich'                    , 'Revisionsstelle'                            ,   null                                                 ,   null                                                  );
