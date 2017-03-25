@@ -12,7 +12,7 @@ use DBI;
 our $zefix_root_dir;
 our $zefix_downloads_dir;
 
-my $debug        = 1;
+my $debug        = 0;
 my $debug_indent = 0;
 
 sub init { #_{
