@@ -14,7 +14,7 @@ echo "Ok\n";
 
 function check_firma($dbh) { #_{
 
-  check_count($dbh, 'firma', 42);
+  check_count($dbh, 'firma', 43);
 
   $zuffrey = 'Zufferey Aurélie et Tânia Margarida da Mota Cardoso Kiosque Liberté';
   $fiduc_crans = 'Fiduciaire de Crans-Montana (FCM) SA';
@@ -41,6 +41,7 @@ function check_firma($dbh) { #_{
   cmp_firma($sth,  563696, 'Federer & Partner Kommanditgesellschaft'       , 'CH02020015631',    null,  '141',   null, null ,  2, null         , 3194841,''                                   ,'Zehntenhofweg'            ,  '6'  ,''                ,     null, '8800', 'Thalwil'          ,10);
   cmp_firma($sth,  601009, 'Abaco Design GmbH'                             , 'CH29040137240',    null,  2939,   20000, 'CHF',  2, null         , 5254450,''                                   ,'Stadthausgasse'           ,  '1'  ,''                ,     null, '8200', 'Schaffhausen'     , 4);
   cmp_firma($sth,  601097, 'Kälin & Partner Bauingenieure/Planer GmbH'     , 'CH13000119169',    null,  1349 ,  50000, 'CHF',  2, null         , 6209698,''                                   ,'Sonnenriedstrasse'        ,  '9'  ,''                ,     null, '8855', 'Wangen'           , 4);
+  cmp_firma($sth,  613438, 'Auberge des Clefs GmbH'                        , 'CH21705402133',    null,  2284 ,  20000, 'CHF',  2, null         , 2583675,''                                   ,'Route de Chenaux'         ,  '4'  ,''                ,     null, '1789', 'Lugnorre'         , 4);
   cmp_firma($sth,  712087, 'Varian Medical Systems Imaging Laboratory GmbH', 'CH40040245074',    null,  4021, 2000000, 'CHF',  2, null         , 2185269,''                                   ,'Täfernstrasse'            ,  '7'  ,''                ,     null, '5405', 'Baden-Dättwil'    , 4);
   cmp_firma($sth,  718052, 'Schenker Stores SA'                            , 'CH21710024815',  461976,  2197,    null, null ,  2, null         , 7171080,''                                   ,'Route Henri-Stephan'      , '12'  ,''                ,     null, '1762', 'Givisiez'         , 9);
   cmp_firma($sth,  728139, 'Volltext Lienert'                              , 'CH02010440290',    null,   155,    null, null ,  2, null         , 6180656,''                                   ,'Bahnhofstrasse'           , '14'  ,''                ,     null, '8708', 'Männedorf'        , 1);
@@ -140,7 +141,7 @@ function check_firma_bez($dbh) { #_{
 
   $en_liq = 'en liquidation';
 
-  check_count($dbh, 'firma_bez', 65);
+  check_count($dbh, 'firma_bez', 66);
 
   $sth = db_prep_exec($dbh, 'select * from firma_bez order by id_firma, dt_ab', array());
   cmp_firma_bez($sth,   60442, '940', 1, 'DE',  3, 'Fluggruppe Mollis'                                                         , '1996-01-01', '9999-12-31');
@@ -170,6 +171,7 @@ function check_firma_bez($dbh) { #_{
   cmp_firma_bez($sth,  563696, '940', 1, 'DE',  3, 'Federer & Partner Kommanditgesellschaft'                                   , '2000-10-22', '9999-12-31');
   cmp_firma_bez($sth,  601009, '990', 1, 'DE',  3, 'Abaco Design GmbH'                                                         , '2001-01-31', '9999-12-31');
   cmp_firma_bez($sth,  601097, '990', 1, 'DE',  3, 'Kälin & Partner Bauingenieure/Planer GmbH'                                 , '2001-01-31', '9999-12-31');
+  cmp_firma_bez($sth,  613438, '990', 1, 'DE',  3, 'Auberge des Clefs GmbH'                                                    , '2001-05-22', '9999-12-31');
   cmp_firma_bez($sth,  712087, '990', 1, 'DE',  3, 'Varian Medical Systems Imaging Laboratory GmbH'                            , '2003-07-03', '9999-12-31');
   cmp_firma_bez($sth,  718052, '990', 1, 'DE',  3, 'Schenker Stores SA'                                                        , '2003-09-10', '9999-12-31');
   cmp_firma_bez($sth,  728139, '990', 1, 'DE',  3, 'Volltext Lienert'                                                          , '2003-11-26', '9999-12-31');
@@ -255,7 +257,7 @@ function cmp_firma_bez($sth, $id_firma, $seq, $typ, $sprachcode, $status, $bezei
 
 function check_zweck($dbh) { #_{
 
-  check_count($dbh, 'zweck', 42);
+  check_count($dbh, 'zweck', 43);
 
   $sth = db_prep_exec($dbh, 'select * from zweck order by id_firma', array());
   cmp_zweck($sth,   60442, 'Die Fluggruppe Mollis vereinigt die am Motorflug auf dem Flugplatz Mollis interessierten Personen des Kantons Glarus und Umgebung mit dem Zweck der Förderung der Luftfahrt im allgemeinen und der Schulung und des Trainings der Mitglieder im besonderen. Sie stellt die notwendige Infrastruktur für die Sicherstellung des Motorflugbetriebes.');
@@ -276,6 +278,7 @@ function check_zweck($dbh) { #_{
   cmp_zweck($sth,  563696, 'Ingenieurbüro zur Planung, Projektierung, Devisierung, Beratung und Bauleitung im Hoch- und Tiefbau.');
   cmp_zweck($sth,  601009, 'Design von, Handel mit und Reparatur von Fahrzeugen, Pneuhandel, Beratungsdienstleistungen auf diesem Gebiet sowie Handel mit Waren aller Art.');
   cmp_zweck($sth,  601097, 'Planung, Projektierung und Erstellung von Bauten aller Art, insbesondere Erbringen von Baudienstleistungen; kann sich an anderen Unternehmen beteiligen sowie Grundstücke erwerben, halten und veräussern.');
+  cmp_zweck($sth,  613438, 'Betrieb des Restaurants Auberge des Clefs.');
   cmp_zweck($sth,  712087, 'Vertrieb von elektronischen und technischen Einrichtungen aller Art und deren Bestandteile sowie Forschungs- und Entwicklungsarbeiten auf dem Gebiete elektronischer und technischer Einrichtungen im Medizinbereich, insbesondere im Bereich der Bildmanagement- und Behandlungsplanung Software; kann Patente, Handelsmarken, technische und industrielle Kenntnisse erwerben, verwalten und übertragen, sich an anderen Industrie- und Handelsunternehmen beteiligen, Zweigniederlassungen und Tochtergesellschaften errichten sowie Grundeigentum erwerben, belasten, veräussern und verwalten.');
   cmp_zweck($sth,  718052, '');
   cmp_zweck($sth,  728139, 'Werbeberatung, Konzeption und Produktion von Ideen und Werbung, insbesondere Texte (Werbetexte, PR-Texte, Journalismus, Drehbücher, Ghostwriting und weitere Textsorten) und Grafik (Logodesign, Layouts für Broschüren, Inserate, Flyer, Plakate und weitere Werbeformen).');
@@ -826,7 +829,7 @@ function cmp_person_firma($sth, $cnt, $id_firma, $dt_journal, $add_rm, $titel, $
 
 function check_gemeinde($dbh) { #_{
 
-  check_count($dbh, 'gemeinde', 30);
+  check_count($dbh, 'gemeinde', 31);
 
   $sth = db_prep_exec($dbh, 'select * from gemeinde order by id', array());
   cmp_gemeinde($sth,   56, 'Embrach'            );
@@ -845,6 +848,7 @@ function check_gemeinde($dbh) { #_{
   cmp_gemeinde($sth, 1630, 'Glarus Nord'        );
   cmp_gemeinde($sth, 2196, 'Fribourg'           );
   cmp_gemeinde($sth, 2197, 'Givisiez'           );
+  cmp_gemeinde($sth, 2284, 'Mont-Vully'         );
   cmp_gemeinde($sth, 2305, 'Schmitten (FR)'     );
   cmp_gemeinde($sth, 2309, 'Wünnewil-Flamatt'   );
   cmp_gemeinde($sth, 2939, 'Schaffhausen'       );
