@@ -79,6 +79,7 @@ sub read_next_daily_summary_line { #_{
     return;
   }
   $in =~ s/  */ /g;
+  $in =~ s/ ,/,/g;
   return $in;
 
 } #_}
