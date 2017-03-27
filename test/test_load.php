@@ -392,7 +392,8 @@ function check_person_firma($dbh) { #_{
 
   #_}
 
-  check_count($dbh, 'person_firma', 396);
+# print "\n\n!!!!!!!!!!!!!TODO count firma muesste sein: 396 !!!!!!!!!\n\n";
+  check_count($dbh, 'person_firma', 396); # 396
   $sth = db_prep_exec($dbh, "
     select
       pf.id_firma,
@@ -827,27 +828,27 @@ function cmp_person_firma($sth, $cnt, $id_firma, $dt_journal, $add_rm, $titel, $
 
   $row = $sth -> fetch();
 
-  if (! eq($row[ 0], $id_firma        )) {throw new Exception("\n\n    cmp_person_firma (cnt = $cnt) id_firma differs row[0] = $row[0] but $id_firma expected row[1]=$row[1]  dtJournal=$dt_journal"); }
-  if (! eq($row[ 1], $dt_journal      )) {throw new Exception("\n\n    cmp_person_firma (cnt = $cnt) dt_journal, gotten: $row[1], expected: $dt_journal id_firma=$id_firma"); }
-  if (! eq($row[ 2], $add_rm          )) {throw new Exception("\n\n    cmp_person_firma (cnt = $cnt) 2 add_rm expected: $add_rm, found: $row[2]\nid_firma: $id_firma, $row[0]\nvorname exp: $vorname, got: $row[4]\n"); }
-  if (! eq($row[ 3], $titel           )) {throw new Exception("\n\n    cmp_person_firma (cnt = $cnt) 3 titel expected: $titel, found: $row[3]\nid_firma: $id_firma, $row[0]\nvorname exp: $vorname, got: $row[4]\n"); }
-  if (! eq($row[ 4], $nachname        )) {throw new Exception("\n\n    cmp_person_firma (cnt = $cnt) 4 Nachname found: $row[4], expected: $nachname, id_firma=$id_firma, dt_journal=$dt_journal"); }
-  if (! eq($row[ 5], $vorname         )) {throw new Exception("\n\n    cmp_person_firma (cnt = $cnt) 5 Vorname found: $row[5], expected $vorname"); }
-  if (! eq($row[ 6], $von             )) {throw new Exception("\n\n    cmp_person_firma (cnt = $cnt) 6 von found: $row[6], expected $von"); }
-  if (! eq($row[ 7], $bezeichnung     )) {throw new Exception("\n\n    cmp_person_firma (cnt = $cnt) bezeichnung: " . $row[7] . ' != '  . $bezeichnung); }
+  if (! eq($row[ 0], $id_firma        )) {throw new Exception("\n\n    cmp_person_firma (cnt = $cnt)\n    id_firma differs row[0] = $row[0] but $id_firma expected row[1]=$row[1]  dtJournal=$dt_journal"); }
+  if (! eq($row[ 1], $dt_journal      )) {throw new Exception("\n\n    cmp_person_firma (cnt = $cnt)\n    dt_journal, gotten: $row[1], expected: $dt_journal id_firma=$id_firma"); }
+  if (! eq($row[ 2], $add_rm          )) {throw new Exception("\n\n    cmp_person_firma (cnt = $cnt)\n    2 add_rm expected: $add_rm, found: $row[2]\n    id_firma expected: $id_firma, gotten: $row[0]\n    vorname exp: $vorname got: $row[4]\n"); }
+  if (! eq($row[ 3], $titel           )) {throw new Exception("\n\n    cmp_person_firma (cnt = $cnt)\n    3 titel expected: $titel, found: $row[3]\nid_firma: $id_firma, $row[0]\nvorname exp: $vorname, got: $row[4]\n"); }
+  if (! eq($row[ 4], $nachname        )) {throw new Exception("\n\n    cmp_person_firma (cnt = $cnt)\n    4 Nachname found: $row[4]\n    expected: $nachname\n    id_firma=$id_firma\n    dt_journal=$dt_journal"); }
+  if (! eq($row[ 5], $vorname         )) {throw new Exception("\n\n    cmp_person_firma (cnt = $cnt)\n    5 Vorname found: $row[5], expected $vorname"); }
+  if (! eq($row[ 6], $von             )) {throw new Exception("\n\n    cmp_person_firma (cnt = $cnt)\n    6 von found: $row[6], expected $von\n    id_firma=$id_firma\n    dt_journal=$dt_journal"); }
+  if (! eq($row[ 7], $bezeichnung     )) {throw new Exception("\n\n    cmp_person_firma (cnt = $cnt)\n    7 bezeichnung found:" . $row[7] . ', expected: '  . $bezeichnung . "\n    id_firma=$id_firma\n    dt_journal=$dt_journal"); }
 
-  if (! eq($row[ 8], $in_             )) {throw new Exception("\n\n    cmp_person_firma (cnt = $cnt) 8(in) journal=$dt_journal\n   id_firma=$id_firma\n   in=$in_, row[7]=$row[7]\n   vorname $vorname, $row[4]\n\n\n"); }
+  if (! eq($row[ 8], $in_             )) {throw new Exception("\n\n    cmp_person_firma (cnt = $cnt)\n    8(in) journal=$dt_journal\n   id_firma=$id_firma\n   in=$in_, row[7]=$row[7]\n   vorname $vorname, $row[4]\n\n\n"); }
 
   $c = 9;
 
-  if (! eq($row[$c], $funktion        )) {throw new Exception("\n\n    cmp_person_firma (cnt = $cnt) $c dt_journal=$dt_journal, id_firma=$id_firma, funktion=$funktion, row[c]="          . $row[$c] . "\n\n"); } $c++;
+  if (! eq($row[$c], $funktion        )) {throw new Exception("\n\n    cmp_person_firma (cnt = $cnt) $c\n    dt_journal=$dt_journal,\n    id_firma=$id_firma,\n    funktion expected=$funktion\n    row[c]="          . $row[$c] . "\n\n"); } $c++;
   if (! eq($row[$c], $zeichnung       )) {throw new Exception("\n\n    cmp_person_firma (cnt = $cnt) c=$c\n    dt_journal=$dt_journal\n    id_firma=$id_firma\n    zeichnung expected:$zeichnung<     found: row[c]="         . $row[$c] . "\n\n"); } $c++;
   if (! eq($row[$c], $stammeinlage    )) {
     
     print "\nMismatch Stammeinlage\n";
     print   bin2hex($stammeinlage). "\n";
     print   bin2hex($row[$c]     ). "\n";
-    throw new Exception("cmp_person_firma $c dt_journal=$dt_journal, id_firma=$id_firma, Stammeinlage=$stammeinlage< row[c]="         . $row[$c] . '<'); 
+    throw new Exception("cmp_person_firma $c\n   dt_journal=$dt_journal\n   id_firma=$id_firma\n   Stammeinlage expected $stammeinlage<\n    gotten= " . $row[$c] . '<'); 
   } $c++;
 
 

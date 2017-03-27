@@ -5,7 +5,7 @@ use strict;
 use Zefix;
 use utf8;
 
-Zefix::init('dev');
+Zefix::init('dev', 1);
 
 my $filename = shift or die;
 # open (my $f, '<', $filename) or die;

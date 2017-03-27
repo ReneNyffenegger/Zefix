@@ -204,10 +204,20 @@ sub parse_next_daily_summary_line { #_{
 sub s_back { #_{
   my $text = shift;
 
+  $text =~ s/##-_und_##/- und /g;
 
   $text =~ s/##dipl_##/dipl./g;
   $text =~ s/##k beschr##/, beschränkt/g;
   $text =~ s/##k_und_GF([^#]*)##/, und Geschäftsführer$1/g;
+  $text =~ s/##_und_GF([^#]*)##/ und Geschäftsführer$1/g;
+  $text =~ s/##_und_DIR([^#]*)##/ und Direktor$1/g;
+  $text =~ s/##_und_SEKR([^#]*)##/ und Sekretär$1/g;
+  $text =~ s/##_und_KASS_und##/ und Kassier und/g;
+  $text =~ s/##_und_KASS([^#]*)##/ und Kassier$1/g;
+  $text =~ s/##_und_AKT([^#]*)##/ und Aktuar$1/g;
+  $text =~ s/##_und_FLUGPLATZCHEF([^#]*)##/ und Flugplatzchef$1/g;
+  $text =~ s/##GES_und_##/Gesellschafter und /g;
+  $text =~ s/##_und_GES([^#]*)##/ und Gesellschafter$1/g;
   $text =~ s/##(\d)d(\d)##/$1.$2/g;
   $text =~ s/## (.)##/ $1./g;
   $text =~ s/##--##/.--/g;
@@ -216,7 +226,6 @@ sub s_back { #_{
   $text =~ s/##(.)_(.)_##/$1.$2./g;
 
 
-  # HIER.
   $text =~ s/##k_(.*?)##/, $1/g;
   $text =~ s/##([^#]+)##/$1./g;
 
@@ -234,9 +243,22 @@ sub find_persons_from_daily_summary_rec { #_{
   $text =~ s/(\d)\.(\d)/##$1d$2##/g;
   $text =~ s/(.)\.(.)\./##$1_$2_##/g; # a.A. / S.A.
 
+  $text =~ s/- und /##-_und_##/g;
+
   $text =~ s/, *und Geschäftsführer(\w*)/##k_und_GF$1##/g;  # , und Geschäftsführer
+  $text =~ s/ *und Geschäftsführer(\w*)/##_und_GF$1##/g;    #   und Geschäftsführer
+  $text =~ s/ *und Direktor(\w*)/##_und_DIR$1##/g;          #   und Direktor
+  $text =~ s/ *und Sekretär(\w*)/##_und_SEKR$1##/g;         #   und Sekretär
+  $text =~  s/ und Kassier und/##_und_KASS_und##/g;         #
+  $text =~ s/ *und Kassier(\w*)/##_und_KASS$1##/g;          #
+  $text =~ s/ *und Aktuar(\w*)/##_und_AKT$1##/g;          #
+  $text =~ s/ *und Flugplatzchef(\w*)/##_und_FLUGPLATZCHEF$1##/g; # 
+  $text =~ s/Gesellschafter und /##GES_und_##/g; # 
+  $text =~ s/ und Gesellschafter(\w*)/##_und_GES$1##/g;
+
 
   $text =~ s/(##._._##) (Präsident|Gesellschafter|Inhaber|Aktuar|Mitglied|Vizepräsident|Direktor)/$1, $2/g;
+
 
   $text =~ s/ (.)\./## $1##/g;
   $text =~ s/\.--/##--##/g;
@@ -261,6 +283,10 @@ sub find_persons_from_daily_summary_rec { #_{
 
   $text =~ s/(<(R|M)>CH.*?<E>)/ my $x = $1; $x =~ s![.-]!!g; $x /eg;
 
+
+  $text =~ s/, von und in /##k_von_und_in##/g;
+
+
   my @ret = ();
 
   if (not registeramt_with_special_wording($rec)) { #_{
@@ -269,8 +295,8 @@ sub find_persons_from_daily_summary_rec { #_{
 
     $debug_indent++;
 
-#   my @PARTS = split /(Ausgeschiedene Personen(?: und|,) erloschene Unterschriften|Eingetragene Personen(?: (?:neu oder mutierend|Geändert))?|Personne et signature radiée|Inscription ou modification de personne(?:\(s\))?|Persone dimissionarie e firme cancellate|Persone iscritte|Nuove persone iscritte o modifiche|Personne\(s\) inscrite\(s\)|Personen neu oder mutierend|Ausgeschiedene Personen|Gelöschte Personen): */, $text;
-    my @PARTS = split /(Ausgeschiedene Personen(?: und|,) erloschene Unterschriften|Eingetragene Personen(?: (?:neu oder mutierend|Geändert))?|Personne et signature radiée|Inscription ou modification de personne(?:\(s\))?|Persone dimissionarie e firme cancellate|Persone iscritte|Nuove persone iscritte o modifiche|Personne\(s\) inscrite\(s\)|Personen neu oder mutierend|Ausgeschiedene Personen): */, $text;
+    my @PARTS = split /(Ausgeschiedene Personen(?: und|,) erloschene Unterschriften|Eingetragene Personen(?: (?:neu(?: oder mutierend)?|Geändert))?|Personne et signature radiée|Inscription ou modification de personne(?:\(s\))?|Persone dimissionarie e firme cancellate|Persone iscritte|Nuove persone iscritte o modifiche|Personne\(s\) inscrite\(s\)|Personen neu oder mutierend|Ausgeschiedene Personen|Gelöschte Personen): */, $text;
+#   my @PARTS = split /(Ausgeschiedene Personen(?: und|,) erloschene Unterschriften|Eingetragene Personen(?: (?:neu oder mutierend|Geändert))?|Personne et signature radiée|Inscription ou modification de personne(?:\(s\))?|Persone dimissionarie e firme cancellate|Persone iscritte|Nuove persone iscritte o modifiche|Personne\(s\) inscrite\(s\)|Personen neu oder mutierend|Ausgeschiedene Personen): */, $text;
     debug('scalar @PARTS: ' . scalar @PARTS);
 
     if (@PARTS == 1 and $text =~ /Stiftungsrat:/) { # f798777
@@ -284,8 +310,11 @@ sub find_persons_from_daily_summary_rec { #_{
     my $special_parsing = shift @PARTS;
 
 
+    $special_parsing =~ s/##k_von_und_in##/, von und in /;
+    $special_parsing =~ s/#1<#von_([^_]+?)_und_([^.]*?)#1>#/ von $1 und $2/g;
 
     debug("special_parsing: $special_parsing");
+    $debug_indent++;
  #_{ Special parsing
     while ($special_parsing =~ s/Die Zweigniederlassung von [^.]+ ist erloschen\.?//) { #_{
 #     print "yepp\n";
@@ -488,8 +517,12 @@ sub find_persons_from_daily_summary_rec { #_{
     } #_}
     while ($special_parsing =~ s/\. Eingetragene Personen neu:*(?<name>[^.]+), (?:von (?<von>[^.]+?)|(?<von>[^.]*?Staatsangehörige[^.]*?)), in (?<in>[^.,]+?), (?<funktion>[^.]*), (?<zeichnung>[^.]*)//) { #_{
 
+       print "! Warning 'Eingetragene Personen neu' in special_parsing should not occur anymore\n";
        debug('special parsing, Eingetragene Personen neu');
+       $debug_indent++;
        my $name = $+{name};
+
+       debug("Name=$name");
 
        my $person_rec = {add_rm => '+'};
        $person_rec -> {funktion} = $+{funktion};
@@ -500,6 +533,7 @@ sub find_persons_from_daily_summary_rec { #_{
 
        push @ret, $person_rec;
 
+       $debug_indent--;
 
     } #_}
     while ($special_parsing =~ s/\. *([^.]+?), bisher [^,]+, zeichnet neu mit ([^.]+)//) { #_{
@@ -555,6 +589,7 @@ sub find_persons_from_daily_summary_rec { #_{
 
     } #_}
     while ($special_parsing =~ s/\. Gelöschte Personen:*(?<name>[^.]+?), (?<funktion>[^.]*)//) { #_{
+       print "! Warning Gelöschte Personen in special_parsing should not occur anymore\n";
 
        my $name = $+{name};
 
@@ -635,25 +670,40 @@ sub find_persons_from_daily_summary_rec { #_{
       push @ret, $rec_person;
     } #_}
  #_}
-    debug('while (@PARTS)');
+    $debug_indent--;
+    debug("while (\@PARTS) [scalar \@PARTS=" . scalar @PARTS . ']');
     $debug_indent++;
     while (@PARTS) { #_{
 
       debug('PART -------');
       $debug_indent++;
+
       my $intro_text    = shift @PARTS;
       my $personen_text = shift @PARTS;
 
+      debug("intro_text  = $intro_text");
+
       my @person_parts;
-      debug("personen_text: $personen_text");
-      @person_parts = split /(?:\.|;|, und |, alle drei mit ) */, $personen_text;
+
+
+      debug("personen_text, vor escape_und(): $personen_text\n");
+      $personen_text = escape_und($personen_text);
+      $personen_text =~ s/ *\[nicht:[^\]]+\]//g;
+      $personen_text =~ s/ *\[bisher:[^\]]+\]//g;
+      debug("personen_text, nach escape_und(): $personen_text\n");
+
+
+      @person_parts = grep {defined} split /(?:\.|;|,? und |, ((?:beide|alle drei) mit [^.]*)) */, $personen_text;
+      debug ('scalar @person_parts=' . scalar @person_parts);
 
       for my $person_text (@person_parts) { #_{
-
-        debug("intro_text  = $intro_text");
-        debug("person_text = $person_text");
+        debug("person_text loop = $person_text");
         $debug_indent ++;
 
+#       debug("person_text vorher = $person_text");
+        $person_text =~ s/##k_von_und_in##/, von und in /;
+#       $person_text =~ s/#1<#von_([^_]+?)_und_([^.]*?)#1>#/ von $1 und $2/g;
+        $person_text = unescape_und($person_text);
 
         if ($person_text =~ /^ *beide (mit .*)/) { #_{
 
@@ -661,7 +711,7 @@ sub find_persons_from_daily_summary_rec { #_{
           debug("beide mit $zeichnung");
 
           if (@ret < 2) {
-            print "! beide mit ... ret < 2\n";
+            print "! beide mit ... ret (" . scalar @ret . ") < 2\n";
           }
           else {
             $ret[-1]->{zeichnung} = $zeichnung;
@@ -687,6 +737,16 @@ sub find_persons_from_daily_summary_rec { #_{
         if ($person_text =~ s! *[([]?<R>([^<]+)<E>[)\]]?!!g)  { #_{
           $person_rec->{firma} = s_back($1);
         } #_}
+        if ($intro_text eq 'Gelöschte Personen') { #_{
+           debug ('Gelöschte Personen');
+           if ($person_text =~ /^(?<name>[^,]+), *(?<funktion>[^,]+)$/) {
+             $person_rec -> {funktion} = $+{funktion};
+            ($person_rec->{nachname}, $person_rec->{vorname}) = name_ohne_komma_to_nachname_vorname($+{name});
+            push @ret, $person_rec;
+            next;
+          }
+          print "! Warning Gelöschte Personen: too many ,\n";
+        } #_}
         if ($person_text =~ / *(?<name>.*?), (?:von und in) (?<vonin>[^,]+?), *(?<more>.*)/) { #_{
           my $name = $+{name};
           my $more = $+{more};
@@ -703,7 +763,7 @@ sub find_persons_from_daily_summary_rec { #_{
           $debug_indent--;
   
         } #_}
-        elsif ($person_text =~ / *(.*?), (?:in|à) ([^,]+?),( [^,]+##p_\w\w\w?##,)? *(.*)/) { #_{
+        elsif ($person_text =~ / *(.*?), (?:in|à) ([^,]+),?( [^,]+##p_\w\w\w?##,)? *(.*)/) { #_{
 
           debug ('person_text =~ in|a');
           $debug_indent++;
@@ -719,12 +779,14 @@ sub find_persons_from_daily_summary_rec { #_{
           debug("more = $more");
   
           if ($country_with_parans) { #_{
+            debug('country_with_parans');
             $country_with_parans = s_back($country_with_parans);
             $country_with_parans =~ s/ *,$//;
             $person_rec->{in} .= "," . s_back($country_with_parans);
           } #_}
   
           if ($name =~ / *(.*), (?:Heimat:|von|de|da) (.*)/) { #_{
+            debug('Heimat:|von|de|da');
   
             my $naturliche_person = $1;
             $person_rec->{von} = $2;
@@ -733,6 +795,7 @@ sub find_persons_from_daily_summary_rec { #_{
   
           } #_}
           elsif ($name =~ / *(.*), *([^,]*(?:Staatsangehöriger?|ressortissant|cittadino|\bcitoyen)[^]]*)/) { #_{
+            debug('Staatsangehörige');
   
             my $naturliche_person = $1;
             $person_rec->{von} = $2;
@@ -744,6 +807,7 @@ sub find_persons_from_daily_summary_rec { #_{
   
           } #_}
           else { #_{
+            debug('else, bezeichnung = name');
   
             $person_rec->{bezeichnung} = $name;
   
@@ -819,7 +883,6 @@ sub find_persons_from_daily_summary_rec { #_{
         push @persons, $person_rec;
      
       } #_}
-
 
       if ($signature_halter =~ /les (\w+) gérants/) { #_{
 
@@ -960,6 +1023,10 @@ sub name_to_nachname_vorname { #_{
   my $person_rec = shift;
   my $name       = shift;
 
+  $debug_indent++;
+
+  debug("name_to_nachname_vorname name = $name");
+
   if ($rec->{registeramt} == 229) {  #_{ Registeramt 229 does not seem to have commas between first and last name
 
      ($person_rec->{nachname}, $person_rec->{vorname}) = name_ohne_komma_to_nachname_vorname($name);
@@ -976,16 +1043,26 @@ sub name_to_nachname_vorname { #_{
      }
      else {
 
-      # Note the order here: vorname is first! Is this always correct?
+      
+      if ($rec->{registeramt} == 217) {
+       ($person_rec->{nachname}, $person_rec->{vorname}) = name_ohne_komma_to_nachname_vorname($name);
+      }
+      else {
        ($person_rec->{vorname}, $person_rec->{nachname}) = name_ohne_komma_to_nachname_vorname($name);
+      }
+
      }
 
   } #_}
+  $debug_indent--;
 
 } #_}
 
 sub name_ohne_komma_to_nachname_vorname { #_{
+  $debug_indent ++;
   my $name = shift;
+
+  debug("name_ohne_komma_to_nachname_vorname, name = $name");
 
   $name =~ s/^([Vv]on) /$1%%/;
 
@@ -996,6 +1073,7 @@ sub name_ohne_komma_to_nachname_vorname { #_{
 
   $nachname =~ s/(.*)%%/$1 /;
 
+  $debug_indent --;
   return (s_back($nachname), s_back($vorname));
 
 } #_}
@@ -1025,6 +1103,7 @@ sub parse_person_more { #_{
 
   $more =~ s/ *[[(](?:nicht|non): *([^\])]+)[\])]//;
 # $more =~ s/ *[\[]bisher:([^\])]+)[\]]//;
+  debug ("after remove [] $more");
   my $person_det_nicht = $1;
 
   my @parts = split ' *, *', $more;
@@ -1060,7 +1139,11 @@ sub parse_person_more { #_{
          /\bKU\b/
         ) {
 
-        debug("Zeichnung: $_");
+    #   TODO This should really not be...
+        s/##$//;
+        s/#1>#$//;
+
+        debug("Zeichnung: $_<");
 
         if (exists $rec_person->{zeichnung} and $_ ne $rec_person->{zeichnung}) {
         
@@ -1246,6 +1329,37 @@ sub who_and_zeichnung { #_{
   }
 
 
+} #_}
+
+sub escape_und { #_{
+  my $text = shift;
+#
+# $text =~ s/ von ((?:(?!in ))[^.,]+?) und ([^\];.,]+)/#1<#von_$1_und_$2#1>#/g;
+
+# print "\n\n\n$text\n\n";
+# $text =~ s/ von (.*?) und (.*?)(?= und | von |, in)/#1<#von_$1_und_$2#1>#/g;
+
+# Test...
+# my $text = "abc VVV foo III pqr hash def VVV bar hash baz III stu hash ghi VVV bbb, ccc hash ddd III vwx";
+#    $text =~ s/ VVV ((?:(?!III).)*?) hash (.*?)(?=III)/ VVV $1 HASH $2/g;
+#  (http://stackoverflow.com/questions/43046270/why-does-word-another-word-match-only-a-character)
+
+# $text =~ s/ von (.(?!, in ))*? und (.*?)(?=, in)/#1<#von_$1_und_$2#1>#/g;
+# $text =~ s/ von (.(?!, in ))*? und (.*?)(?=, in)/  von    1: $1\n    2: $2\n   3: $3\n  4: $4\n/g;
+# print "\n\n\n$text\n\n";
+  $text =~ s/ von ((?:(?!, in ).)*?) und (.*?)(?=;|, in)/#1<#von_$1_und_$2#1>#/g;
+# print "\n\n\n$text\n\n";
+
+  $text =~ s/ und mit einem Stammanteil von /##_und_mit_stammanteil_von_##/g;
+  return $text;
+
+} #_}
+
+sub unescape_und { #_{
+  my $text = shift;
+  $text =~ s/##_und_mit_stammanteil_von_##/ und mit einem Stammanteil von /g;
+  $text =~ s/#1<#von_([^_]+?)_und_([^.]*?)#1>#/ von $1 und $2/g;
+  return $text;
 } #_}
 
 sub debug { #_{

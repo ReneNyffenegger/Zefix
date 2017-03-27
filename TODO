@@ -16,6 +16,10 @@ http://renenyffenegger.ch/Firmen/f403182    Sunrise...
  --> hat »Cawley, Timothy J., Bürger der USA«
      »Mc Cullough, William B., Bürger der USA«
 
+http://renenyffenegger.ch/Firmen/f604360
+  -> »Bürgerin der USA«
+  -> »Bürger der USA«
+
 http://renenyffenegger.ch/Firmen/f871329
   -> unbekannten Aufenthaltes
 
@@ -40,6 +44,8 @@ select pf.id_firma, p.vorname from person p join person_firma pf on p.id = pf.id
 
 select * from person where von like '%ist nicht mehr%wird aber%';
 
+Suchen
+  »alle drei mit Kollektivunterschrift zu zweien« (f 798777 bereits im Test)
 
 »Gesellschafter, ohne Zeichnungsberechtigung, Geschäftsführer, mit Einzelunterschrift«
   -> Test 17-058
@@ -289,6 +295,8 @@ ftp://ftp.zefix.ch/hrdata/NEWS-2016-08-18.txt
     (p.nachname  like '%Kachelmann%'         and  p.vorname like '%Jörg%'                                ) or
     (p.nachname  like '%Wick%'               and  p.vorname like '%Peter%'                               ) or
     (p.nachname  like '%Bucheli%'            and  p.vorname like '%Thomas%'                              ) or
+    --
+    (p.nachname  like '%schbacher%'          and  p.vorname like '%Kurt%'                                ) or
     --
     (p.nachname  like '%Andress%'            and  p.vorname like '%Ursula%'                              ) or
     (p.nachname  like '%Pulver%'             and  p.vorname like '%Liselotte%'                           ) or

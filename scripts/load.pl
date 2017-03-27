@@ -32,7 +32,7 @@ GetOptions (
 $env = 'prod' if $prod;
 print "env = $env\n";
 
-Zefix::init($env eq 'prod' ? 'dev' : 'test');
+Zefix::init($env eq 'prod' ? 'dev' : 'test', 0);
 
 if ($env eq 'test') {
   $zefix_root = "$ENV{github_root}Zefix/test/";
