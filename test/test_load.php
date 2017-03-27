@@ -14,7 +14,7 @@ echo "Ok\n";
 
 function check_firma($dbh) { #_{
 
-  check_count($dbh, 'firma', 45);
+  check_count($dbh, 'firma', 46);
 
   $zuffrey = 'Zufferey Aurélie et Tânia Margarida da Mota Cardoso Kiosque Liberté';
   $fiduc_crans = 'Fiduciaire de Crans-Montana (FCM) SA';
@@ -48,6 +48,7 @@ function check_firma($dbh) { #_{
   cmp_firma($sth,  728139, 'Volltext Lienert'                              , 'CH02010440290',    null,   155,    null, null ,  2, null         , 6180656,''                                   ,'Bahnhofstrasse'           , '14'  ,''                ,     null, '8708', 'Männedorf'        , 1);
   cmp_firma($sth,  738038, 'Telelan AG'                                    , 'CH21735309828',  241462,  2309,    null, null ,  0,'2009-03-13'  , 4924584,''                                   ,'Bernstrasse'              , '41'  ,'Flamatt'         ,     null, '3184', 'Wünnewil-Flamatt' , 9);
   cmp_firma($sth,  790603, 'Presenti, Genuss-Hofladen, Ritler'             , 'CH60010123481',    null,  6192,    null, null ,  2, null         , 1091615,''                                   ,'Ried'                     , '38'  ,''                ,     null, '3919', 'Blatten'          , 1);
+  cmp_firma($sth,  798777, 'Arcanum Stiftung'                              , 'CH21735337926',    null,  2196,    null, null ,  2, null         , 3290717,''                                   ,'Route des Arsenaux'       , '41'  ,''                ,     null, '1700', 'Fribourg'         , 7);
   cmp_firma($sth,  823465, 'D1 Solutions AG'                               , 'CH02030293815',    null,   261,  100000, 'CHF',  2, null         , 1667155,''                                   ,'Zypressenstrasse'         , '71'  ,''                ,     null, '8004', 'Zürich'           , 3);
   cmp_firma($sth,  934296, 'Akyon AG'                                      , 'CH02030334394',    null,   261,  100000, 'CHF',  2, null         , 3232871,'c/o ADP Analyse Design Planung GmbH','Glatttalstrasse'          ,'104f' ,''                ,     null, '8052', 'Zürich'           , 3);
   cmp_firma($sth,  959835, 'Stiftung Bärenpark Bern'                       , 'CH03670458868',    null,   351,    null, null ,  2, null         , 6649346,'c/o Tierpark Dählhölzli'            ,'Tierparkweg'              ,  '1'  ,''                ,     null, '3005', 'Bern'             , 7);
@@ -143,7 +144,7 @@ function check_firma_bez($dbh) { #_{
 
   $en_liq = 'en liquidation';
 
-  check_count($dbh, 'firma_bez', 68);
+  check_count($dbh, 'firma_bez', 72);
 
   $sth = db_prep_exec($dbh, 'select * from firma_bez order by id_firma, dt_ab', array());
   cmp_firma_bez($sth,   60442, '940', 1, 'DE',  3, 'Fluggruppe Mollis'                                                         , '1996-01-01', '9999-12-31');
@@ -183,6 +184,10 @@ function check_firma_bez($dbh) { #_{
   cmp_firma_bez($sth,  790603, '990', 1, 'DE', -1, 'Presenti, Blumen und Geschenke, Karin Ritler'                              , '2005-05-04', '2011-06-23');
   cmp_firma_bez($sth,  790603, '980', 1, 'DE', -1, 'Presenti, Hofladen, Karin Ritler'                                          , '2011-06-24', '2013-09-23');
   cmp_firma_bez($sth,  790603, '970', 1, 'DE',  3, 'Presenti, Genuss-Hofladen, Ritler'                                         , '2013-09-24', '9999-12-31');
+  cmp_firma_bez($sth,  798777, '990', 1, 'DE',  3, 'Arcanum Stiftung'                                                          , '2005-07-27', '9999-12-31');
+  cmp_firma_bez($sth,  798777, '990', 2, 'EN',  3, 'Foundation Arcanum'                                                        , '2005-07-27', '9999-12-31');
+  cmp_firma_bez($sth,  798777, '990', 2, 'FR',  3, 'Fondation Arcanum'                                                         , '2005-07-27', '9999-12-31');
+  cmp_firma_bez($sth,  798777, '990', 2, 'IT',  3, 'Fondazione Arcanum'                                                        , '2005-07-27', '9999-12-31');
   cmp_firma_bez($sth,  823465, '990', 1, 'DE', -1, 'd1 solutions ag'                                                           , '2005-12-28', '2011-10-31');
   cmp_firma_bez($sth,  823465, '980', 1, 'DE',  3, 'D1 Solutions AG'                                                           , '2011-11-01', '9999-12-31');
   cmp_firma_bez($sth,  934296, '990', 1, 'DE', -1, 'CBC Core Banking Competence Center AG'                                     , '2009-02-02', '2009-11-11');
@@ -261,7 +266,7 @@ function cmp_firma_bez($sth, $id_firma, $seq, $typ, $sprachcode, $status, $bezei
 
 function check_zweck($dbh) { #_{
 
-  check_count($dbh, 'zweck', 45);
+  check_count($dbh, 'zweck', 46);
 
   $sth = db_prep_exec($dbh, 'select * from zweck order by id_firma', array());
   cmp_zweck($sth,   60442, 'Die Fluggruppe Mollis vereinigt die am Motorflug auf dem Flugplatz Mollis interessierten Personen des Kantons Glarus und Umgebung mit dem Zweck der Förderung der Luftfahrt im allgemeinen und der Schulung und des Trainings der Mitglieder im besonderen. Sie stellt die notwendige Infrastruktur für die Sicherstellung des Motorflugbetriebes.');
@@ -289,6 +294,7 @@ function check_zweck($dbh) { #_{
   cmp_zweck($sth,  728139, 'Werbeberatung, Konzeption und Produktion von Ideen und Werbung, insbesondere Texte (Werbetexte, PR-Texte, Journalismus, Drehbücher, Ghostwriting und weitere Textsorten) und Grafik (Logodesign, Layouts für Broschüren, Inserate, Flyer, Plakate und weitere Werbeformen).');
   cmp_zweck($sth,  738038, '');
   cmp_zweck($sth,  790603, 'Handel mit und Verkauf von Blumen, Geschenken und landwirtschaftlichen Produkten aus der Region und damit zusammenhängende Tätigkeiten sowie Catering.');
+  cmp_zweck($sth,  798777, 'Erbringung humanitärer Hilfeleistungen, Unterstützung humanitärer Projekte, Förderung von Kunst und Kultur, Förderung von Bildung und Erziehung, Förderung der Völkerverständigung, Förderung des Tierschutzes und Entwicklungshilfe. Die Stiftung kann ihren Zweck im In- und Ausland verfolgen. Es steht im freien Ermessen des Stiftungsrates festzulegen, wann und in welchem Ausmass die verschiedenen Teilzwecke verfolgt werden.');
   cmp_zweck($sth,  823465, 'Zweck der Gesellschaft ist die Erbringung von Dienstleistungen in den Bereichen Unternehmensberatung, Organisation und Coaching. Die Gesellschaft kann Tochtergesellschaften und Zweigniederlassungen im In- und Ausland errichten, Vertretungen übernehmen und alle Geschäfte eingehen, die den Gesellschaftszweck direkt oder indirekt fördern. Sie kann sich auch an anderen Unternehmungen beteiligen, Darlehen aufnehmen sowie Grundstücke erwerben, verwalten und veräussern.');
   cmp_zweck($sth,  934296, 'Die Gesellschaft bezweckt die Beratung und Schulung von Unternehmen in allen wirtschaftlichen, organisatorischen und technischen Belangen, insbesondere der Analyse, Konzeption, Planung und Projektierung sowie Entwicklung, Lieferung und Unterhalt von IT-Software und Infrastruktur. Die Gesellschaft kann Zweigniederlassungen und Tochtergesellschaften im In- und Ausland errichten und sich an anderen Unternehmen im In- und Ausland beteiligen sowie alle Geschäfte tätigen, die direkt oder indirekt mit ihrem Zweck in Zusammenhang stehen. Die Gesellschaft kann im In- und Ausland Grundeigentum erwerben, belasten, veräussern und verwalten. Sie kann auch Finanzierungen für eigene oder fremde Rechnung vornehmen sowie Garantien und Bürgschaften für Tochtergesellschaften und Dritte eingehen.');
   cmp_zweck($sth,  959835, 'Die Stiftung bezweckt die Unterstützung des Bärenparks der Stadt Bern, insbesondere bei der Realisierung von Projekten, die aus zoologischer, pädagogischer und touristischer Sicht oder anderswie mit dem Bärenpark Bern in Zusammenhang stehen, sowie bei allfälligen baulichen Erweiterungen. Die Stiftung kann einen Unterstützungsverein gründen. Zu diesem Zweck sammelt die Stiftung Spenden von natürlichen und juristischen Personen, die den Bärenpark unterstützen möchten. Gewinn und Kapital der Stiftung sind ausschliesslich dem vorstehend genannten Zweck gewidmet. Erwerbszwecke sind ausgeschlossen.');

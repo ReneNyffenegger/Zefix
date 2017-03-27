@@ -17,12 +17,12 @@ select count(*) from person_firma where funktion like '% ';
 -- select
 --   'http://renenyffenegger.ch/Firmen/f' || f.id || ' ',
 --   f.bezeichnung,
---   '>' || p.von || '<'
+--   '>' || pf.funktion || '<'
 -- from
 --   person       p                         join
 --   person_firma pf on p.id = pf.id_person join
 --   firma         f on f.id = pf.id_firma
 -- where
---   p.von like '% ';
+--   pf.funktion like '% ';
 -- 
 
