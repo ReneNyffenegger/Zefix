@@ -14,7 +14,7 @@ echo "Ok\n";
 
 function check_firma($dbh) { #_{
 
-  check_count($dbh, 'firma', 44);
+  check_count($dbh, 'firma', 45);
 
   $zuffrey = 'Zufferey Aurélie et Tânia Margarida da Mota Cardoso Kiosque Liberté';
   $fiduc_crans = 'Fiduciaire de Crans-Montana (FCM) SA';
@@ -55,6 +55,7 @@ function check_firma($dbh) { #_{
   cmp_firma($sth, 1043245, 'Leo MGE Transports Sàrl'                       , 'CH64541075065' ,   null,  5601,   20000, 'CHF',  2, null         , 3291443,''                                   ,'Chemin de Fleur de Lys'   ,  '1'  ,''                ,     null, '1071', 'Chexbres'         , 4); 
   cmp_firma($sth, 1050881, $zuffrey                                        , 'CH62620141168' ,   null,  6253,    null, null ,  2, null         , 3270557,''                                   ,'Avenue de la Gare'        , '24'  ,''                , 'CP 433', '3963', 'Crans-Montana'    , 2); 
   cmp_firma($sth, 1111024, 'Riedo Stephan'                                 , 'CH10017951180' ,   null,  1098,    null, null ,  2, null         , 6829256,''                                   ,'Buholzstrasse'            ,   ''  ,'Restaurant Lamm' ,     null, '6017', 'Ruswil'           , 1); 
+  cmp_firma($sth, 1219961, 'Moreira Abreu Luis Vitor José'                 , 'CH67010068561' ,   null,  6708,    null, null ,  2, null         , 2123229,''                                   ,'Route de Delémont'        , '15'  ,''                ,     null, '2830', 'Courrendlin'      , 1); 
   cmp_firma($sth, 1263109, 'Grégorio Maïka, SUISSE SABLAGE'                , 'CH62610171082' ,   null,  6253,    null, null ,  2, null         , 3270283,'c/o Grégorio Maïka'                 ,'Rue de la Pavia'          , '46'  ,''                ,     null, '3963', 'Montana Village'  , 1); 
   cmp_firma($sth, 1268712, 'Pompes Funèbres Daniel Rey et Fils Sàrl'       , 'CH62640171965' ,   null,  6253,   20000, 'CHF',  2, null         , 3270279,''                                   ,'Route de Crans-Montana'   , '24'  ,''                ,     null, '3963', 'Montana'          , 4); 
   cmp_firma($sth, 1271188, 'NOVA LANDO Sagl'                               , 'CH50140213081' ,   null,  5192,   20000, 'CHF',  2, null         , 3269757,''                                   ,'via Francesco Somaini no.',  '5'  ,''                ,     null, '6900', 'Lugano'           , 4); 
@@ -142,7 +143,7 @@ function check_firma_bez($dbh) { #_{
 
   $en_liq = 'en liquidation';
 
-  check_count($dbh, 'firma_bez', 67);
+  check_count($dbh, 'firma_bez', 68);
 
   $sth = db_prep_exec($dbh, 'select * from firma_bez order by id_firma, dt_ab', array());
   cmp_firma_bez($sth,   60442, '940', 1, 'DE',  3, 'Fluggruppe Mollis'                                                         , '1996-01-01', '9999-12-31');
@@ -193,6 +194,7 @@ function check_firma_bez($dbh) { #_{
   cmp_firma_bez($sth, 1043245, '990', 1, 'DE', 3, 'Leo MGE Transports Sàrl'                                                    , '2011-12-21', '9999-12-31');
   cmp_firma_bez($sth, 1050881, '990', 1, 'DE', 3, 'Zufferey Aurélie et Tânia Margarida da Mota Cardoso Kiosque Liberté'        , '2012-02-28', '9999-12-31');
   cmp_firma_bez($sth, 1111024, '990', 1, 'DE', 3, 'Riedo Stephan'                                                              , '2012-08-29', '9999-12-31');
+  cmp_firma_bez($sth, 1219961, '990', 1, 'DE', 3, 'Moreira Abreu Luis Vitor José'                                              , '2015-04-27', '9999-12-31');
   cmp_firma_bez($sth, 1263109, '990', 1, 'FR', 3, 'Grégorio Maïka, SUISSE SABLAGE'                                             , '2016-05-12', '9999-12-31');
   cmp_firma_bez($sth, 1268712, '990', 1, 'FR', 3, 'Pompes Funèbres Daniel Rey et Fils Sàrl'                                    , '2016-06-28', '9999-12-31');
   cmp_firma_bez($sth, 1271188, '990', 1, 'IT', 3, 'NOVA LANDO Sagl'                                                            , '2016-07-15', '9999-12-31');
@@ -259,7 +261,7 @@ function cmp_firma_bez($sth, $id_firma, $seq, $typ, $sprachcode, $status, $bezei
 
 function check_zweck($dbh) { #_{
 
-  check_count($dbh, 'zweck', 44);
+  check_count($dbh, 'zweck', 45);
 
   $sth = db_prep_exec($dbh, 'select * from zweck order by id_firma', array());
   cmp_zweck($sth,   60442, 'Die Fluggruppe Mollis vereinigt die am Motorflug auf dem Flugplatz Mollis interessierten Personen des Kantons Glarus und Umgebung mit dem Zweck der Förderung der Luftfahrt im allgemeinen und der Schulung und des Trainings der Mitglieder im besonderen. Sie stellt die notwendige Infrastruktur für die Sicherstellung des Motorflugbetriebes.');
@@ -294,6 +296,7 @@ function check_zweck($dbh) { #_{
   cmp_zweck($sth, 1043245, 'Transports suisses et internationaux; entreposage, conditionnement, manutention de tous objets et marchandises; logistique, dédouannement; et autres moyens et dispositifs de transport (pour but complet, cf. statuts).');
   cmp_zweck($sth, 1050881, 'L\'exploitation d\'un kiosque');
   cmp_zweck($sth, 1111024, 'Führung eines Gastronomiebetriebes.');
+  cmp_zweck($sth, 1219961, 'Exploitation d\'un atelier mécanique et d\'une carrosserie.');
   cmp_zweck($sth, 1263109, 'Sablage, décapage, aérogommage');
   cmp_zweck($sth, 1268712, 'L\'exploitation d\'une entreprise de services funèbres (cf. statuts pour but complet)');
   cmp_zweck($sth, 1271188, 'La fornitura di prestazioni, servizi e consulenza, segnatamente nel settore del marketing e dello sviluppo di business. Trading ed intermediazione in genere. Lo studio, lo sviluppo e la commercializzazione di soluzioni informatiche e di nuove tecnologie ITC. La società può creare filiali e/o succursali sia in Svizzera che all\'estero nonché partecipare a qualsiasi attività commerciale in Svizzera o all\'estero. Essa potrà compiere tutte le operazioni commerciali, industriali, finanziarie, mobiliari ed immobiliari direttamente od indirettamente connesse con lo scopo sociale nonché assumere interessenze e partecipazioni in altre imprese sia in Svizzera che all\'estero.');
@@ -842,7 +845,7 @@ function cmp_person_firma($sth, $cnt, $id_firma, $dt_journal, $add_rm, $titel, $
 
 function check_gemeinde($dbh) { #_{
 
-  check_count($dbh, 'gemeinde', 32);
+  check_count($dbh, 'gemeinde', 33);
 
   $sth = db_prep_exec($dbh, 'select * from gemeinde order by id', array());
   cmp_gemeinde($sth,   56, 'Embrach'            );
@@ -876,6 +879,7 @@ function check_gemeinde($dbh) { #_{
   cmp_gemeinde($sth, 5749, 'Chavornay'          );
   cmp_gemeinde($sth, 6192, 'Blatten'            );
   cmp_gemeinde($sth, 6253, 'Crans-Montana'      );
+  cmp_gemeinde($sth, 6708, 'Courrendlin'        );
   cmp_gemeinde($sth, 6800, 'Porrentruy'         );
 
   echo "gemeinde ok\n";

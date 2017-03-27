@@ -23,6 +23,6 @@ select count(*) from person_firma where funktion like '% ';
 --   person_firma pf on p.id = pf.id_person join
 --   firma         f on f.id = pf.id_firma
 -- where
---   p.von like ' %';
+--   p.von like '% ';
 -- 
 
