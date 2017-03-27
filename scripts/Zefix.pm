@@ -1348,6 +1348,7 @@ sub escape_und { #_{
 # $text =~ s/ von (.(?!, in ))*? und (.*?)(?=, in)/  von    1: $1\n    2: $2\n   3: $3\n  4: $4\n/g;
 # print "\n\n\n$text\n\n";
   $text =~ s/ von ((?:(?!, in ).)*?) und (.*?)(?=;|, in)/#1<#von_$1_und_$2#1>#/g;
+# $text =~ s/ von ((?:(?!, in ).)*?) und (.*?)(?=;)/#1<#von_$1_und_$2#1>#/g;
 # print "\n\n\n$text\n\n";
 
   $text =~ s/ und mit einem Stammanteil von /##_und_mit_stammanteil_von_##/g;
