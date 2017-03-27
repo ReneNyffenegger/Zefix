@@ -6,6 +6,7 @@ package Zefix;
 use warnings;
 use strict;
 use utf8;
+use Text::Wrap; $Text::Wrap::columns = 180;
 
 use DBI;
 
@@ -17,7 +18,8 @@ my $debug_indent = 0;
 
 sub init { #_{
 
-  my $env = shift or die;
+  my $env   = shift or die;
+     $debug = shift;
 
   if ($env eq 'test') {
     $zefix_root_dir = "$ENV{github_root}Zefix/test/";
@@ -267,19 +269,27 @@ sub find_persons_from_daily_summary_rec { #_{
 
     $debug_indent++;
 
+#   my @PARTS = split /(Ausgeschiedene Personen(?: und|,) erloschene Unterschriften|Eingetragene Personen(?: (?:neu oder mutierend|Geändert))?|Personne et signature radiée|Inscription ou modification de personne(?:\(s\))?|Persone dimissionarie e firme cancellate|Persone iscritte|Nuove persone iscritte o modifiche|Personne\(s\) inscrite\(s\)|Personen neu oder mutierend|Ausgeschiedene Personen|Gelöschte Personen): */, $text;
     my @PARTS = split /(Ausgeschiedene Personen(?: und|,) erloschene Unterschriften|Eingetragene Personen(?: (?:neu oder mutierend|Geändert))?|Personne et signature radiée|Inscription ou modification de personne(?:\(s\))?|Persone dimissionarie e firme cancellate|Persone iscritte|Nuove persone iscritte o modifiche|Personne\(s\) inscrite\(s\)|Personen neu oder mutierend|Ausgeschiedene Personen): */, $text;
+    debug('scalar @PARTS: ' . scalar @PARTS);
+
+    if (@PARTS == 1 and $text =~ /Stiftungsrat:/) { # f798777
+
+      @PARTS = split /(Stiftungsrat:)/, $text;
+      debug('After split Stiftungsrat: - scalar @PARTS: ' . scalar @PARTS);
+#     unshift @PARTS, 'Eingetragene Personen';
+
+    }
 
     my $special_parsing = shift @PARTS;
 
 
+
     debug("special_parsing: $special_parsing");
-#   if ($special_parsing =~ /Für die Zweigniederlassung zeichne. (mit \w+) ([^.]+)\./) {
-#     print "\n\nMatches\n\n";
-#   }
-    while ($special_parsing =~ s/Die Zweigniederlassung von [^.]+ ist erloschen\.?//) {
+ #_{ Special parsing
+    while ($special_parsing =~ s/Die Zweigniederlassung von [^.]+ ist erloschen\.?//) { #_{
 #     print "yepp\n";
-    }
-#   while ($special_parsing =~ s/Für die Zweigniederlassung zeichne. (mit \w+) ([^.]+)//) {
+    } #_}
     while ($special_parsing =~ s/Für die Zweigniederlassung zeichne. ([^.]+)//) { #_{
     #
     # f 738038
@@ -624,24 +634,28 @@ sub find_persons_from_daily_summary_rec { #_{
 
       push @ret, $rec_person;
     } #_}
-
+ #_}
     debug('while (@PARTS)');
     $debug_indent++;
     while (@PARTS) { #_{
 
+      debug('PART -------');
+      $debug_indent++;
       my $intro_text    = shift @PARTS;
       my $personen_text = shift @PARTS;
 
       my @person_parts;
-      @person_parts = split /(?:\.|;|, und ) */, $personen_text;
+      debug("personen_text: $personen_text");
+      @person_parts = split /(?:\.|;|, und |, alle drei mit ) */, $personen_text;
 
       for my $person_text (@person_parts) { #_{
 
+        debug("intro_text  = $intro_text");
         debug("person_text = $person_text");
         $debug_indent ++;
 
 
-        if ($person_text =~ /^ *beide (mit .*)/) {
+        if ($person_text =~ /^ *beide (mit .*)/) { #_{
 
           my $zeichnung = $1;
           debug("beide mit $zeichnung");
@@ -656,14 +670,17 @@ sub find_persons_from_daily_summary_rec { #_{
 
           $debug_indent --;
           next;
-        }
+        } #_}
+#       if ($person_text =~ /^ alle drei (mit .*)/) 
 
         my $person_rec = {};
   
-        if ($intro_text =~ /^Eingetragene Personen/ or $intro_text =~ /[iI]nscrip?t/ or $intro_text =~ /[Pp]ersone iscritte/ or $intro_text =~ /^Personen neu/) { #_{
+        if ($intro_text =~ /^Eingetragene Personen/ or $intro_text =~ /[iI]nscrip?t/ or $intro_text =~ /[Pp]ersone iscritte/ or $intro_text =~ /^Personen neu/ or $intro_text eq 'Stiftungsrat:') { #_{
+           debug ("add_rm = + (intro_text = $intro_text");
            $person_rec = {'add_rm' => '+'};
         }
         else {
+           debug ("add_rm = - (intro_text = $intro_text");
            $person_rec = {'add_rm' => '-'};
         } #_}
   
@@ -749,6 +766,7 @@ sub find_persons_from_daily_summary_rec { #_{
         $debug_indent --;
       } #_}
   
+      $debug_indent--;
     } #_}
     $debug_indent--;
 
@@ -829,7 +847,7 @@ sub find_persons_from_daily_summary_rec { #_{
   } #_}
 
   debug('for my $rec_..');
-  for my $rec_ (@ret) {
+  for my $rec_ (@ret) { #_{
 #   $rec_->{von} = split_von($rec_->{von});
 
 
@@ -855,7 +873,7 @@ sub find_persons_from_daily_summary_rec { #_{
 #     push @titles, 'Dr.';
 #   }
 
-  }
+  } #_}
 
   return @ret;
 
@@ -1233,8 +1251,9 @@ sub who_and_zeichnung { #_{
 sub debug { #_{
   return unless $debug;
   print '  ' x $debug_indent;
-  print "$_[0]\n";
-
+# print "$_[0]\n";
+  print wrap('', '  ' x $debug_indent, $_[0]);
+  print "\n";
 } #_}
 
 1;
