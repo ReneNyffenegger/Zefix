@@ -19,7 +19,8 @@ print $out '<!DOCTYPE HTML>
   <style>
     tr.del {color:grey}
     td.rest {background-color:#f99}
-    .no-pers {color: red; font-weight: bold}
+    .no-pers  {color: red; font-weight: bold}
+    .no-space {background-color:#f90}
   </style>
 
 </head><body>';
@@ -61,12 +62,10 @@ while (my $rec = Zefix::parse_next_daily_summary_line($zefix_file)) {
 
     $personen_trs .= sprintf( #_{
       "<tr class='%s'>
-        <td>%s</td>
-        <td>%s</td>
-        <td>%s</td>
-        <td>%s</td>
-
-        <td>%s</td>
+        <td%s>%s</td>   <!-- titel       -->
+        <td%s>%s</td>   <!-- nachname    -->
+        <td%s>%s</td>   <!-- vorname     -->
+        <td%s>%s</td>   <!-- von         -->
         <!-- von 1 .. 6
         <td> s</td>
         <td> s</td>
@@ -74,33 +73,33 @@ while (my $rec = Zefix::parse_next_daily_summary_line($zefix_file)) {
         <td> s</td>
         <td> s</td>
         -->
-
-        <td>%s</td>
+        <td%s>%s</td>   <!-- bezeichnung -->
       <!-- ---------- -->
-        <td>%s</td>
-        <td>%s</td>
-        <td>%s</td>
+        <td%s>%s</td>   <!-- in           -->
+        <td%s>%s</td>   <!-- funktion     -->
+        <td%s>%s</td>   <!-- zeichnung    -->
+        <td%s>%s</td>   <!-- stammeinlage -->
       <!-- ---------- -->
-        <td class='%s'>%s</td>
+        <td class='%s'>%s</td> <!-- rest -->
         </tr>\n",
 #     $personen_rec->{add_rm},
       $personen_rec->{add_rm} eq '-' ? 'del' : 'add',
-      $personen_rec->{titel}        // '',
-      $personen_rec->{nachname}     // '',
-      $personen_rec->{vorname}      // '',
-      $personen_rec->{von}          // '',
+      css_class($personen_rec->{titel}   ), $personen_rec->{titel}        // '',
+      css_class($personen_rec->{nachname}), $personen_rec->{nachname}     // '',
+      css_class($personen_rec->{vorname} ), $personen_rec->{vorname}      // '',
+      css_class($personen_rec->{von}     ), $personen_rec->{von}          // '',
 #   ${$personen_rec->{von}}[0]      // '',
 #   ${$personen_rec->{von}}[1]      // '',
 #   ${$personen_rec->{von}}[2]      // '',
 #   ${$personen_rec->{von}}[3]      // '',
 #   ${$personen_rec->{von}}[4]      // '',
 #   ${$personen_rec->{von}}[5]      // '',
-      $personen_rec->{bezeichnung}  // '',
-      $personen_rec->{in}           // '',
+      css_class($personen_rec->{bezeichnung} ), $personen_rec->{bezeichnung}  // '',
+      css_class($personen_rec->{in}          ), $personen_rec->{in}           // '',
 
-      $personen_rec->{funktion}     // '<i>null</i>',
-      $personen_rec->{zeichnung}    // '<i>null</i>',
-      $personen_rec->{stammeinlage} // '<i>null</i>',
+      css_class($personen_rec->{funktion}    ), $personen_rec->{funktion}     // '<i>null</i>',
+      css_class($personen_rec->{zeichnung}   ), $personen_rec->{zeichnung}    // '<i>null</i>',
+      css_class($personen_rec->{stammeinlage}), $personen_rec->{stammeinlage} // '<i>null</i>',
 
       $personen_rec->{rest} ? 'rest': '',
       $personen_rec->{rest} // '?'
@@ -152,6 +151,15 @@ while (my $rec = Zefix::parse_next_daily_summary_line($zefix_file)) {
 HTML
 
 }
+
+sub css_class { #_{
+  my $text = shift;
+  return '' unless defined $text;
+  if ($text =~ /^ / or $text =~ / $/) {
+    return " class='no-space'";
+  }
+  return '';
+} #_}
 
 print $out "</body></html>";
 close $out;
