@@ -20,7 +20,7 @@ my $dest_dir       = "q/";
 my @ids_firma;
 if ($ids) {
   die "Dest dir $dest_dir does not exist" unless -d $dest_dir;
-  die if grep { $_ != '.gitignore' } glob ("$dest_dir*-*");
+  die if grep { $_ ne '.gitignore' } glob ("$dest_dir*-*");
   @ids_firma = @ARGV or die;
 }
 elsif ($regexp) {
