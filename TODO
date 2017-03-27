@@ -5,6 +5,17 @@ select * from person where von like '% ist nach Massgabe %' or von like 'vertret
 
 select pf.id_firma, substr(p.von, 0, 100) from person p join person_firma pf on p.id = pf.id_person order by length(p.von) desc limit 100;
 
+http://renenyffenegger.ch/Firmen/f467622           Schweizerischer Blinden- und Sehbehindertenverband (SBV)
+ --> Hat als Zeichnung (Funktion?) zB.
+      »Mitglied der Geschäftsleitungeinem Mitglied des Zentralvorstandes oder einem Mitglied der Geschäftsleitung«
+    (Bruno Bächi)
+http://renenyffenegger.ch/Firmen/f82875            
+ --> Hat als Funktion zB
+      »nur zusammen mit einem Mitglied oder dem Direktor«
+http://renenyffenegger.ch/Firmen/f403182    Sunrise...
+ --> hat »Cawley, Timothy J., Bürger der USA«
+     »Mc Cullough, William B., Bürger der USA«
+
 http://renenyffenegger.ch/Firmen/f871329
   -> unbekannten Aufenthaltes
 
