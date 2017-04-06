@@ -91,7 +91,8 @@ function main($db) { #_{
 
 function print_firma($db, $id_firma) { #_{
 
-  if ($id_firma == 784897) { #_{
+  if ($id_firma == 784897 or   #_{
+      $id_firma == 151395   ){
   #
   #  Datenschutz
   #
@@ -119,6 +120,10 @@ function print_firma($db, $id_firma) { #_{
   }
 
   print "<i>" . $firma['rechtsform_bezeichnung']. "</i><p>";
+
+  if ($firma['status'] == 0) {
+     return;
+  }
 
   if ($firma['care_of'       ]) { printf("  %s<br>\n"   , tq84_enc($firma['care_of'])); }
   printf("%s %s<br>\n", tq84_enc($firma['strasse']), tq84_enc($firma['hausnummer']));
@@ -287,7 +292,8 @@ function print_person($db, $nachname, $vorname, $in) { #_{
     where
       p.nachname = ? and
       p.vorname  = ? and
-      p.von      = ?
+      p.von      = ? and
+      f.status   <> 0
     ",
       array($nachname, $vorname, $in)
   );
