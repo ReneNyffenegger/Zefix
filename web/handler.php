@@ -91,6 +91,15 @@ function main($db) { #_{
 
 function print_firma($db, $id_firma) { #_{
 
+  if ($id_firma == 784897) { #_{
+  #
+  #  Datenschutz
+  #
+    print '<meta http-equiv="refresh" content="0; url=http://www.renenyffenegger.ch/" />';
+    return;
+
+  } #_}
+
   $firma = firma_info($db, $id_firma);
 
   $firma_bezeichnung = $firma['bezeichnung'];
@@ -182,7 +191,11 @@ function print_firma($db, $id_firma) { #_{
 
     $nachname = $row['nachname'];
 
-    if ($row['cnt_firma'] > 1) {
+    if ($row['cnt_firma'] > 1 and (
+       ( $nachname != 'Bahceli'        and $vorname != 'Batikan'  ) or
+       ( $nachname != 'Hegetschweiler' and $vorname != 'Caroline' )
+     )
+    ) {
 #      $nachname = sprintf("<a href='p/%s/%s/%s'>%s</a>", $row['nachname'], $row['vorname'], $row['von'], $row['nachname']);
        $nachname = sprintf("<a href='p•%s•%s•%s'>%s</a>", $row['nachname'], $row['vorname'], $row['von'], $row['nachname']);
     }
@@ -244,6 +257,16 @@ function print_firma($db, $id_firma) { #_{
 } #_}
 
 function print_person($db, $nachname, $vorname, $in) { #_{
+
+  if ( ($vorname == 'Batikan'   and $nachname == 'Bahceli') or
+       ($vorname == 'Caroline'  and $nachname == 'Hegetschweiler') 
+  ) {
+  #
+  #  Datenschutz
+  #
+    print '<meta http-equiv="refresh" content="0; url=http://www.renenyffenegger.ch/" />';
+    return;
+  }
 
   print_html_start("$vorname $nachname", "$vorname $nachame: Zuordnung zu verschiedenen Firmen", 0);
  
