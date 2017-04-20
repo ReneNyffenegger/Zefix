@@ -1,5 +1,11 @@
 <?php
 
+#if ($_SERVER['REQUEST_URI'] == '/Firmen/f303760') {
+  header($_SERVER["SERVER_PROTOCOL"]." 410 Gone"); 
+  exit;
+# exit;
+#}
+
 print '<meta http-equiv="refresh" content="0; url=http://www.renenyffenegger.ch/" />';
 exit;
 
