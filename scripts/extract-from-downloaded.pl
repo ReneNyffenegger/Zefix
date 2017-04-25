@@ -10,17 +10,25 @@ use Zefix;
 
 GetOptions (
   'ids'      => \my $ids,
-  'regexp:s' => \my $regexp
+  'regexp:s' => \my $regexp,
+  'test'     => \my $test,
 ) or exit;
 
-Zefix::init('dev');
+if ($test) {
+  Zefix::init('test');
+}
+else {
+  Zefix::init('dev');
+}
 
 my $dest_dir       = "q/";
 
 my @ids_firma;
 if ($ids) {
-  die "Dest dir $dest_dir does not exist" unless -d $dest_dir;
-  die if grep { $_ ne '.gitignore' } glob ("$dest_dir*-*");
+  if (not $test) {
+    die "Dest dir $dest_dir does not exist" unless -d $dest_dir;
+    die if grep { $_ ne '.gitignore' } glob ("$dest_dir*-*");
+  }
   @ids_firma = @ARGV or die;
 }
 elsif ($regexp) {
@@ -42,9 +50,12 @@ for my $file (Zefix::daily_summary_files) { #_{
       if (grep {$_ == $row[0]} @ids_firma) {
         print "found $row[0] in $file\n";
         my $file_base = basename($file);
-        open (my $out, '>>', "$dest_dir$file_base") or die;
-        print $out $in;
-        close $out;
+
+        if (not $test) {
+          open (my $out, '>>', "$dest_dir$file_base") or die;
+          print $out $in;
+          close $out;
+        }
   
       }
     } #_}
@@ -70,8 +81,10 @@ for my $file (Zefix::daily_summary_files) { #_{
 
 if (@ids_firma) {
 
-  extract_from_firmen_or_firmen_bezeichnung('firmen'            );
-  extract_from_firmen_or_firmen_bezeichnung('firmen_bezeichnung');
+  if (not $test) {
+    extract_from_firmen_or_firmen_bezeichnung('firmen'            );
+    extract_from_firmen_or_firmen_bezeichnung('firmen_bezeichnung');
+  }
 
 }
 
