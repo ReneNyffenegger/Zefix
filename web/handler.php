@@ -1,5 +1,14 @@
 <?php
 
+#if ($_SERVER['REQUEST_URI'] == '/Firmen/f303760') {
+  header($_SERVER["SERVER_PROTOCOL"]." 410 Gone"); 
+  exit;
+# exit;
+#}
+
+print '<meta http-equiv="refresh" content="0; url=http://www.renenyffenegger.ch/" />';
+exit;
+
 $V_or_F = substr($_SERVER['REQUEST_URI'], 1, 1);
 
 if ($V_or_F == 'V') {
@@ -91,6 +100,16 @@ function main($db) { #_{
 
 function print_firma($db, $id_firma) { #_{
 
+  if ($id_firma == 784897 or   #_{
+      $id_firma == 151395   ){
+  #
+  #  Datenschutz
+  #
+    print '<meta http-equiv="refresh" content="0; url=http://www.renenyffenegger.ch/" />';
+    return;
+
+  } #_}
+
   $firma = firma_info($db, $id_firma);
 
   $firma_bezeichnung = $firma['bezeichnung'];
@@ -103,13 +122,17 @@ function print_firma($db, $id_firma) { #_{
 
 # $nominatim_address = $firma['strasse'] . ' ' . $firma['hausnummer'] . ', ' . $firma['plz'] . ' ' . $firma['ort'] . ', Schweiz';
   $nominatim_address = $firma['strasse'] . ' ' . $firma['hausnummer'] . ', '                       . $firma['ort'] . ', Schweiz';
-  print_html_start($firma_bezeichnung, "$firma_bezeichnung (Mit Karte und Zuordnung zu Stichworten)", $nominatim_address);
+  print_html_start($firma_bezeichnung, "$firma_bezeichnung (Mit Karte und Zuordnung zu Stichworten)", $nominatim_address, 0);
 
   if ($firma['loesch_dat']) {
     print "Diese Firma wurde " . $firma['loesch_dat']  . " gelöscht.<p>";
   }
 
   print "<i>" . $firma['rechtsform_bezeichnung']. "</i><p>";
+
+  if ($firma['status'] == 0) {
+     return;
+  }
 
   if ($firma['care_of'       ]) { printf("  %s<br>\n"   , tq84_enc($firma['care_of'])); }
   printf("%s %s<br>\n", tq84_enc($firma['strasse']), tq84_enc($firma['hausnummer']));
@@ -182,7 +205,11 @@ function print_firma($db, $id_firma) { #_{
 
     $nachname = $row['nachname'];
 
-    if ($row['cnt_firma'] > 1) {
+    if ($row['cnt_firma'] > 1 and (
+       ( $nachname != 'Bahceli'        and $vorname != 'Batikan'  ) or
+       ( $nachname != 'Hegetschweiler' and $vorname != 'Caroline' )
+     )
+    ) {
 #      $nachname = sprintf("<a href='p/%s/%s/%s'>%s</a>", $row['nachname'], $row['vorname'], $row['von'], $row['nachname']);
        $nachname = sprintf("<a href='p•%s•%s•%s'>%s</a>", $row['nachname'], $row['vorname'], $row['von'], $row['nachname']);
     }
@@ -245,9 +272,17 @@ function print_firma($db, $id_firma) { #_{
 
 function print_person($db, $nachname, $vorname, $in) { #_{
 
-  print_html_start("$vorname $nachname", "$vorname $nachame: Zuordnung zu verschiedenen Firmen", 0);
- 
-  print "$vorname $nachname erscheint im Zusammenhang mit folgenden Firmen:";
+  if ( ($vorname == 'Batikan'   and $nachname == 'Bahceli') or
+       ($vorname == 'Caroline'  and $nachname == 'Hegetschweiler') 
+  ) {
+  #
+  #  Datenschutz
+  #
+    print '<meta http-equiv="refresh" content="0; url=http://www.renenyffenegger.ch/" />';
+    return;
+  }
+
+
 
   $res = db_prep_exec_fetchall($db, 
 
@@ -264,24 +299,37 @@ function print_person($db, $nachname, $vorname, $in) { #_{
     where
       p.nachname = ? and
       p.vorname  = ? and
-      p.von      = ?
+      p.von      = ? and
+      f.status   <> 0
     ",
       array($nachname, $vorname, $in)
   );
 
-  print "<table border=1>";
+  $html = "<table border=1>";
+  $cnt = 0;
   foreach ($res as $row) {
-    printf ("<tr><td><a href='f%d'>%s</a></td><td><a href='g%d'>%s</td></tr>", $row['id_firma'], $row['bezeichnung'], $row['id_gemeinde'], $row['name_gemeinde']);
+    $cnt ++;
+    $html .= sprintf ("<tr><td><a href='f%d'>%s</a></td><td><a href='g%d'>%s</td></tr>", $row['id_firma'], $row['bezeichnung'], $row['id_gemeinde'], $row['name_gemeinde']);
   }
-  print "</table>";
+  $html .= "</table>";
 
 
+  if ($cnt) {
+    print_html_start("$vorname $nachname", "$vorname $nachame: Zuordnung zu verschiedenen Firmen", 0, 1);
+ 
+    print "$vorname $nachname erscheint im Zusammenhang mit folgenden Firmen:";
+    print $html;
+  }
+  else {
+
+    print '<meta http-equiv="refresh" content="0; url=http://www.renenyffenegger.ch/" />';
+  }
 } #_}
 
 function print_gemeinde($db, $id_gemeinde) { #_{
 
   $gemeinde_name = gemeinde_name($db, $id_gemeinde);
-  print_html_start("Firmen in $gemeinde_name", "Firmen in $gemeinde_name mit Zuordnung zu Stichworten" , 0);
+  print_html_start("Firmen in $gemeinde_name", "Firmen in $gemeinde_name mit Zuordnung zu Stichworten" , 0, 1);
 
   info("id_gemeinde: $id_gemeinde");
 
@@ -325,7 +373,7 @@ function print_gemeinde($db, $id_gemeinde) { #_{
 
 function print_gemeinden($db) { #_{
 
-  print_html_start("Gemeinden der Schweiz", "Gemeinde der Schweiz - Einstiegsseite zur Suche nach Firmen", 0);
+  print_html_start("Gemeinden der Schweiz", "Gemeinde der Schweiz - Einstiegsseite zur Suche nach Firmen", 0, 1);
 
   $res = db_prep_exec_fetchall($db, 'select id, name from gemeinde order by name');
 
@@ -339,7 +387,7 @@ function print_gemeinden($db) { #_{
 
 function print_stichwort($db, $stichwort_name) { #_{
 
-  print_html_start("Stichwort: $stichwort_name", "Liste von Firmen zum Stichwort $stichwort_name", 0);
+  print_html_start("Stichwort: $stichwort_name", "Liste von Firmen zum Stichwort $stichwort_name", 0, 1);
 
   if (is_tq84()) {
     print 'id_stichwort: ' . db_sel_1_row_1_col($db, 'select id from stichwort where stichwort = ?', array($stichwort_name));
@@ -357,7 +405,8 @@ function print_stichwort($db, $stichwort_name) { #_{
        firma           f  on f.id = sf.id_firma     join
        gemeinde        g  on g.id = f .id_gemeinde
      where
-       s.stichwort = ?
+       s.stichwort = ?  and
+       f.status    <> 0
      order by
        g.name', array($stichwort_name));
 
@@ -372,7 +421,7 @@ function print_stichwort($db, $stichwort_name) { #_{
 } #_}
 
 function print_index($db) { #_{
-  print_html_start("Firmen der Schweiz", "Firmen der Schweiz, im zusammenhang stehende Personen und Stichworte", 0);
+  print_html_start("Firmen der Schweiz", "Firmen der Schweiz, im zusammenhang stehende Personen und Stichworte", 0, 1);
 
   print "<h1 id='stichwoerter'>Stichwörter</h1>\n";
 
@@ -404,13 +453,20 @@ function info($text) { #_{
 
 } #_}
 
-function print_html_start($title, $meta_description, $google_map_address) { #_{
+function print_html_start($title, $meta_description, $google_map_address, $google_archive_etc) { #_{
+
+  $meta_google = '';
+
+  if ($google_archive_etc) {
+    $meta_google = "<meta name='robots' content='noarchive,noindex'>";
+  }
 
 print "<!DOCTYPE html>
 <html>
 <head>
 <meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
 <meta name='description' content='$meta_description' />
+$meta_google
 <title>$title</title>
 <style>
 
