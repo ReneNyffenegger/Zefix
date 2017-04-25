@@ -271,6 +271,7 @@ ftp://ftp.zefix.ch/hrdata/NEWS-2016-08-18.txt
     (p.nachname  like '%Schawinski%'         and  p.vorname like '%Roger%'                               ) or
     (p.nachname  like '%Giacobbo%'           and  p.vorname like '%Viktor%'                              ) or
     (p.nachname  like '%Thiel%'              and  p.vorname like '%Andres%'                              ) or
+    (p.nachname  like '%Osterwald%'          and  p.vorname like '%Hazy%'                                ) or
     --
     (p.nachname  like '%Russi%'              and  p.vorname like '%Bernhard%'                            ) or
     (p.nachname  like '%Hess%'               and  p.vorname like '%Erika%'                               ) or
